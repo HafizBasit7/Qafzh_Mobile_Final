@@ -1,0 +1,341 @@
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  ActivityIndicator,
+  Dimensions,
+} from "react-native";
+import { MaterialIcons, Ionicons } from "@expo/vector-icons";
+import { useTranslation } from "react-i18next";
+import { useAuth } from "../hooks/useAuth";
+import PhoneLink from './PhoneLink';
+import { useNavigation } from "@react-navigation/native";
+
+const { width } = Dimensions.get('window');
+const cardWidth = (width - 48) / 2; // 2 cards per row with margins
+
+const ProductCard = ({ product }) => {
+  const { t } = useTranslation();
+  const { user } = useAuth();
+  const [imageLoading, setImageLoading] = useState(true);
+  const [imageError, setImageError] = useState(false);
+  const navigation = useNavigation();
+
+  if (!product) return null;
+
+  const handlePress = () => {
+    navigation.navigate('ProductDetail', { product });
+  };
+
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat("ar-YE", {
+      style: "decimal",  
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(price);
+  };
+
+  const renderImage = () => {
+    if (imageError) {
+      return (
+        <View style={styles.imagePlaceholder}>
+          <MaterialIcons name="broken-image" size={32} color="#CBD5E1" />
+          <Text style={styles.placeholderText}>لا توجد صورة</Text>
+        </View>
+      );
+    }
+
+    return (
+      <View style={styles.imageContainer}>
+        <Image
+          source={{
+            uri: product.images?.[0] || "https://via.placeholder.com/300",
+          }}
+          style={styles.image}
+          onLoadStart={() => setImageLoading(true)}
+          onLoadEnd={() => setImageLoading(false)}
+          onError={() => {
+            setImageLoading(false);
+            setImageError(true);
+          }}
+        />
+        {imageLoading && (
+          <View style={styles.imageLoader}>
+            <ActivityIndicator color="#16A34A" size="large" />
+          </View>
+        )}
+
+        {/* Condition Badge */}
+        {/* <View
+          style={[styles.conditionBadge, styles[`${product.condition}Badge`]]}
+        >
+          <Text
+            style={[styles.conditionText, styles[`${product.condition}Text`]]}
+          >
+            {t(`CONDITIONS.${product.condition.toUpperCase()}`)}
+          </Text>
+        </View> */}
+      </View>
+    );
+  };
+
+  const getConditionColor = (condition) => {
+    switch (condition?.toLowerCase()) {
+      case 'new': return '#10B981';
+      case 'used': return '#F59E0B';
+      case 'needs repair': return '#EF4444';
+      case 'refurbished': return '#8B5CF6';
+      default: return '#F59E0B';
+    }
+  };
+
+  const getConditionText = (condition) => {
+    switch (condition?.toLowerCase()) {
+      case 'new': return t('MARKETPLACE.NEW');
+      case 'used': return t('MARKETPLACE.USED');
+      case 'needs repair': return t('MARKETPLACE.NEEDS_REPAIR');
+      case 'refurbished': return t('MARKETPLACE.REFURBISHED');
+      default: return condition || t('MARKETPLACE.CONDITION_UNKNOWN');
+    }
+  };
+
+  return (
+    <TouchableOpacity style={styles.container} onPress={handlePress}>
+      {renderImage()}
+
+      {/* Product Info */}
+      <View style={styles.content}>
+        <Text style={styles.title} numberOfLines={2}>
+          {product.name || t('MARKETPLACE.UNTITLED_PRODUCT')}
+        </Text>
+        
+        {product.brand && (
+          <Text style={styles.brand} numberOfLines={1}>
+            {product.brand}
+          </Text>
+        )}
+
+        <Text style={styles.price}>
+          {formatPrice(product.price)}
+        </Text>
+
+        {/* Location */}
+        {(product.governorate || product.city) && (
+          <View style={styles.locationContainer}>
+            <Ionicons name="location-outline" size={12} color="#6B7280" />
+            <Text style={styles.location} numberOfLines={1}>
+              {[product.city, product.governorate].filter(Boolean).join(', ')}
+            </Text>
+          </View>
+        )}
+
+        {/* Contact Info */}
+        {product.phone && (
+          <PhoneLink
+            phoneNumber={product.phone}
+            style={styles.phoneContainer}
+            textStyle={styles.phoneText}
+            iconSize={12}
+            showIcon={true}
+          />
+        )}
+      </View>
+    </TouchableOpacity>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 16,
+    overflow: "hidden",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    elevation: 4,
+    borderWidth: 1,
+    borderColor: "#F1F5F9",
+    width: cardWidth, // Apply cardWidth to container
+    marginHorizontal: 8, // Add some horizontal margin
+    marginVertical: 8, // Add some vertical margin
+  },
+  imageContainer: {
+    position: "relative",
+    width: "100%",
+    height: 140,
+    backgroundColor: "#F8FAFC",
+  },
+  image: {
+    width: "100%",
+    height: "100%",
+    resizeMode: "cover",
+  },
+  imageLoader: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(255, 255, 255, 0.9)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  imagePlaceholder: {
+    width: "100%",
+    height: 140,
+    backgroundColor: "#F1F5F9",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  placeholderText: {
+    fontSize: 12,
+    color: "#94A3B8",
+    marginTop: 8,
+    fontFamily: "Tajawal-Regular",
+  },
+
+  conditionBadge: {
+    position: "absolute",
+    top: 12,
+    left: 12,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 12,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  newBadge: {
+    backgroundColor: "#DCFCE7",
+  },
+  usedBadge: {
+    backgroundColor: "#DBEAFE",
+  },
+  needs_repairBadge: {
+    backgroundColor: "#FEE2E2",
+  },
+  conditionText: {
+    fontSize: 11,
+    fontFamily: "Tajawal-Bold",
+  },
+  newText: {
+    color: "#166534",
+  },
+  usedText: {
+    color: "#1E40AF",
+  },
+  needs_repairText: {
+    color: "#DC2626",
+  },
+  content: {
+    padding: 12,
+  },
+  title: {
+    fontSize: 15,
+    fontFamily: "Tajawal-Bold",
+    color: "#1E293B",
+    marginBottom: 8,
+    textAlign: "right",
+    lineHeight: 20,
+  },
+  priceSection: {
+    flexDirection: "row-reverse",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 8,
+  },
+  priceContainer: {
+    flexDirection: "row-reverse",
+    alignItems: "baseline",
+    gap: 4,
+  },
+  price: {
+    fontSize: 18,
+    fontFamily: "Tajawal-Bold",
+    color: "#16A34A",
+  },
+  currency: {
+    fontSize: 14,
+    fontFamily: "Tajawal-Medium",
+    color: "#16A34A",
+  },
+  negotiableBadge: {
+    backgroundColor: "#FEF3C7",
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 8,
+  },
+  negotiableText: {
+    fontSize: 11,
+    fontFamily: "Tajawal-Medium",
+    color: "#D97706",
+  },
+  locationContainer: {
+    flexDirection: "row-reverse",
+    alignItems: "center",
+    gap: 6,
+    marginBottom: 8,
+  },
+  location: {
+    fontSize: 13,
+    fontFamily: "Tajawal-Regular",
+    color: "#64748B",
+    flex: 1,
+    textAlign: "right",
+  },
+  bottomSection: {
+    flexDirection: "row-reverse",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  verifiedBadge: {
+    flexDirection: "row-reverse",
+    alignItems: "center",
+    gap: 4,
+    backgroundColor: "#10B981",
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 8,
+  },
+  verifiedText: {
+    fontSize: 11,
+    fontFamily: "Tajawal-Medium",
+    color: "#10B981",
+  },
+  spacer: {
+    flex: 1,
+  },
+  typeBadge: {
+    backgroundColor: "#F1F5F9",
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 8,
+  },
+  typeText: {
+    fontSize: 11,
+    fontFamily: "Tajawal-Medium",
+    color: "#475569",
+  },
+  // New styles for PhoneLink
+  phoneContainer: {
+    flexDirection: 'row-reverse',
+    alignItems: 'center',
+    gap: 4,
+    marginTop: 8,
+  },
+  phoneText: {
+    fontSize: 13,
+    fontFamily: 'Tajawal-Medium',
+    color: '#4B5563',
+  },
+  brand: {
+    fontSize: 13,
+    fontFamily: 'Tajawal-Regular',
+    color: '#6B7280',
+    marginBottom: 4,
+  },
+});
+
+export default ProductCard;
