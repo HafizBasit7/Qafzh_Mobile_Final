@@ -18,7 +18,7 @@ import { useAuth } from '../hooks/useAuth';
 import { useProducts } from '../hooks/useProducts';
 import { useModal } from '../hooks/useModal';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
-import { governorates } from '../../data/governorates';
+import governorates from '../../data/governorates'; // Updated import
 import { uploadImage } from '../../utils/upload';
 import CustomModal from '../components/common/CustomModal';
 import EmptyState from '../components/EmptyState';
@@ -40,6 +40,7 @@ const ProductSubmissionScreen = () => {
   const { modalState, hideModal, showSuccess, showError, showWarning, showInfo } = useModal();
   const [hasCheckedAuth, setHasCheckedAuth] = useState(false);
   const navigation = useNavigation();
+  
   // ALL HOOKS MUST BE AT THE TOP - BEFORE ANY CONDITIONAL RETURNS
   const [formData, setFormData] = useState({
     name: '',
@@ -52,18 +53,15 @@ const ProductSubmissionScreen = () => {
     currency: 'USD',
     phone: currentUser?.phone || '',
     whatsappPhone: '',
-    governorate: "Sana'a",
+    governorate: "",
     city: '',
     locationText: '',
     images: [],
-    specifications: {
-      power: '',
-      voltage: '',
-      capacity: '',
-      warranty: ''
-    },
     isNegotiable: false
   });
+
+  // State for available cities based on selected governorate
+  const [availableCities, setAvailableCities] = useState([]);
   
   // Check auth when screen is focused
   useFocusEffect(
@@ -106,6 +104,23 @@ const ProductSubmissionScreen = () => {
       }
     }, [isAuthenticated, isVerified, showInfo, navigation, currentUser])
   );
+
+  // Update available cities when governorate changes
+  useEffect(() => {
+    if (formData.governorate) {
+      const selectedGovernorate = governorates.find(gov => gov.name === formData.governorate);
+      if (selectedGovernorate) {
+        setAvailableCities(selectedGovernorate.cities || []);
+        // Reset city selection when governorate changes
+        setFormData(prev => ({ ...prev, city: '' }));
+      } else {
+        setAvailableCities([]);
+      }
+    } else {
+      setAvailableCities([]);
+      setFormData(prev => ({ ...prev, city: '' }));
+    }
+  }, [formData.governorate]);
 
   // Product types and conditions data
   const productTypes = [
@@ -174,16 +189,6 @@ const ProductSubmissionScreen = () => {
       newImages.splice(index, 1);
       setFormData({ ...formData, images: newImages });
     }
-  };
-
-  const handleSpecChange = (field, value) => {
-    setFormData({
-      ...formData,
-      specifications: {
-        ...formData.specifications,
-        [field]: value
-      }
-    });
   };
 
   const validateForm = () => {
@@ -471,8 +476,9 @@ const ProductSubmissionScreen = () => {
               onValueChange={(value) => setFormData({ ...formData, governorate: value })}
               style={styles.picker}
             >
+              <Picker.Item label="اختر المحافظة" value="" />
               {governorates && governorates.map((gov) => (
-                <Picker.Item key={gov} label={gov} value={gov} />
+                <Picker.Item key={gov.name} label={gov.name} value={gov.name} />
               ))}
             </Picker>
           </View>
@@ -480,13 +486,25 @@ const ProductSubmissionScreen = () => {
 
         <View style={styles.inputGroup}>
           <Text style={styles.label}>المدينة *</Text>
-          <TextInput
-            style={styles.input}
-            value={formData.city}
-            onChangeText={(text) => setFormData({...formData, city: text})}
-            placeholder="اسم المدينة"
-            placeholderTextColor="#999"
-          />
+          <View style={styles.pickerContainer}>
+            <Picker
+              selectedValue={formData.city}
+              onValueChange={(value) => setFormData({ ...formData, city: value })}
+              style={styles.picker}
+              enabled={availableCities.length > 0}
+            >
+              <Picker.Item 
+                label={formData.governorate ? "اختر المدينة" : "اختر المحافظة أولاً"} 
+                value="" 
+              />
+              {availableCities.map((city) => (
+                <Picker.Item key={city} label={city} value={city} />
+              ))}
+            </Picker>
+          </View>
+          {!formData.governorate && (
+            <Text style={styles.helperText}>يرجى اختيار المحافظة أولاً</Text>
+          )}
         </View>
 
         <View style={styles.inputGroup}>
@@ -522,55 +540,6 @@ const ProductSubmissionScreen = () => {
               </TouchableOpacity>
             </View>
           )) : null}
-        </View>
-      </View>
-
-      {/* Specifications Section */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>المواصفات التقنية</Text>
-        
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>القدرة (واط)</Text>
-          <TextInput
-            style={styles.input}
-            value={formData.specifications.power}
-            onChangeText={(text) => handleSpecChange('power', text)}
-            placeholder="مثال: 300W"
-            placeholderTextColor="#999"
-          />
-        </View>
-
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>الجهد (فولت)</Text>
-          <TextInput
-            style={styles.input}
-            value={formData.specifications.voltage}
-            onChangeText={(text) => handleSpecChange('voltage', text)}
-            placeholder="مثال: 12V"
-            placeholderTextColor="#999"
-          />
-        </View>
-
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>السعة</Text>
-          <TextInput
-            style={styles.input}
-            value={formData.specifications.capacity}
-            onChangeText={(text) => handleSpecChange('capacity', text)}
-            placeholder="مثال: 100Ah"
-            placeholderTextColor="#999"
-          />
-        </View>
-
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>الضمان</Text>
-          <TextInput
-            style={styles.input}
-            value={formData.specifications.warranty}
-            onChangeText={(text) => handleSpecChange('warranty', text)}
-            placeholder="مثال: سنتان"
-            placeholderTextColor="#999"
-          />
         </View>
       </View>
 
@@ -670,6 +639,13 @@ const styles = StyleSheet.create({
   },
   picker: {
     height: 50,
+  },
+  helperText: {
+    fontSize: 12,
+    color: '#666',
+    marginTop: 4,
+    textAlign: 'right',
+    fontStyle: 'italic',
   },
   row: {
     flexDirection: 'row',

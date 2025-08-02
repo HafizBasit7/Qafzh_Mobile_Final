@@ -12,6 +12,9 @@ import {
   ActivityIndicator,
   Image,
   TextInput,
+  ScrollView,
+  Modal,
+  TouchableWithoutFeedback
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import ProductCard from "../components/ProductCard";
@@ -29,6 +32,7 @@ import { useModal } from "../hooks/useModal";
 import { useDebounce } from "../hooks/useDebounce";
 import { searchAPI } from "../services/api";
 import LoadingSpinner from "../components/common/LoadingSpinner";
+import Logo from "../../assets/images/Logo.png"
 import {
   MaterialIcons,
   FontAwesome,
@@ -36,76 +40,275 @@ import {
   MaterialCommunityIcons,
 } from "@expo/vector-icons";
 
-// Mobile dimensions
-const { width } = Dimensions.get("window");
+const { width, height } = Dimensions.get("window");
 
-export default function MarketplaceScreen() {
+const governorates = [
+  {
+    name: "أبين",
+    cities: ["زنجبار", "خنفر", "لودر", "مودية", "سيبان", "أحور"]
+  },
+  {
+    name: "عدن",
+    cities: ["كريتر", "المعلا", "التواهي", "الشيخ عثمان", "المنصورة", "دار سعد", "البريقة", "خور مكسر"]
+  },
+  {
+    name: "البيضاء",
+    cities: ["البيضاء", "رداع", "مكيراس", "ناطع", "سباح", "ولد ربيع", "الصومعة", "الزاهر"]
+  },
+  {
+    name: "الضالع",
+    cities: ["الضالع", "دمت", "قعطبة", "الأزارق", "جحاف", "الحصين", "الشعيب", "جبن"]
+  },
+  {
+    name: "الحديدة",
+    cities: ["الحديدة", "باجل", "الخوخة", "اللُحية", "الصليف", "بيت الفقيه", "زبيد", "المنصورية", "التحيتا", "حيس", "المغلاف", "الجراحي", "كمران", "الدريهمي", "القناوص", "وادي مور", "الزيدية", "التحيتا", "الخوخة", "حرف سفيان", "الشمايتين", "المراوعة", "بُرع"]
+  },
+  {
+    name: "الجوف",
+    cities: ["الحزم", "خب والشعف", "برط العنان", "الخلق", "المطمة", "الغيل", "رجوزة", "الزاهر", "الحميدات", "خب والشعف", "المتون"]
+  },
+  {
+    name: "المهرة",
+    cities: ["الغيضة", "سيحوت", "قشن", "المسيلة", "حوف", "منعر", "شحن", "حَصوين", "فرطك"]
+  },
+  {
+    name: "المحويت",
+    cities: ["المحويت", "الخبت", "حفاش", "شبام كوكبان", "ملحان", "بني سعد", "الرجم", "الطويلة", "الرُجم"]
+  },
+  {
+    name: "أمانة العاصمة",
+    cities: ["المدينة القديمة", "السبعين", "معين", "التحرير", "الثورة", "شعوب", "السبعين", "بني الحارث", "الوحدة", "آزال"]
+  },
+  {
+    name: "عمران",
+    cities: ["عمران", "ريدة", "حرف سفيان", "خارف", "القفلة", "السودة", "بني صريم", "مسور", "عيال سريح", "جبل عيال يزيد", "ثلاء", "حبور ظليمة", "السود", "المدان", "سوير", "شهيد ناجي", "ذي بين"]
+  },
+  {
+    name: "ذمار",
+    cities: ["ذمار", "عنس", "الحداء", "ميفعة عنس", "عتمة", "جهران", "دوران عنس", "مغرب عنس", "المنار", "وصاب السافل", "وصاب العالي", "جبل الشرق"]
+  },
+  {
+    name: "حضرموت",
+    cities: ["المكلا", "سيئون", "الشحر", "تريم", "شبام", "وادي حضرموت", "قطن", "يابوث", "حجر الصيعر", "دوعن", "الريدة", "القطن", "عمد", "رخية", "ثمود", "سيح الأر", "العبر", "مأرب الوادي", "حورة", "زمخ ومنوخ", "الوديعة", "غيل باوزير", "هجم", "مكيراس", "الريدة وقصيعر", "الديس", "رممة", "المكلا", "مكيراس", "القائمة", "السوم", "الروضة", "الثلوث", "التنعيم", "برهوت", "يشبم"]
+  },
+  {
+    name: "حجة",
+    cities: ["حجة", "عبس", "حرض", "ميدي", "مستباء", "أفلح اليمن", "قفل شمر", "نجرة", "بكيل المير", "الجميمة", "المفتاح", "الشغادرة", "وشحة", "كُحلان الشرف", "كعيدنة", "أفلح الشام", "بني قيس", "شهارة", "السلام", "أوبينة", "ريف حجة", "أسلم", "لاعة", "المغربة", "الشاهل", "كُشر"]
+  },
+  {
+    name: "إب",
+    cities: ["إب", "جبلة", "بعدان", "حبيش", "السياني", "المشنة", "السبرة", "مذيخرة", "القفر", "يافع", "النادرة", "ذي السفال", "العدين", "حزم العدين", "فرع العدين", "السدة", "الشاعر", "المخادر", "الرُضمة"]
+  },
+  {
+    name: "لحج",
+    cities: ["الحوطة", "تبن", "الحليمين", "ردفان", "يهر", "الوديعة", "القبيطة", "المضاربة ورأس العارة", "الملاح", "المقاطرة", "طور الباحة", "يافع", "الحد", "السعيد"]
+  },
+  {
+    name: "مأرب",
+    cities: ["مأرب", "صرواح", "رغوان", "ماهلية", "حريب", "الجوبة", "بدبدة", "رحبة", "حريب القراميش", "مجزر", "العبدية", "مدغل", "جبل مراد", "رحبة"]
+  },
+  {
+    name: "ريمة",
+    cities: ["الجبين", "بلاد الطعام", "كُسمة", "السلفية", "مُزهر", "السلفية"]
+  },
+  {
+    name: "صعدة",
+    cities: ["صعدة", "حيدان", "كتاف والبقع", "الظاهر", "رازح", "الحشوة", "مجزر", "سحار", "كتاف", "الصفراء", "شدا", "قطابر", "باقم", "منبه", "غمر", "ساقين", "البقع", "البقع"]
+  },
+  {
+    name: "صنعاء",
+    cities: ["سنحان", "خولان", "بني مطر", "الحصن", "جحانة", "همدان", "نهم", "بني حشيش", "مناخة", "همدان", "صعفان", "أرحب", "الطيال", "بلاد الروس", "الحيمة الخارجية", "بني ضبيان"]
+  },
+  {
+    name: "شبوة",
+    cities: ["عتق", "الروضة", "ميفعة", "نصاب", "مرخة السفلى", "مرخة العليا", "حطيب", "عسيلان", "رضوم", "جردان", "ضَهر", "بيحان", "عين", "السعيد", "عرمة", "الطلح", "حبّان"]
+  },
+  {
+    name: "سقطرى",
+    cities: ["حديبو", "مومي", "قلنسية", "عبد الكوري"]
+  },
+  {
+    name: "تعز",
+    cities: ["تعز", "التربة", "صبر الموادم", "الشمايتين", "دمنت خدير", "الوازعية", "شرعب الرونة", "شرعب السلام", "جبل حبشي", "المظفر", "القاهرة", "صالة", "مقبنة", "المسراخ", "موزع", "الصلو", "سامع", "المعافر", "المخا", "ذباب", "برة", "حيفان", "ماوية", "المواسط"]
+  }
+];
+
+
+
+
+// Product types for the new tabs
+const PRODUCT_TYPES = [
+  { id: "all", name: "الكل", icon: "apps" },
+  { id: "Panel", name: "ألواح شمسية", icon: "solar-panel" },
+  { id: "Inverter", name: "انفرترات", icon: "flash" },
+  { id: "Battery", name: "بطاريات", icon: "battery" },
+  // { id: "Accessory", name: "اكسسوارات", icon: "cable" },
+];
+
+export default function MarketplaceScreen({ navigation }) {
   const { t } = useTranslation();
   const { currentUser, isAuthenticated } = useAuth();
   const { modalState, hideModal, showError } = useModal();
-  
+  const [showGovernorateModal, setShowGovernorateModal] = useState(false);
   const [activeTab, setActiveTab] = useState("products");
+  const [activeProductType, setActiveProductType] = useState("all");
   const [showFilters, setShowFilters] = useState(false);
+  const [showLocationFilter, setShowLocationFilter] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [isSearching, setIsSearching] = useState(false);
+  const [selectedLocation, setSelectedLocation] = useState("كل اليمن");
+  const [showCategories, setShowCategories] = useState(false);
   const [searchResults, setSearchResults] = useState({
     products: { data: [], total: 0 },
     engineers: { data: [], total: 0 },
     shops: { data: [], total: 0 },
     ads: { data: [], total: 0 }
   });
-  
+
+
+  const renderGovernorateFilter = () => {
+    if (activeTab !== "products") return null;
+
+    return (
+      <View style={styles.governorateFilterContainer}>
+        <TouchableOpacity
+          style={styles.governorateFilterButton}
+          onPress={() => setShowGovernorateModal(true)}
+        >
+          <MaterialIcons name="location-on" size={18} color="#02ff04" />
+          <Text style={styles.governorateFilterText}>
+            {filters.governorate || "كل المحافظات"}
+          </Text>
+          <MaterialIcons name="arrow-drop-down" size={20} color="#02ff04" />
+        </TouchableOpacity>
+      </View>
+    );
+  };
+
+  const renderGovernorateModal = () => (
+    <Modal
+      visible={showGovernorateModal}
+      animationType="slide"
+      transparent={true}
+      onRequestClose={() => setShowGovernorateModal(false)}
+    >
+      <TouchableWithoutFeedback onPress={() => setShowGovernorateModal(false)}>
+        <View style={styles.modalOverlay} />
+      </TouchableWithoutFeedback>
+
+      <View style={styles.governorateModalContainer}>
+        <View style={styles.governorateModalHeader}>
+          <Text style={styles.governorateModalTitle}>اختر المحافظة</Text>
+          <TouchableOpacity onPress={() => setShowGovernorateModal(false)}>
+            <MaterialIcons name="close" size={24} color="#6B7280" />
+          </TouchableOpacity>
+        </View>
+
+        <FlatList
+          data={[{ name: "كل المحافظات" }, ...governorates]}
+          keyExtractor={(item) => item.name}
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              style={[
+                styles.governorateItem,
+                filters.governorate === item.name && styles.selectedGovernorateItem
+              ]}
+              onPress={() => {
+                setFilters({
+                  ...filters,
+                  governorate: item.name === "كل المحافظات" ? "" : item.name,
+                  city: ""
+                });
+                setShowGovernorateModal(false);
+              }}
+            >
+              <Text
+                style={[
+                  styles.governorateItemText,
+                  filters.governorate === item.name && styles.selectedGovernorateItemText
+                ]}
+              >
+                {item.name}
+              </Text>
+              {filters.governorate === item.name && (
+                <MaterialIcons name="check" size={20} color="#02ff04" />
+              )}
+            </TouchableOpacity>
+          )}
+          ItemSeparatorComponent={() => <View style={styles.governorateItemSeparator} />}
+          contentContainerStyle={styles.governorateModalContent}
+        />
+      </View>
+    </Modal>
+  );
+
   const fadeAnim = useRef(new Animated.Value(1)).current;
 
   const [filters, setFilters] = useState({
     productType: "",
     condition: "",
     governorate: "",
+    city: "",
     sortBy: "newest",
+    priceRange: [0, 10000],
   });
 
-  // Debounced search value
+  // Get cities based on selected governorate
+  const getCities = () => {
+    if (!filters.governorate) return [];
+    const selectedGov = governorates.find(gov => gov.name === filters.governorate);
+    return selectedGov ? selectedGov.cities : [];
+  };
+
   const debouncedSearchText = useDebounce(searchText, 500);
 
-  // Build filter parameters for API
   const buildFilterParams = useCallback(() => {
     const params = {};
-    
+
     if (debouncedSearchText.trim()) {
       params.search_keyword = debouncedSearchText.trim();
     }
-    
-    if (filters.productType && filters.productType !== 'all') {
+
+    if (activeProductType !== "all") {
+      params.type = activeProductType;
+    } else if (filters.productType && filters.productType !== "all") {
       params.type = filters.productType;
     }
-    
-    if (filters.condition && filters.condition !== 'all') {
+
+    if (filters.condition && filters.condition !== "all") {
       params.condition = filters.condition;
     }
-    
-    if (filters.governorate && filters.governorate !== 'all') {
+
+    if (filters.governorate && filters.governorate !== "all") {
       params.governorate = filters.governorate;
     }
-    
-    // Handle sorting
-    if (filters.sortBy === 'price_asc') {
-      params.sortBy = 'price';
-      params.sortOrder = 'asc';
-    } else if (filters.sortBy === 'price_desc') {
-      params.sortBy = 'price';
-      params.sortOrder = 'desc';
-    } else if (filters.sortBy === 'name') {
-      params.sortBy = 'name';
-      params.sortOrder = 'asc';
-    } else {
-      params.sortBy = 'createdAt';
-      params.sortOrder = 'desc';
-    }
-    
-    return params;
-  }, [debouncedSearchText, filters]);
 
-  // Unified search effect
+    if (filters.city && filters.city !== "all") {
+      params.city = filters.city;
+    }
+
+    if (filters.priceRange) {
+      params.minPrice = filters.priceRange[0];
+      params.maxPrice = filters.priceRange[1];
+    }
+
+    if (filters.sortBy === "price_asc") {
+      params.sortBy = "price";
+      params.sortOrder = "asc";
+    } else if (filters.sortBy === "price_desc") {
+      params.sortBy = "price";
+      params.sortOrder = "desc";
+    } else if (filters.sortBy === "name") {
+      params.sortBy = "name";
+      params.sortOrder = "asc";
+    } else {
+      params.sortBy = "createdAt";
+      params.sortOrder = "desc";
+    }
+
+    return params;
+  }, [debouncedSearchText, filters, activeProductType]);
+
   useEffect(() => {
     const performUnifiedSearch = async () => {
       if (!debouncedSearchText.trim()) {
@@ -124,8 +327,7 @@ export default function MarketplaceScreen() {
         const results = await searchAPI.searchAll(buildFilterParams());
         setSearchResults(results);
       } catch (error) {
-        console.error('Search error:', error);
-        // Instead of showing annoying modal, just set empty results
+        console.error("Search error:", error);
         setSearchResults({
           products: { data: [], total: 0 },
           engineers: { data: [], total: 0 },
@@ -140,12 +342,10 @@ export default function MarketplaceScreen() {
     performUnifiedSearch();
   }, [debouncedSearchText, buildFilterParams]);
 
-  // Data hooks for non-search scenarios
   const productsHook = useProducts(debouncedSearchText ? {} : buildFilterParams());
   const engineersHook = useEngineers(debouncedSearchText ? {} : { search_keyword: debouncedSearchText });
   const shopsHook = useShops(debouncedSearchText ? {} : { search_keyword: debouncedSearchText });
 
-  // Handle filter application
   const handleFiltersApply = (newFilters) => {
     setFilters(newFilters);
     setShowFilters(false);
@@ -166,12 +366,14 @@ export default function MarketplaceScreen() {
     ]).start(() => setActiveTab(tabId));
   };
 
-  // Get active data based on search state and current tab
+  const handleProductTypeChange = (typeId) => {
+    setActiveProductType(typeId);
+  };
+
   const getActiveData = () => {
-    const isSearchMode = debouncedSearchText.trim() !== '';
-    
+    const isSearchMode = debouncedSearchText.trim() !== "";
+
     if (isSearchMode) {
-      // Use search results
       switch (activeTab) {
         case "products":
           return {
@@ -179,10 +381,10 @@ export default function MarketplaceScreen() {
             isLoading: isSearching,
             isError: false,
             error: null,
-            hasNextPage: false, // Search doesn't support pagination yet
-            fetchNextPage: () => {},
+            hasNextPage: false,
+            fetchNextPage: () => { },
             isFetchingNextPage: false,
-            refetch: () => {},
+            refetch: () => { },
             total: searchResults.products.total,
           };
         case "engineers":
@@ -192,9 +394,9 @@ export default function MarketplaceScreen() {
             isError: false,
             error: null,
             hasNextPage: false,
-            fetchNextPage: () => {},
+            fetchNextPage: () => { },
             isFetchingNextPage: false,
-            refetch: () => {},
+            refetch: () => { },
             total: searchResults.engineers.total,
           };
         case "shops":
@@ -204,9 +406,9 @@ export default function MarketplaceScreen() {
             isError: false,
             error: null,
             hasNextPage: false,
-            fetchNextPage: () => {},
+            fetchNextPage: () => { },
             isFetchingNextPage: false,
-            refetch: () => {},
+            refetch: () => { },
             total: searchResults.shops.total,
           };
         default:
@@ -216,14 +418,13 @@ export default function MarketplaceScreen() {
             isError: false,
             error: null,
             hasNextPage: false,
-            fetchNextPage: () => {},
+            fetchNextPage: () => { },
             isFetchingNextPage: false,
-            refetch: () => {},
+            refetch: () => { },
             total: 0,
           };
       }
     } else {
-      // Use regular hooks
       switch (activeTab) {
         case "products":
           return {
@@ -268,9 +469,9 @@ export default function MarketplaceScreen() {
             isError: false,
             error: null,
             hasNextPage: false,
-            fetchNextPage: () => {},
+            fetchNextPage: () => { },
             isFetchingNextPage: false,
-            refetch: () => {},
+            refetch: () => { },
             total: 0,
           };
       }
@@ -289,37 +490,36 @@ export default function MarketplaceScreen() {
     if (!activeData.hasNextPage) return null;
     return (
       <View style={styles.footerLoader}>
-        <ActivityIndicator size="small" color="#16A34A" />
+        <ActivityIndicator size="small" color="#02ff04" />
       </View>
     );
   };
 
   const renderEmptyState = () => {
-    // Determine the appropriate message based on context
-    let iconName = 'search-off';
-    let message = 'لا توجد نتائج للبحث';
-    let subMessage = 'جرب تغيير كلمات البحث أو الفلاتر';
-    
+    let iconName = "search-off";
+    let message = "لا توجد نتائج للبحث";
+    let subMessage = "جرب تغيير كلمات البحث أو الفلاتر";
+
     if (!debouncedSearchText) {
       switch (activeTab) {
-        case 'products':
-          iconName = 'inventory-2';
-          message = 'لا توجد منتجات متاحة حالياً';
-          subMessage = 'سيتم إضافة المزيد من المنتجات قريباً';
+        case "products":
+          iconName = "inventory-2";
+          message = "لا توجد منتجات متاحة حالياً";
+          subMessage = "سيتم إضافة المزيد من المنتجات قريباً";
           break;
-        case 'engineers':
-          iconName = 'engineering';
-          message = 'لا توجد مهندسين مسجلين حالياً';
-          subMessage = '';
+        case "engineers":
+          iconName = "engineering";
+          message = "لا توجد مهندسين مسجلين حالياً";
+          subMessage = "";
           break;
-        case 'shops':
-          iconName = 'store';
-          message = 'لا توجد متاجر مسجلة حالياً';
-          subMessage = '';
+        case "shops":
+          iconName = "store";
+          message = "لا توجد متاجر مسجلة حالياً";
+          subMessage = "";
           break;
       }
     }
-  
+
     return (
       <View style={styles.emptyState}>
         <MaterialIcons name={iconName} size={64} color="#9CA3AF" />
@@ -341,88 +541,123 @@ export default function MarketplaceScreen() {
     </View>
   );
 
-  const getId = (item) => item?._id || item?.id;
-
-  // Get tabs with search results counts
   const categories = [
     {
       id: "products",
       name: "المنتجات",
       icon: "solar-panel-large",
-      // count: activeData.total || 0,
     },
     {
       id: "engineers",
-      name: "المهندسين", 
+      name: "المهندسين",
       icon: "account-hard-hat",
-      // count: debouncedSearchText ? searchResults.engineers.total : (engineersHook.totalCount || 0),
     },
     {
       id: "shops",
       name: "المتاجر",
       icon: "store",
-      // count: debouncedSearchText ? searchResults.shops.total : (shopsHook.totalCount || 0),
     },
   ];
 
   const renderHeader = () => (
     <View style={styles.headerContainer}>
       <LinearGradient
-        colors={["#16A34A", "#15803D"]}
+        colors={["#02ff04", "#02ff04"]}
         style={styles.headerGradient}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 0 }}
       >
         <View style={styles.header}>
-          {/* Top Row - Title and Location */}
           <View style={styles.headerTop}>
             <View style={styles.headerLeft}>
+              <Image source={Logo} style={styles.logo} />
               <Text style={styles.title}>السوق الشمسي</Text>
-              <Text style={styles.subtitle}>
-                {debouncedSearchText ? `نتائج البحث: "${debouncedSearchText}"` : "اكتشف المنتجات والخدمات الشمسية"}
-              </Text>
             </View>
-            <View style={styles.locationTag}>
-              <Ionicons name="location-sharp" size={10} color="#FFFFFF" />
+
+            <TouchableOpacity
+              style={styles.locationTag}
+              onPress={() => setShowGovernorateModal(true)}
+            >
+              <Ionicons name="location-sharp" size={14} color="#FFFFFF" />
               <Text style={styles.locationText} numberOfLines={1}>
-                اليمن
+                {selectedLocation}
               </Text>
+            </TouchableOpacity>
+          </View>
+
+
+          <View style={styles.searchRow}>
+            <TouchableOpacity
+              style={styles.searchContainer}
+              onPress={() => setShowCategories(!showCategories)}
+            >
+              <MaterialIcons name="category" size={20} color="#FFFFFF" />
+            </TouchableOpacity>
+
+            <View style={styles.searchInputContainer}>
+              <TextInput
+                style={styles.searchTextInput}
+                placeholder="ابحث عن منتج أو خدمة..."
+                placeholderTextColor="#94A3B8"
+                value={searchText}
+                onChangeText={setSearchText}
+                returnKeyType="search"
+                textAlign="right"
+              />
+              <MaterialIcons
+                name="search"
+                size={20}
+                color="#02ff04"
+                style={styles.searchIcon}
+              />
             </View>
           </View>
 
-          {/* Bottom Row - Search and Filter */}
-          <View style={styles.actionsRow}>
-            <View style={styles.searchContainer}>
-              <View style={styles.searchInput}>
-                <MaterialIcons name="search" size={20} color="#FFFFFF" />
-                <TextInput
-                  style={styles.searchTextInput}
-                  placeholder="ابحث عن منتج أو خدمة..."
-                  placeholderTextColor="#94A3B8"
-                  value={searchText}
-                  onChangeText={setSearchText}
-                  returnKeyType="search"
-                  textAlign="right"
-                />
-                {isSearching && (
-                  <ActivityIndicator size="small" color="#FFFFFF" />
+          {showCategories && (
+            <View style={styles.categoriesContainer}>
+              <FlatList
+                horizontal
+                data={categories}
+                keyExtractor={(item) => item.id}
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.categoriesList}
+                renderItem={({ item }) => (
+                  <TouchableOpacity
+                    style={[
+                      styles.categoryButton,
+                      activeTab === item.id && styles.activeCategoryButton
+                    ]}
+                    onPress={() => handleTabChange(item.id)}
+                  >
+                    <MaterialCommunityIcons
+                      name={item.icon}
+                      size={18}
+                      color={activeTab === item.id ? "#FFFFFF" : "#02ff04"}
+                    />
+                    <Text
+                      style={[
+                        styles.categoryButtonText,
+                        activeTab === item.id && styles.activeCategoryButtonText
+                      ]}
+                    >
+                      {item.name}
+                    </Text>
+                  </TouchableOpacity>
                 )}
-              </View>
+              />
             </View>
-            
-            <TouchableOpacity
-              style={styles.filterIcon}
-              onPress={() => setShowFilters(true)}
-            >
-              <MaterialIcons name="tune" size={24} color="#FFFFFF" />
-            </TouchableOpacity>
-          </View>
+          )}
         </View>
       </LinearGradient>
     </View>
   );
+
   const renderBanner = () => (
-    <View style={styles.bannerContainer}>
+    <TouchableOpacity
+      style={styles.bannerContainer}
+      activeOpacity={0.9}
+      onPress={() => navigation.navigate("OffersTab")}
+    >
       <Image
         source={require("../../assets/images/solar1.jpg")}
         style={styles.bannerImage}
@@ -439,13 +674,14 @@ export default function MarketplaceScreen() {
           <Text style={styles.bannerSubtitle}>
             احصل على أفضل العروض على الأنظمة الشمسية
           </Text>
-          <TouchableOpacity style={styles.bannerButton}>
+          <TouchableOpacity style={styles.bannerButton} onPress={() => navigation.navigate("OffersTab")}>
             <Text style={styles.bannerButtonText}>تسوق الآن</Text>
           </TouchableOpacity>
         </View>
       </LinearGradient>
-    </View>
+    </TouchableOpacity>
   );
+
 
   const renderCategoryTabs = () => (
     <View style={styles.tabsContainer}>
@@ -466,7 +702,7 @@ export default function MarketplaceScreen() {
             <MaterialCommunityIcons
               name={item.icon}
               size={20}
-              color={activeTab === item.id ? "#FFFFFF" : "#16A34A"}
+              color={activeTab === item.id ? "#FFFFFF" : "#02ff04"}
             />
             <Text
               style={[
@@ -476,129 +712,89 @@ export default function MarketplaceScreen() {
             >
               {item.name}
             </Text>
-            <View
-              style={[
-                styles.categoryBadge,
-                activeTab === item.id && styles.activeCategoryBadge,
-              ]}
-            >
-              <Text
-                style={[
-                  styles.categoryBadgeText,
-                  activeTab === item.id && styles.activeCategoryBadgeText,
-                ]}
-              >
-                {item.count}
-              </Text>
-            </View>
           </TouchableOpacity>
         )}
       />
     </View>
   );
 
-  const renderSection = (
-    type,
-    data = [],
-    titleKey,
-    detailScreen,
-    CardComponent
-  ) => {
-    const shouldRender = activeTab === "all" || activeTab === type;
-    if (!shouldRender) return null;
-
-    const sectionData = Array.isArray(data) ? data : [];
-    const showEmptyState = !activeData.isLoading && sectionData.length === 0;
-    const showHeader = activeTab === "all" && sectionData.length > 0;
-
-    const typeConfig = {
-      products: {
-        numColumns: 2,
-        cardStyle: styles.productCard,
-        detailKey: "product",
-
-        additionalProps: (item) => ({
-          // Ensure all product fields are passed
-          name: item?.name,
-          price: item?.price,
-          currency: item?.currency,
-          images: item?.images,
-          type: item?.type,
-          condition: item?.condition,
-          location:
-            item?.governorate || item?.city
-              ? `${item?.governorate || ""}${
-                  item?.governorate && item?.city ? ", " : ""
-                }${item?.city || ""}`
-              : "",
-          isNegotiable: item?.isNegotiable,
-        }),
-      },
-      shops: {
-        numColumns: 1,
-        cardStyle: styles.fullWidthCard,
-        detailKey: "shop",
-      },
-      engineers: {
-        numColumns: 1,
-        cardStyle: styles.fullWidthCard,
-        detailKey: "engineer",
-      },
-    };
-
-    const { numColumns, cardStyle, detailKey } = typeConfig[type];
+  const renderProductTypeTabs = () => {
+    if (activeTab !== "products") return null;
 
     return (
-      <View style={styles.section}>
-        {showHeader && (
-          <View style={styles.sectionHeader}>
-            <View style={styles.titleContainer}>
-              <Text style={styles.sectionTitle}>{t(titleKey)}</Text>
-            </View>
-            <TouchableOpacity onPress={() => setActiveTab(type)}>
-              <Text style={styles.seeAllText}>{t("COMMON.SEE_ALL")}</Text>
+      <View style={styles.productTypeTabsContainer}>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.productTypeTabsScroll}
+        >
+          {PRODUCT_TYPES.map((type) => (
+            <TouchableOpacity
+              key={type.id}
+              style={[
+                styles.productTypeTab,
+                activeProductType === type.id && styles.activeProductTypeTab,
+              ]}
+              onPress={() => handleProductTypeChange(type.id)}
+            >
+              <MaterialCommunityIcons
+                name={type.icon}
+                size={18}
+                color={activeProductType === type.id ? "#FFFFFF" : "#02ff04"}
+              />
+              <Text
+                style={[
+                  styles.productTypeTabText,
+                  activeProductType === type.id && styles.activeProductTypeTabText,
+                ]}
+              >
+                {type.name}
+              </Text>
             </TouchableOpacity>
-          </View>
-        )}
+          ))}
+        </ScrollView>
+      </View>
+    );
+  };
 
-        {showEmptyState ? (
-          <View style={styles.emptyState}>
-            <Text style={styles.emptyText}>
-              {t(`MARKETPLACE.NO_${type.toUpperCase()}`)}
-            </Text>
-          </View>
-        ) : (
-          <FlatList
-            data={sectionData}
-            renderItem={({ item }) => {
-              if (!item) return null;
+  // Corrected quick filters component
+  const renderQuickFilters = () => {
+    if (activeTab !== "products") return null;
 
-              const detailProps = { [detailKey]: item };
+    const QUICK_FILTERS = [
+      { id: "newest", name: "الأحدث" },
+      { id: "price_asc", name: "السعر من الأقل" },
+      { id: "price_desc", name: "السعر من الأعلى" },
+      // { id: "nearby", name: "القريب منك" },
+    ];
 
-              return (
-                <TouchableOpacity
-                  onPress={() => navigate(detailScreen, detailProps)}
-                  style={cardStyle}
-                >
-                  <CardComponent {...detailProps} />
-                </TouchableOpacity>
-              );
-            }}
-            keyExtractor={(item) =>
-              item?.id || item?._id || Math.random().toString()
-            }
-            numColumns={numColumns}
-            columnWrapperStyle={numColumns > 1 ? styles.columnWrapper : null}
-            scrollEnabled={false}
-            onEndReached={handleLoadMore}
-            onEndReachedThreshold={0.5}
-            ListFooterComponent={
-              activeData.isFetchingNextPage ? (
-                <ActivityIndicator size="small" style={styles.loader} />
-              ) : null
-            }
-          />
-        )}
+    return (
+      <View style={styles.quickFiltersContainer}>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.quickFiltersScroll}
+        >
+          {QUICK_FILTERS.map((filter) => (
+            <TouchableOpacity
+              key={filter.id}
+              style={[
+                styles.quickFilter,
+                filters.sortBy === filter.id && styles.activeQuickFilter,
+              ]}
+              onPress={() => setFilters({ ...filters, sortBy: filter.id })}
+            >
+              <Text
+                style={[
+                  styles.quickFilterText,
+                  filters.sortBy === filter.id && styles.activeQuickFilterText,
+                ]}
+              >
+                {filter.name}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
       </View>
     );
   };
@@ -616,11 +812,10 @@ export default function MarketplaceScreen() {
       return renderEmptyState();
     }
 
-    // Render current tab data
     return (
       <Animated.View style={{ opacity: fadeAnim }}>
         <FlatList
-          key={`${activeTab}-${activeTab === "products" ? "2" : "1"}`} // Force re-render when numColumns changes
+          key={`${activeTab}-${activeTab === "products" ? "2" : "1"}`}
           data={activeData.data}
           renderItem={({ item }) => {
             switch (activeTab) {
@@ -645,8 +840,8 @@ export default function MarketplaceScreen() {
             <RefreshControl
               refreshing={activeData.isLoading}
               onRefresh={activeData.refetch}
-              colors={["#16A34A"]}
-              tintColor="#16A34A"
+              colors={["#02ff04"]}
+              tintColor="#02ff04"
             />
           }
           showsVerticalScrollIndicator={false}
@@ -657,7 +852,6 @@ export default function MarketplaceScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea} edges={["left", "right"]}>
-      
       <View style={styles.container}>
         <FlatList
           data={[]}
@@ -665,7 +859,10 @@ export default function MarketplaceScreen() {
             <>
               {renderHeader()}
               {renderBanner()}
-              {renderCategoryTabs()}
+              {/* {renderCategoryTabs()} */}
+              {renderProductTypeTabs()}
+              {renderQuickFilters()}
+              {renderGovernorateFilter()}
             </>
           }
           ListFooterComponent={renderContent()}
@@ -673,23 +870,24 @@ export default function MarketplaceScreen() {
             <RefreshControl
               refreshing={activeData.isLoading}
               onRefresh={activeData.refetch}
-              colors={["#16A34A"]}
-              tintColor="#16A34A"
+              colors={["#02ff04"]}
+              tintColor="#02ff04"
             />
           }
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
         />
+        {renderGovernorateModal()}
 
         <MarketplaceFilter
           visible={showFilters}
           onClose={() => setShowFilters(false)}
           onApply={handleFiltersApply}
           initialFilters={filters}
+          governorates={governorates}
         />
       </View>
 
-      {/* Custom Modal */}
       <CustomModal
         visible={modalState.visible}
         type={modalState.type}
@@ -712,228 +910,211 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
+    backgroundColor: "#F5F7FA",
   },
   headerContainer: {
     marginBottom: 10,
     paddingTop: 0,
+    elevation: 4,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
   },
   headerGradient: {
-    paddingTop: 25,
-    paddingBottom: 15,
+    paddingTop: 5,
+    paddingBottom: 5,
+    paddingHorizontal: 15,
   },
   header: {
-    paddingHorizontal: 15,
+    paddingBottom: 10,
   },
   headerTop: {
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "flex-start",
-    marginBottom: 15,
+    alignItems: "center",
+    marginBottom: 5,
+    minHeight: 30, // Ensures consistent header height
   },
+  
+
   headerLeft: {
     flex: 1,
-    marginRight: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
   },
+
+  logo: {
+    width: 64,
+    height: 64,
+    marginRight: 8,
+    maxHeight: 64,
+    resizeMode: 'contain',
+  },
+  
+
   title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#FFFFFF",
-    marginBottom: 2,
-    textAlign: "center",
+    fontSize: 25,
+    fontWeight: 'bold',
+    color: '#fff',
   },
-  subtitle: {
-    fontSize: 14,
-    color: "rgba(255,255,255,0.8)",
-    textAlign: "center",
+
+  searchRow: {
+    flexDirection: "row-reverse",
+    alignItems: "center",
+    marginBottom: 5,
   },
   searchContainer: {
-    flex: 1,
-    flexDirection: "row-reverse",
+    backgroundColor: "rgba(255, 255, 255, 0.2)",
+    borderRadius: 8,
+    width: 45,
+    height: 45,
+    justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "rgba(255, 255, 255, 0.15)", 
-    borderRadius: 12,
-    paddingHorizontal: 12,
-    height: 44,
+    marginLeft: 10,
   },
-  searchInput: {
+  searchInputContainer: {
     flex: 1,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 8,
+    height: 45,
     flexDirection: "row-reverse",
     alignItems: "center",
-    gap: 8,
+    paddingHorizontal: 15,
   },
   searchTextInput: {
     flex: 1,
-    color: "#FFFFFF",
-    fontSize: 14,
+    color: "#1F2937",
+    fontSize: 13,
     fontFamily: "Tajawal-Medium",
     textAlign: "right",
     paddingVertical: 0,
   },
-  actionsRow: {
-    flexDirection: "row-reverse",
-    alignItems: "center",
-    gap: 12,
-  },
-  filterButton: {
-    flexDirection: "row",
-    backgroundColor: "rgba(255,255,255,0.1)",
-    paddingVertical: 10,
-    paddingHorizontal: 16,
-    borderRadius: 12,
-    alignItems: "center",
-  },
-  filterButtonText: {
-    color: "#FFFFFF",
-    fontSize: 12,
-    marginLeft: 5,
+  searchIcon: {
+    marginLeft: 10,
   },
   locationTag: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "rgba(255, 255, 255, 0.15)",
-    paddingHorizontal: 6,
-    paddingVertical: 3,
-    borderRadius: 12,
-    maxWidth: 120,
-  },
-  locationText: {
-    color: "#FFFFFF",
-    fontSize: 12,
-    marginLeft: 3,
-    fontFamily: "Tajawal-Medium",
-    numberOfLines: 1,
-  },
-  tabsContainer: {
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: "#E5E7EB",
-  },
-  tabsScrollContent: {
-    paddingHorizontal: 15,
-  },
-  categoryTab: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#F0FDF4",
+    backgroundColor: "rgba(255, 255, 255, 0.2)",
     paddingHorizontal: 12,
     paddingVertical: 8,
     borderRadius: 20,
-    marginRight: 8,
   },
-  activeCategoryTab: {
-    backgroundColor: "#16A34A",
-  },
-  categoryTabText: {
-    fontSize: 12,
-    color: "#16A34A",
-    marginHorizontal: 5,
-  },
-  activeCategoryTabText: {
+  locationText: {
     color: "#FFFFFF",
-  },
-  categoryBadge: {
-    backgroundColor: "#DCFCE7",
-    borderRadius: 10,
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-  },
-  activeCategoryBadge: {
-    backgroundColor: "rgba(255,255,255,0.2)",
-  },
-  categoryBadgeText: {
-    fontSize: 10,
-    color: "#166534",
-    fontWeight: "bold",
-  },
-  activeCategoryBadgeText: {
-    color: "#FFFFFF",
-  },
-  contentContainer: {
-    padding: 15,
-  },
-  section: {
-    marginBottom: 20,
-  },
-  sectionHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 15,
-  },
-  titleContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#1F2937",
-  },
-  seeAllText: {
-    fontSize: 12,
-    color: "#16A34A",
-    fontWeight: "500",
-  },
-  productCard: {
-    flex: 1,
-    margin: 5,
-    maxWidth: "50%",
-  },
-  fullWidthCard: {
-    marginBottom: 10,
-  },
-  tabletCard: {
-    flex: 1,
-    marginHorizontal: 5,
-  },
-  columnWrapper: {
-    justifyContent: "space-between",
-  },
-  footerLoader: {
-    paddingVertical: 10,
-  },
-  emptyState: {
-    paddingVertical: 40,
-    alignItems: "center",
-  },
-  emptyText: {
-    fontSize: 16,
-    color: "#FFFFFF",
-  },
-  emptySubtext: {
     fontSize: 14,
-    color: "#FFFFFF",
-    marginTop: 5,
+    marginLeft: 5,
+    fontFamily: "Tajawal-Medium",
+    maxWidth: 120,
   },
-  errorContainer: {
-    paddingVertical: 40,
+  categoriesContainer: {
+    marginTop: 8,
+  },
+  categoriesList: {
+    paddingBottom: 2,
+  },
+  categoryButton: {
+    flexDirection: "row",
     alignItems: "center",
+    backgroundColor: "#02ff04",
+    paddingHorizontal: 15,
+    paddingVertical: 5,
+    borderRadius: 20,
+    marginLeft: 10,
+    // borderWidth: 1,
+    borderColor: "#D1FAE5",
   },
-  errorText: {
+  activeCategoryButton: {
+    backgroundColor: "#FFFFFF",
+    borderColor: "#02ff04",
+  },
+  categoryButtonText: {
     fontSize: 16,
-    color: "#EF4444",
-    marginBottom: 15,
-    textAlign: "center",
-  },
-  retryButton: {
-    backgroundColor: "#16A34A",
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderRadius: 5,
-  },
-  retryButtonText: {
     color: "#FFFFFF",
-    fontWeight: "bold",
+    marginRight: 5,
+    fontFamily: "Tajawal-Medium",
+  },
+  activeCategoryButtonText: {
+    color: "#02ff04",
+  },
+  productTypeTabsContainer: {
+    paddingVertical: 12,
+    backgroundColor: "#FFFFFF",
+    borderBottomWidth: 1,
+    borderBottomColor: "#E5E7EB",
+    elevation: 2,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+  },
+  productTypeTabsScroll: {
+    paddingHorizontal: 15,
+  },
+  productTypeTab: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#F3F4F6",
+    paddingHorizontal: 15,
+    paddingVertical: 5,
+    borderRadius: 20,
+    marginLeft: 10,
+    // borderWidth: 1,
+    borderColor: "#E5E7EB",
+  },
+  activeProductTypeTab: {
+    backgroundColor: "#02ff04",
+    borderColor: "#02ff04",
+  },
+  productTypeTabText: {
+    fontSize: 13,
+    color: "#4B5563",
+    marginHorizontal: 5,
+    fontFamily: "Tajawal-Medium",
+  },
+  activeProductTypeTabText: {
+    color: "#FFFFFF",
+  },
+  quickFiltersContainer: {
+    paddingVertical: 10,
+    backgroundColor: "#FFFFFF",
+    borderBottomWidth: 1,
+    borderBottomColor: "#E5E7EB",
+  },
+  quickFiltersScroll: {
+    paddingHorizontal: 15,
+  },
+  quickFilter: {
+    backgroundColor: "#F3F4F6",
+    paddingHorizontal: 15,
+    paddingVertical: 5,
+    borderRadius: 20,
+    marginLeft: 10,
+    // borderWidth: 1,
+    borderColor: "#E5E7EB",
+  },
+  activeQuickFilter: {
+    backgroundColor: "#02ff04",
+    borderColor: "#02ff04",
+  },
+  quickFilterText: {
+    fontSize: 13,
+    color: "#4B5563",
+    fontFamily: "Tajawal-Medium",
+  },
+  activeQuickFilterText: {
+    color: "#FFFFFF",
   },
   bannerContainer: {
-    height: 180,
-    marginHorizontal: 15,
-    marginBottom: 15,
-    borderRadius: 16,
+    height: 150,
+    marginHorizontal: 12,
+    marginBottom: 10,
+    borderRadius: 12,
     overflow: "hidden",
     elevation: 4,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.15,
     shadowRadius: 8,
   },
@@ -944,75 +1125,60 @@ const styles = StyleSheet.create({
   },
   bannerOverlay: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: "flex-end",
+    padding: 20,
   },
   bannerContent: {
-    alignItems: "center",
-    padding: 24,
+    alignItems: "flex-end",
   },
   bannerTitle: {
-    fontSize: 22,
+    fontSize: 18,
     fontFamily: "Tajawal-Bold",
     color: "#FFFFFF",
-    textAlign: "center",
-    marginBottom: 8,
+    marginBottom: 5,
     textShadowColor: "rgba(0,0,0,0.5)",
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 2,
   },
   bannerSubtitle: {
-    fontSize: 15,
+    fontSize: 14,
     fontFamily: "Tajawal-Regular",
     color: "rgba(255,255,255,0.95)",
-    textAlign: "center",
-    marginBottom: 20,
+    marginBottom: 15,
     lineHeight: 20,
+    textAlign: "right",
   },
   bannerButton: {
-    backgroundColor: "#16A34A",
-    paddingHorizontal: 24,
-    paddingVertical: 12,
-    borderRadius: 28,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 3,
+    backgroundColor: "#FFFFFF",
+    paddingHorizontal: 10,
+    paddingVertical: 3,
+    borderRadius: 25,
+    alignSelf: "flex-end",
   },
   bannerButtonText: {
-    color: "#FFFFFF",
+    color: "#02ff04",
     fontFamily: "Tajawal-Bold",
     fontSize: 15,
   },
-  actionButtons: {
-    flexDirection: "row-reverse",
-    alignItems: "center",
-    gap: 8,
-  },
-  searchButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: "rgba(255, 255, 255, 0.2)",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  filterIcon: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: "rgba(255, 255, 255, 0.2)",
-    justifyContent: "center",
-    alignItems: "center",
-  },
   listContent: {
-    paddingBottom: 20, // Add some padding at the bottom for the footer
+    paddingHorizontal: 10,
+    paddingTop: 15,
+    paddingBottom: 20,
+  },
+  columnWrapper: {
+    justifyContent: "space-between",
+    paddingHorizontal: 5,
+    marginBottom: 10,
+  },
+  footerLoader: {
+    paddingVertical: 20,
+    alignItems: "center",
   },
   emptyState: {
-    paddingVertical: 40,
+    paddingVertical: 60,
     alignItems: 'center',
     justifyContent: 'center',
+    paddingHorizontal: 20,
   },
   emptyText: {
     fontSize: 16,
@@ -1026,5 +1192,109 @@ const styles = StyleSheet.create({
     color: '#9CA3AF',
     textAlign: 'center',
     marginTop: 8,
+    fontFamily: 'Tajawal-Regular',
+  },
+  errorContainer: {
+    paddingVertical: 60,
+    alignItems: "center",
+    paddingHorizontal: 20,
+  },
+  errorText: {
+    fontSize: 16,
+    color: "#EF4444",
+    marginBottom: 20,
+    textAlign: "center",
+    fontFamily: "Tajawal-Medium",
+    marginTop: 16,
+  },
+  retryButton: {
+    backgroundColor: "#02ff04",
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    borderRadius: 8,
+  },
+  retryButtonText: {
+    color: "#FFFFFF",
+    fontFamily: "Tajawal-Bold",
+    fontSize: 14,
+  },
+  governorateFilterContainer: {
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    backgroundColor: "#FFFFFF",
+    // borderBottomWidth: 1,
+    borderBottomColor: "#E5E7EB",
+  },
+  governorateFilterButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#F3F4F6",
+    paddingVertical: 5,
+    paddingHorizontal: 15,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "#D1D5DB",
+  },
+  governorateFilterText: {
+    flex: 1,
+    fontSize: 13,
+    fontFamily: "Tajawal-Medium",
+    color: "#1F2937",
+    marginHorizontal: 8,
+    textAlign: "right",
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  governorateModalContainer: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: "#FFFFFF",
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
+    maxHeight: height * 0.7,
+    paddingBottom: 20,
+  },
+  governorateModalHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: "#E5E7EB",
+  },
+  governorateModalTitle: {
+    fontSize: 18,
+    fontFamily: "Tajawal-Bold",
+    color: "#1F2937",
+  },
+  governorateModalContent: {
+    paddingHorizontal: 16,
+  },
+  governorateItem: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingVertical: 16,
+    paddingHorizontal: 8,
+  },
+  selectedGovernorateItem: {
+    backgroundColor: "#F0FDF4",
+  },
+  governorateItemText: {
+    fontSize: 16,
+    fontFamily: "Tajawal-Medium",
+    color: "#1F2937",
+  },
+  selectedGovernorateItemText: {
+    color: "#02ff04",
+  },
+  governorateItemSeparator: {
+    height: 1,
+    backgroundColor: "#E5E7EB",
+    marginHorizontal: 8,
   },
 });

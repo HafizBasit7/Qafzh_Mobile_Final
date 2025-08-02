@@ -16,7 +16,7 @@ import CustomModal from '../../components/common/CustomModal';
 
 export default function LoginScreen({ navigation }) {
   const { login, isLoggingIn, isAuthenticated, refreshAuthState } = useAuth();
-  const { modalState, hideModal } = useModal();
+  const { modalState, hideModal, showModal } = useModal();
   const [formData, setFormData] = useState({
     phone: '',
     password: ''
@@ -37,14 +37,44 @@ export default function LoginScreen({ navigation }) {
     }
   }, [isAuthenticated, navigation]);
 
-  const handleLogin = () => {
-    if (formData.phone.trim() && formData.password.trim()) {
-      login({
-        phone: formData.phone.trim(),
-        password: formData.password.trim()
+  const handleLogin = async () => {
+    const phone = formData.phone.trim();
+    const password = formData.password.trim();
+  
+    if (!phone || !password) return;
+  
+    try {
+      const result = await login({ phone, password });
+  
+      if (result?.data?.token && result?.data?.user) {
+        showModal({
+          type: 'success',
+          title: 'تم تسجيل الدخول',
+          message: 'مرحباً بك، تم تسجيل الدخول بنجاح',
+          autoClose: true,
+          duration: 1500,
+        });
+      } else {
+        showModal({
+          type: 'error',
+          title: 'فشل تسجيل الدخول',
+          message: result?.message || 'الرجاء التحقق من البيانات المدخلة',
+          autoClose: true,
+          duration: 3000,
+        });
+      }
+    } catch (error) {
+      showModal({
+        type: 'error',
+        title: 'خطأ في تسجيل الدخول',
+        message: error?.message || 'تعذر تسجيل الدخول. تأكد من بياناتك.',
+        autoClose: true,
+        duration: 3000,
       });
     }
   };
+  
+  
 
   const handleRegister = () => {
     navigation.navigate('Register');
@@ -175,7 +205,7 @@ const styles = StyleSheet.create({
     textAlign: 'right',
   },
   button: {
-    backgroundColor: '#16A34A',
+    backgroundColor: '#02ff04',
     borderRadius: 12,
     padding: 16,
     alignItems: 'center',
@@ -199,7 +229,7 @@ const styles = StyleSheet.create({
     color: '#64748B',
   },
   registerHighlight: {
-    color: '#16A34A',
+    color: '#02ff04',
     fontFamily: 'Tajawal-Bold',
   },
 });

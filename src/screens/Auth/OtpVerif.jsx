@@ -162,7 +162,7 @@ const OtpVerif = ({ navigation, route }) => {
           disabled={timer > 0 || isRequestingOTP}
         >
           {isRequestingOTP ? (
-            <ActivityIndicator color="#16A34A" size="small" />
+            <ActivityIndicator color="#02ff04" size="small" />
           ) : (
             <Text style={[styles.resendText, timer > 0 && styles.resendTextDisabled]}>
               {timer > 0
@@ -241,11 +241,11 @@ const styles = StyleSheet.create({
     color: '#1E293B',
   },
   otpInputFilled: {
-    borderColor: '#16A34A',
+    borderColor: '#02ff04',
     backgroundColor: '#F0FDF4',
   },
   button: {
-    backgroundColor: '#16A34A',
+    backgroundColor: '#02ff04',
     borderRadius: 12,
     padding: 16,
     alignItems: 'center',
@@ -267,7 +267,7 @@ const styles = StyleSheet.create({
     opacity: 0.6,
   },
   resendText: {
-    color: '#16A34A',
+    color: '#02ff04',
     fontSize: 14,
     fontFamily: 'Tajawal-Medium',
   },

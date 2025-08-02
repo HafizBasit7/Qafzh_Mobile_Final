@@ -122,7 +122,7 @@ export default function SolarCalculator() {
         {/* Calculator Card */}
         <View style={styles.calculatorCard}>
           <View style={styles.cardHeader}>
-            <MaterialIcons name="calculate" size={24} color="#16A34A" />
+            <MaterialIcons name="calculate" size={24} color="#02ff04" />
             <Text style={styles.cardTitle}>إدخال البيانات</Text>
           </View>
 
@@ -196,7 +196,7 @@ export default function SolarCalculator() {
         <View style={styles.modalOverlay}>
           <View style={styles.modalContainer}>
             <View style={styles.modalHeader}>
-              <MaterialIcons name="solar-power" size={28} color="#16A34A" />
+              <MaterialIcons name="solar-power" size={28} color="#02ff04" />
               <Text style={styles.modalTitle}>نتائج الحساب</Text>
             </View>
 
@@ -207,7 +207,7 @@ export default function SolarCalculator() {
               {results && (
                 <>
                   <View style={styles.resultCard}>
-                    <MaterialIcons name="flash-on" size={20} color="#16A34A" />
+                    <MaterialIcons name="flash-on" size={20} color="#02ff04" />
                     <View style={styles.resultContent}>
                       <Text style={styles.resultLabel}>
                         إجمالي الطاقة اليومية
@@ -219,7 +219,7 @@ export default function SolarCalculator() {
                   </View>
 
                   <View style={styles.resultCard}>
-                    <MaterialIcons name="speed" size={20} color="#16A34A" />
+                    <MaterialIcons name="speed" size={20} color="#02ff04" />
                     <View style={styles.resultContent}>
                       <Text style={styles.resultLabel}>أقصى حمل</Text>
                       <Text style={styles.resultValue}>
@@ -229,7 +229,7 @@ export default function SolarCalculator() {
                   </View>
 
                   <View style={styles.resultCard}>
-                    <MaterialIcons name="grid-on" size={20} color="#16A34A" />
+                    <MaterialIcons name="grid-on" size={20} color="#02ff04" />
                     <View style={styles.resultContent}>
                       <Text style={styles.resultLabel}>الألواح الشمسية</Text>
                       <Text style={styles.resultValue}>
@@ -245,7 +245,7 @@ export default function SolarCalculator() {
                     <MaterialIcons
                       name="battery-charging-full"
                       size={20}
-                      color="#16A34A"
+                      color="#02ff04"
                     />
                     <View style={styles.resultContent}>
                       <Text style={styles.resultLabel}>حجم البطارية</Text>
@@ -259,7 +259,7 @@ export default function SolarCalculator() {
                   </View>
 
                   <View style={styles.resultCard}>
-                    <MaterialIcons name="power" size={20} color="#16A34A" />
+                    <MaterialIcons name="power" size={20} color="#02ff04" />
                     <View style={styles.resultContent}>
                       <Text style={styles.resultLabel}>حجم المحول</Text>
                       <Text style={styles.resultValue}>
@@ -362,7 +362,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#16A34A",
+    backgroundColor: "#02ff04",
     paddingVertical: 16,
     paddingHorizontal: 24,
     borderRadius: 12,
@@ -448,7 +448,7 @@ const styles = StyleSheet.create({
     color: "#9CA3AF",
   },
   okButton: {
-    backgroundColor: "#16A34A",
+    backgroundColor: "#02ff04",
     paddingVertical: 16,
     margin: 20,
     borderRadius: 12,

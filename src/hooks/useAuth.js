@@ -65,7 +65,14 @@ export const useAuth = () => {
         console.log('🔐 useAuth: Profile fetch failed, clearing stored data');
         // If profile fetch fails, clear stored data
         await storage.clearAuthData();
+        
         await updateApiToken(null);
+        navigation.dispatch(
+          CommonActions.reset({
+            index: 0,
+            routes: [{ name: 'Login' }],
+          })
+        );
         throw error;
       }
     },
@@ -307,7 +314,7 @@ export const useAuth = () => {
     refreshAuthState, // Force auth state refresh
     
     // Mutations
-    register: registerMutation.mutate,
+    register: registerMutation.mutateAsync,
     isRegistering: registerMutation.isPending,
     
     verifyOTP: verifyOTPMutation.mutate,
@@ -316,7 +323,7 @@ export const useAuth = () => {
     requestOTP: requestOTPMutation.mutate,
     isRequestingOTP: requestOTPMutation.isPending,
     
-    login: loginMutation.mutate,
+    login: loginMutation.mutateAsync,
     isLoggingIn: loginMutation.isPending,
     
     updateProfile: updateProfileMutation.mutate,

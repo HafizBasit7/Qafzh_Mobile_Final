@@ -13,7 +13,10 @@ import { MaterialIcons, Feather, AntDesign } from "@expo/vector-icons";
 import { useAuth } from "../../hooks/useAuth";
 import { showToast } from "../../components/common/Toast";
 import { useProducts } from "../../hooks/useProducts";
+import CustomModal from "../../components/common/CustomModal";
 const ProfileScreen = ({ navigation }) => {
+  const [logoutModalVisible, setLogoutModalVisible] = React.useState(false);
+
   const { user, currentUser, isLoadingUser, isUserError, logout, refetchUser } = useAuth();
 
   const {
@@ -177,17 +180,41 @@ const ProfileScreen = ({ navigation }) => {
 
 {/* Add this logout button section at the bottom */}
 <View style={styles.bottomLogoutContainer}>
-  <TouchableOpacity
-    style={styles.bottomLogoutButton}
-    onPress={handleLogout}
-  >
-    <Feather name="log-out" size={20} color="#fff" />
-    <Text style={styles.bottomLogoutButtonText}>
-      تسجيل الخروج
-    </Text>
-  </TouchableOpacity>
+<TouchableOpacity
+  style={styles.bottomLogoutButton}
+  onPress={() => setLogoutModalVisible(true)} // show modal instead of direct logout
+>
+  <Feather name="log-out" size={20} color="#fff" />
+  <Text style={styles.bottomLogoutButtonText}>
+    تسجيل الخروج
+  </Text>
+</TouchableOpacity>
+
 </View>
     </ScrollView>
+    <CustomModal
+  visible={logoutModalVisible}
+  type="warning"
+  title="تأكيد تسجيل الخروج"
+  message="هل أنت متأكد أنك تريد تسجيل الخروج؟"
+  autoClose={false}
+  onClose={() => setLogoutModalVisible(false)}
+  actionText="تسجيل الخروج"
+  onAction={async () => {
+    setLogoutModalVisible(false);
+    try {
+      await logout();
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "AuthStack" }],
+      });
+    } catch (error) {
+      console.error("Logout error:", error);
+      showToast("error", "حدث خطأ", "تعذر تسجيل الخروج");
+    }
+  }}
+/>
+
     </SafeAreaView>
   );
 };

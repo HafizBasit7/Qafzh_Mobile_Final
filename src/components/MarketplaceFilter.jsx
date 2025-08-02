@@ -219,7 +219,7 @@ const styles = StyleSheet.create({
   resetText: {
     fontSize: 14,
     fontFamily: "Tajawal-Medium",
-    color: "#16A34A",
+    color: "#02ff04",
   },
   content: {
     flex: 1,
@@ -249,8 +249,8 @@ const styles = StyleSheet.create({
     borderColor: "#E2E8F0",
   },
   selectedOption: {
-    backgroundColor: "#16A34A",
-    borderColor: "#16A34A",
+    backgroundColor: "#02ff04",
+    borderColor: "#02ff04",
   },
   optionText: {
     fontSize: 14,
@@ -266,7 +266,7 @@ const styles = StyleSheet.create({
     borderTopColor: "#E2E8F0",
   },
   applyButton: {
-    backgroundColor: "#16A34A",
+    backgroundColor: "#02ff04",
     paddingVertical: 14,
     borderRadius: 12,
     alignItems: "center",

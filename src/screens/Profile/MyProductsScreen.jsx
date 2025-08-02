@@ -136,7 +136,7 @@ const confirmDelete = () => {
     return (
       <View style={styles.footer}>
         {isFetchingNextPage && (
-          <ActivityIndicator size="large" color="#16A34A" />
+          <ActivityIndicator size="large" color="#02ff04" />
         )}
       </View>
     );
@@ -145,7 +145,7 @@ const confirmDelete = () => {
   if (isLoading && !refreshing) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#16A34A" />
+        <ActivityIndicator size="large" color="#02ff04" />
       </View>
     );
   }
@@ -197,8 +197,8 @@ const confirmDelete = () => {
           <RefreshControl
             refreshing={refreshing}
             onRefresh={handleRefresh}
-            colors={["#16A34A"]}
-            tintColor="#16A34A"
+            colors={["#02ff04"]}
+            tintColor="#02ff04"
           />
         }
         showsVerticalScrollIndicator={false}

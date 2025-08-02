@@ -44,7 +44,7 @@ export default function App() {
             /> */}
             <StatusBar
         barStyle="light-content"
-        backgroundColor="#16A34A"
+        backgroundColor="#02ff04"
         translucent={false}
       />
             <RootNavigator />

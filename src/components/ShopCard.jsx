@@ -196,7 +196,7 @@ const styles = StyleSheet.create({
     paddingTop: 16,
   },
   callButton: {
-    backgroundColor: "#16A34A",
+    backgroundColor: "#02ff04",
     flexDirection: "row-reverse",
     alignItems: "center",
     paddingVertical: 12,

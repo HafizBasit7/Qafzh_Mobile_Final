@@ -64,7 +64,7 @@ const ProductCard = ({ product }) => {
         />
         {imageLoading && (
           <View style={styles.imageLoader}>
-            <ActivityIndicator color="#16A34A" size="large" />
+            <ActivityIndicator color="#02ff04" size="large" />
           </View>
         )}
 
@@ -254,12 +254,12 @@ const styles = StyleSheet.create({
   price: {
     fontSize: 18,
     fontFamily: "Tajawal-Bold",
-    color: "#16A34A",
+    color: "#02ff04",
   },
   currency: {
     fontSize: 14,
     fontFamily: "Tajawal-Medium",
-    color: "#16A34A",
+    color: "#02ff04",
   },
   negotiableBadge: {
     backgroundColor: "#FEF3C7",

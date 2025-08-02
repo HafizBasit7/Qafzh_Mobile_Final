@@ -85,7 +85,7 @@ const ShopScreen = ({ navigation, route }) => {
         <Text style={styles.sectionTitle}>{t("SHOP.workingHours")}</Text>
         <View style={styles.infoCard}>
           <View style={styles.detailRow}>
-            <MaterialIcons name="schedule" size={20} color="#16A34A" />
+            <MaterialIcons name="schedule" size={20} color="#02ff04" />
             <View style={styles.detailTextContainer}>
               <Text style={styles.detailText}>
                 {shop.workingHours.openTime} - {shop.workingHours.closeTime}
@@ -222,7 +222,7 @@ const ShopScreen = ({ navigation, route }) => {
         <View style={styles.infoCard}>
           {shop.establishedYear && (
             <View style={styles.detailRow}>
-              <MaterialIcons name="business" size={20} color="#16A34A" />
+              <MaterialIcons name="business" size={20} color="#02ff04" />
               <View style={styles.detailTextContainer}>
                 <Text style={styles.detailText}>
                   {t("SHOP.establishedYear")}: {shop.establishedYear}
@@ -232,7 +232,7 @@ const ShopScreen = ({ navigation, route }) => {
           )}
           {shop.licenseNumber && (
             <View style={styles.detailRow}>
-              <MaterialIcons name="verified" size={20} color="#16A34A" />
+              <MaterialIcons name="verified" size={20} color="#02ff04" />
               <View style={styles.detailTextContainer}>
                 <Text style={styles.detailText}>
                   {t("SHOP.licenseNumber")}: {shop.licenseNumber}
@@ -242,7 +242,7 @@ const ShopScreen = ({ navigation, route }) => {
           )}
           {shop.website && (
             <View style={styles.detailRow}>
-              <MaterialIcons name="language" size={20} color="#16A34A" />
+              <MaterialIcons name="language" size={20} color="#02ff04" />
               <View style={styles.detailTextContainer}>
                 <Text style={styles.detailText}>{shop.website}</Text>
               </View>
@@ -250,7 +250,7 @@ const ShopScreen = ({ navigation, route }) => {
           )}
           {shop.notes && (
             <View style={styles.detailRow}>
-              <MaterialIcons name="notes" size={20} color="#16A34A" />
+              <MaterialIcons name="notes" size={20} color="#02ff04" />
               <View style={styles.detailTextContainer}>
                 <Text style={styles.detailText}>{shop.notes}</Text>
               </View>
@@ -446,7 +446,7 @@ const styles = StyleSheet.create({
   },
   callButton: {
     flex: 1,
-    backgroundColor: "#16A34A",
+    backgroundColor: "#02ff04",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
@@ -550,7 +550,7 @@ const styles = StyleSheet.create({
   },
   workingDayText: {
     fontSize: 12,
-    color: "#16A34A",
+    color: "#02ff04",
     fontFamily: "Tajawal-Medium",
   },
 
@@ -610,7 +610,7 @@ const styles = StyleSheet.create({
   },
   categoryText: {
     fontSize: 14,
-    color: "#16A34A",
+    color: "#02ff04",
     fontFamily: "Tajawal-Medium",
   },
   errorContainer: {
@@ -627,7 +627,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   retryButton: {
-    backgroundColor: "#16A34A",
+    backgroundColor: "#02ff04",
     paddingHorizontal: 24,
     paddingVertical: 12,
     borderRadius: 8,

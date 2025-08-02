@@ -35,7 +35,7 @@ export default function TabNavigator() {
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: "#16A34A",
+        tabBarActiveTintColor: "#02ff04",
         tabBarInactiveTintColor: "#64748B",
         tabBarLabelStyle: {
           fontFamily: "Tajawal-Bold",
@@ -150,7 +150,7 @@ const styles = StyleSheet.create({
     width: scaleSize(50),
     height: scaleSize(50),
     borderRadius: scaleSize(25),
-    backgroundColor: "#16A34A",
+    backgroundColor: "#02ff04",
     justifyContent: "center",
     alignItems: "center",
     marginTop: scaleSize(-10),

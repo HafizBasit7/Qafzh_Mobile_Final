@@ -17,11 +17,13 @@ import { showToast } from "../../components/common/Toast";
 import { useTranslation } from "react-i18next";
 import * as ImagePicker from "expo-image-picker";
 import { uploadImage } from "../../../utils/upload";
-
+import CustomModal from "../../components/common/CustomModal"
+import { useModal } from "../../hooks/useModal";
 const RegisterScreen = ({ navigation, route }) => {
   const { t } = useTranslation();
   const { register, isRegistering } = useAuth();
   const returnData = route.params?.returnData;
+  const { modalState, showModal, hideModal } = useModal();
 
   const [formData, setFormData] = useState({
     name: "",
@@ -53,56 +55,108 @@ const RegisterScreen = ({ navigation, route }) => {
   };
 
   const handleSubmit = async () => {
-    // Validate form
     if (!formData.name.trim()) {
-      showToast("error", "خطأ", "يرجى إدخال اسمك");
-      return;
-    }
-    if (!formData.phone.trim()) {
-      showToast("error", "خطأ", "يرجى إدخال رقم هاتفك");
-      return;
-    }
-    if (!formData.password || formData.password.length < 6) {
-      showToast("error", "خطأ", "يجب أن تكون كلمة المرور 6 أحرف على الأقل");
-      return;
-    }
-    // if (!formData.profileImageUrl) {
-    //   showToast('error', 'Error', 'Please upload a profile image');
-    //   return;
-    // }
-
-    // Validate password format (at least one uppercase, one number, one special character)
-    const passwordRegex =
-      /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
-    if (!passwordRegex.test(formData.password)) {
-      showToast(
-        "error",
-        "خطأ",
-        "يجب أن تحتوي كلمة المرور على حرف كبير، رقم، ورمز خاص"
-      );
-      return;
-    }
-
-    try {
-      // Register with all required fields
-      await register(formData);
-
-      // Add small delay before navigation
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      // Navigate to OTP verification
-      navigation.navigate("OtpVerif", {
-        phone: formData.phone,
-        returnData,
-        isNewUser: true,
+      showModal({
+        type: "error",
+        title: "خطأ",
+        message: "يرجى إدخال اسمك",
+        autoClose: true,
+        duration: 3000,
       });
+      return;
+    }
+  
+    if (!formData.phone.trim()) {
+      showModal({
+        type: "error",
+        title: "خطأ",
+        message: "يرجى إدخال رقم هاتفك",
+        autoClose: true,
+        duration: 3000,
+      });
+      return;
+    }
+  
+    if (!formData.password || formData.password.length < 6) {
+      showModal({
+        type: "error",
+        title: "خطأ",
+        message: "يجب أن تكون كلمة المرور 6 أحرف على الأقل",
+        autoClose: true,
+        duration: 3000,
+      });
+      return;
+    }
+  
+    const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
+    if (!passwordRegex.test(formData.password)) {
+      showModal({
+        type: "error",
+        title: "كلمة مرور غير قوية",
+        message: "يجب أن تحتوي كلمة المرور على حرف كبير، رقم، ورمز خاص",
+        autoClose: true,
+        duration: 3000,
+      });
+      return;
+    }
+  
+    try {
+      await register(formData); // await register.mutateAsync
+  
+      // Show success only if no error is thrown
+      showModal({
+        type: "success",
+        title: "تم التسجيل",
+        message: "تم إرسال رمز التحقق إلى رقم هاتفك",
+        autoClose: true,
+        duration: 1500,
+      });
+  
+      setTimeout(() => {
+        navigation.navigate("OtpVerif", {
+          phone: formData.phone,
+          returnData,
+          isNewUser: true,
+        });
+      }, 1500);
+  
     } catch (error) {
-      showToast(
-        "error",
-        "خطأ",
-        error.response?.data?.message || "فشل في عملية التسجيل"
-      );
+      console.log("❌ REGISTER ERROR:", JSON.stringify(error, null, 2));
+  
+      const message =
+        error?.message ||
+        error?.response?.data?.message ||
+        error?.data?.message ||
+        error?.error ||
+        "";
+  
+      if (message.toLowerCase().includes("already exists") || message.includes("موجود")) {
+        showModal({
+          type: "error",
+          title: "المستخدم موجود",
+          message: "هذا الرقم مسجل مسبقاً. هل تريد تسجيل الدخول بدلاً من ذلك؟",
+          actionText: "تسجيل الدخول",
+          onAction: () => {
+            hideModal();
+            navigation.navigate("Login");
+          },
+          autoClose: false,
+        });
+      } else {
+        showModal({
+          type: "error",
+          title: "فشل التسجيل",
+          message: message || "حدث خطأ أثناء التسجيل",
+          autoClose: true,
+          duration: 3000,
+        });
+      }
     }
   };
+  
+  
+  
+  
 
   return (
     <KeyboardAvoidingView
@@ -135,7 +189,7 @@ const RegisterScreen = ({ navigation, route }) => {
               ) : (
                 <View style={styles.uploadPlaceholder}>
                   {isUploading ? (
-                    <ActivityIndicator color="#16A34A" />
+                    <ActivityIndicator color="#02ff04" />
                   ) : (
                     <Text style={styles.uploadText}>{t('AUTH.UPLOAD_PHOTO')}</Text>
                   )}
@@ -202,6 +256,19 @@ const RegisterScreen = ({ navigation, route }) => {
           </View>
         </View>
       </ScrollView>
+
+      <CustomModal
+  visible={modalState.visible}
+  type={modalState.type}
+  title={modalState.title}
+  message={modalState.message}
+  onClose={hideModal}
+  actionText={modalState.actionText}
+  onAction={modalState.onAction}
+  autoClose={modalState.autoClose}
+  duration={modalState.duration}
+/>
+
     </KeyboardAvoidingView>
   );
 };
@@ -304,7 +371,7 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   button: {
-    backgroundColor: "#16A34A",
+    backgroundColor: "#02ff04",
     borderRadius: 12,
     padding: 16,
     alignItems: "center",
