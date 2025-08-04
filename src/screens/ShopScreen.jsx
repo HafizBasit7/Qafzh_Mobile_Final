@@ -85,7 +85,7 @@ const ShopScreen = ({ navigation, route }) => {
         <Text style={styles.sectionTitle}>{t("SHOP.workingHours")}</Text>
         <View style={styles.infoCard}>
           <View style={styles.detailRow}>
-            <MaterialIcons name="schedule" size={20} color="#2e7d32" />
+            <MaterialIcons name="schedule" size={20} color="#1877f2" />
             <View style={styles.detailTextContainer}>
               <Text style={styles.detailText}>
                 {shop.workingHours.openTime} - {shop.workingHours.closeTime}
@@ -120,7 +120,7 @@ const ShopScreen = ({ navigation, route }) => {
                 style={styles.socialMediaButton}
                 onPress={() => handleSocialMedia(shop.socialMedia.facebook)}
               >
-                <Ionicons name="logo-facebook" size={24} color="#2e7d32" />
+                <Ionicons name="logo-facebook" size={24} color="#1877f2" />
               </TouchableOpacity>
             )}
             {shop.socialMedia.instagram && (
@@ -222,7 +222,7 @@ const ShopScreen = ({ navigation, route }) => {
         <View style={styles.infoCard}>
           {shop.establishedYear && (
             <View style={styles.detailRow}>
-              <MaterialIcons name="business" size={20} color="#2e7d32" />
+              <MaterialIcons name="business" size={20} color="#1877f2" />
               <View style={styles.detailTextContainer}>
                 <Text style={styles.detailText}>
                   {t("SHOP.establishedYear")}: {shop.establishedYear}
@@ -232,7 +232,7 @@ const ShopScreen = ({ navigation, route }) => {
           )}
           {shop.licenseNumber && (
             <View style={styles.detailRow}>
-              <MaterialIcons name="verified" size={20} color="#2e7d32" />
+              <MaterialIcons name="verified" size={20} color="#1877f2" />
               <View style={styles.detailTextContainer}>
                 <Text style={styles.detailText}>
                   {t("SHOP.licenseNumber")}: {shop.licenseNumber}
@@ -242,7 +242,7 @@ const ShopScreen = ({ navigation, route }) => {
           )}
           {shop.website && (
             <View style={styles.detailRow}>
-              <MaterialIcons name="language" size={20} color="#2e7d32" />
+              <MaterialIcons name="language" size={20} color="#1877f2" />
               <View style={styles.detailTextContainer}>
                 <Text style={styles.detailText}>{shop.website}</Text>
               </View>
@@ -250,7 +250,7 @@ const ShopScreen = ({ navigation, route }) => {
           )}
           {shop.notes && (
             <View style={styles.detailRow}>
-              <MaterialIcons name="notes" size={20} color="#2e7d32" />
+              <MaterialIcons name="notes" size={20} color="#1877f2" />
               <View style={styles.detailTextContainer}>
                 <Text style={styles.detailText}>{shop.notes}</Text>
               </View>
@@ -446,7 +446,7 @@ const styles = StyleSheet.create({
   },
   callButton: {
     flex: 1,
-    backgroundColor: "#2e7d32",
+    backgroundColor: "#1877f2",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
@@ -531,7 +531,7 @@ const styles = StyleSheet.create({
   },
   serviceText: {
     fontSize: 14,
-    color: "#166534",
+    color: "#1877f2",
     fontFamily: "Tajawal-Medium",
   },
   workingDaysContainer: {
@@ -550,7 +550,7 @@ const styles = StyleSheet.create({
   },
   workingDayText: {
     fontSize: 12,
-    color: "#2e7d32",
+    color: "#1877f2",
     fontFamily: "Tajawal-Medium",
   },
 
@@ -583,8 +583,8 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   brandBadge: {
-    backgroundColor: "#FEF3C7",
-    borderColor: "#FDE68A",
+    backgroundColor: "#1877f2",
+    borderColor: "#1877f2",
     borderWidth: 1,
     borderRadius: 20,
     paddingVertical: 8,
@@ -592,7 +592,7 @@ const styles = StyleSheet.create({
   },
   brandText: {
     fontSize: 14,
-    color: "#D97706",
+    color: "#EFF6FF",
     fontFamily: "Tajawal-Medium",
   },
   categoriesContainer: {
@@ -610,7 +610,7 @@ const styles = StyleSheet.create({
   },
   categoryText: {
     fontSize: 14,
-    color: "#2e7d32",
+    color: "#1877f2",
     fontFamily: "Tajawal-Medium",
   },
   errorContainer: {
@@ -627,7 +627,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   retryButton: {
-    backgroundColor: "#2e7d32",
+    backgroundColor: "#1877f2",
     paddingHorizontal: 24,
     paddingVertical: 12,
     borderRadius: 8,

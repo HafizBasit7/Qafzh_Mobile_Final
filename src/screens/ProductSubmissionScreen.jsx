@@ -24,7 +24,7 @@ import CustomModal from '../components/common/CustomModal';
 import EmptyState from '../components/EmptyState';
 
 const colors = {
-  primary: '#2E7D32',
+  primary: '#1877f2',
   primaryLight: '#81C784',
   background: '#F5F5F5',
   white: '#FFFFFF',
@@ -40,9 +40,15 @@ const ProductSubmissionScreen = () => {
   const { modalState, hideModal, showSuccess, showError, showWarning, showInfo } = useModal();
   const [hasCheckedAuth, setHasCheckedAuth] = useState(false);
   const navigation = useNavigation();
-  
+ 
+
+
+
+
+
+
   // ALL HOOKS MUST BE AT THE TOP - BEFORE ANY CONDITIONAL RETURNS
-  const [formData, setFormData] = useState({
+  const initialFormState = ({
     name: '',
     description: '',
     type: 'Panel',
@@ -62,6 +68,20 @@ const ProductSubmissionScreen = () => {
 
   // State for available cities based on selected governorate
   const [availableCities, setAvailableCities] = useState([]);
+  const [formData, setFormData] = useState(initialFormState);
+
+
+   // Reset form when tab loses focus
+   useFocusEffect(
+    React.useCallback(() => {
+      return () => {
+        // This cleanup function runs when the screen loses focus
+        setFormData(initialFormState);
+        setAvailableCities([]);
+      };
+    }, []) // Empty dependency array means this effect runs only once on mount
+  );
+
 
   
   
@@ -560,12 +580,12 @@ const ProductSubmissionScreen = () => {
         <Text style={styles.sectionTitle}>الصور</Text>
         
         <TouchableOpacity style={styles.imagePickerButton} onPress={pickImage}>
-          <AntDesign name="plus" size={20} color={colors.primary} />
+          <AntDesign name="plus" size={20} color={colors.white} />
           <Text style={styles.imagePickerText}>إضافة صورة</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.imagePickerButton} onPress={takePhoto}>
-    <Ionicons name="camera-outline" size={20} color={colors.primary} />
+    <Ionicons name="camera-outline" size={20} color={colors.white} />
     <Text style={styles.imagePickerText}>الكاميرا</Text>
   </TouchableOpacity>
 
@@ -734,12 +754,15 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     paddingVertical: 12,
     marginBottom: 12,
+    backgroundColor:"#1877f2",
+    
   },
   imagePickerText: {
     marginLeft: 8,
     color: colors.primary,
     fontSize: 14,
     fontWeight: '600',
+    color:"#fff"
   },
   submitButton: {
     backgroundColor: colors.primary,

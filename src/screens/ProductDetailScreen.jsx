@@ -138,7 +138,7 @@ export default function ProductDetailScreen() {
                   style={[
                     styles.detailValue,
                     product.condition === "New" && { color: "#10B981" },
-                    product.condition === "Used" && { color: "#F59E0B" },
+                    product.condition === "Used" && { color: "#1877f2" },
                   ]}
                 >
                   {product.condition === "New"
@@ -211,7 +211,7 @@ export default function ProductDetailScreen() {
               <View style={styles.sellerInfo}>
                 <View style={styles.sellerText}>
                   <Text style={styles.sellerContact}>
-                    <Ionicons name="call-outline" size={14} color="#2e7d32" />{" "}
+                    <Ionicons name="call-outline" size={14} color="#1877f2" />{" "}
                     {product.phone}
                   </Text>
                   {product.whatsappPhone && (
@@ -219,7 +219,7 @@ export default function ProductDetailScreen() {
                       <Ionicons
                         name="logo-whatsapp"
                         size={14}
-                        color="#25D366"
+                        color="#1877f2"
                       />{" "}
                       {product.whatsappPhone}
                     </Text>
@@ -261,7 +261,7 @@ export default function ProductDetailScreen() {
         {/* Fixed Action Bar */}
         <View style={styles.actionBar}>
           {/* <TouchableOpacity style={styles.saveButton}>
-            <Ionicons name="bookmark-outline" size={22} color="#2e7d32" />
+            <Ionicons name="bookmark-outline" size={22} color="#1877f2" />
           </TouchableOpacity> */}
 
           {product.whatsappPhone && (
@@ -323,7 +323,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingHorizontal: 16,
     paddingVertical: 12,
-    backgroundColor: "#2e7d32",
+    backgroundColor: "#1877f2",
     elevation: 4,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
@@ -427,7 +427,7 @@ const styles = StyleSheet.create({
   price: {
     fontSize: 24,
     fontFamily: "Tajawal-Bold",
-    color: "#2e7d32",
+    color: "#1877f2",
     textAlign: "right",
     marginBottom: 20,
   },
@@ -508,7 +508,7 @@ const styles = StyleSheet.create({
   sellerLocation: {
     fontSize: 13,
     fontFamily: "Tajawal-Regular",
-    color: "#2e7d32",
+    color: "#1877f2",
     textAlign: "right",
     marginTop: 4,
   },
@@ -545,7 +545,7 @@ const styles = StyleSheet.create({
   },
   primaryButton: {
     flex: 1,
-    backgroundColor: "#2e7d32",
+    backgroundColor: "#1877f2",
     flexDirection: "row-reverse",
     justifyContent: "center",
     alignItems: "center",
@@ -572,7 +572,7 @@ const styles = StyleSheet.create({
   },
   negotiableText: {
     fontSize: 14,
-    color: "#F59E0B",
+    color: "#10B981",
     marginRight: 10,
     fontFamily: "Tajawal-Medium",
   },
@@ -588,7 +588,7 @@ const styles = StyleSheet.create({
   featuredText: {
     fontSize: 12,
     fontFamily: "Tajawal-Medium",
-    color: "#D97706",
+    color: "#10B981",
     marginRight: 4,
   },
   specificationsContainer: {
@@ -636,7 +636,7 @@ const styles = StyleSheet.create({
     color: "#1E293B",
   },
   secondaryButton: {
-    backgroundColor: "#25D366",
+    backgroundColor: "#10B981",
     flexDirection: "row-reverse",
     justifyContent: "center",
     alignItems: "center",

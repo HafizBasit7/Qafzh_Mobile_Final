@@ -100,7 +100,7 @@ const UpdateProfileScreen = ({ navigation }) => {
     <ScrollView style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <MaterialIcons name="arrow-back" size={24} color="#22C55E" />
+          <MaterialIcons name="arrow-back" size={24} color="#1877f2" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>تحديث الملف الشخصي</Text>
         <TouchableOpacity
@@ -109,7 +109,7 @@ const UpdateProfileScreen = ({ navigation }) => {
           style={styles.saveButtonContainer}
         >
           {isUpdating ? (
-            <ActivityIndicator size="small" color="#22C55E" />
+            <ActivityIndicator size="small" color="#1877f2" />
           ) : (
             <Text style={styles.saveButton}>حفظ</Text>
           )}
@@ -191,7 +191,7 @@ const styles = StyleSheet.create({
   saveButton: {
     fontSize: 16,
     fontFamily: "Tajawal-Medium",
-    color: "#22C55E",
+    color: "#1877f2",
   },
   avatarContainer: {
     alignItems: "center",
@@ -209,7 +209,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 0,
     right: "35%",
-    backgroundColor: "#22C55E",
+    backgroundColor: "#1877f2",
     width: 40,
     height: 40,
     borderRadius: 20,

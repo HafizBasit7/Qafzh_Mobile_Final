@@ -86,7 +86,7 @@ const AdsScreen = () => {
   if (adsData.loading && !refreshing) {
     return (
       <View style={styles.center}>
-        <ActivityIndicator size="large" color="#2e7d32" />
+        <ActivityIndicator size="large" color="#1877f2" />
       </View>
     );
   }
@@ -143,7 +143,7 @@ const AdsScreen = () => {
             onPress={() => handleAdPress(item.link)}
           >
             <Text style={styles.linkButtonText}>{t('ADS.VISIT_LINK')}</Text>
-            <Ionicons name="open-outline" size={16} color="#2e7d32" />
+            <Ionicons name="open-outline" size={16} color="#1877f2" />
           </TouchableOpacity>
         )}
       </View>
@@ -173,8 +173,8 @@ const AdsScreen = () => {
             <RefreshControl
               refreshing={refreshing}
               onRefresh={onRefresh}
-              colors={['#2e7d32']}
-              tintColor="#2e7d32"
+              colors={['#1877f2']}
+              tintColor="#1877f2"
             />
           }
         >
@@ -217,7 +217,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 16,
     paddingVertical: 12,
-    backgroundColor: '#2e7d32',
+    backgroundColor: '#1877f2',
     elevation: 4,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -319,7 +319,7 @@ const styles = StyleSheet.create({
     color: '#64748B',
   },
   callButton: {
-    backgroundColor: '#2e7d32',
+    backgroundColor: '#1877f2',
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
@@ -335,7 +335,7 @@ const styles = StyleSheet.create({
   },
   linkButton: {
     borderWidth: 1,
-    borderColor: '#2e7d32',
+    borderColor: '#1877f2',
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
@@ -343,7 +343,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   linkButtonText: {
-    color: '#2e7d32',
+    color: '#1877f2',
     fontFamily: 'Tajawal-Bold',
     fontSize: 14,
     marginRight: 8,

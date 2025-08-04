@@ -35,7 +35,7 @@ export default function EngineerCard({ engineer }) {
             <Text style={styles.engineerName}>{engineer.name}</Text>
             {engineer.isVerified && (
               <View style={styles.verificationBadge}>
-                <Ionicons name="checkmark-circle" size={14} color="#10B981" />
+                <Ionicons name="checkmark-circle" size={14} color="#1877f2" />
                 <Text style={styles.verifiedText}>{t("COMMON.VERIFIED")}</Text>
               </View>
             )}
@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
   verificationBadge: {
     flexDirection: "row-reverse",
     alignItems: "center",
-    backgroundColor: "#ECFDF5",
+    backgroundColor: "#1D4ED8",
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 8,
@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
   verifiedText: {
     fontSize: 12,
     fontFamily: "Tajawal-Medium",
-    color: "#10B981",
+    color: "#ECFDF5",
     marginRight: 4,
   },
   specializationContainer: {
@@ -168,8 +168,8 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   serviceBadge: {
-    backgroundColor: "#F0FDF4",
-    borderColor: "#DCFCE7",
+    backgroundColor: "#EFF6FF",
+    borderColor: "#DBEAFE",
     borderWidth: 1,
     borderRadius: 20,
     paddingVertical: 6,
@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
   },
   serviceText: {
     fontSize: 12,
-    color: "#166534",
+    color: "#1877f2",
     fontFamily: "Tajawal-Medium",
   },
   moreBadge: {
@@ -202,7 +202,7 @@ const styles = StyleSheet.create({
     paddingTop: 16,
   },
   callButton: {
-    backgroundColor: "#2e7d32",
+    backgroundColor: "#1877f2",
     flexDirection: "row-reverse",
     alignItems: "center",
     paddingVertical: 12,

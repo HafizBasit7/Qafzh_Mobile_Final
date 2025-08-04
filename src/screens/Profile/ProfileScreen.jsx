@@ -49,7 +49,7 @@ const ProfileScreen = ({ navigation }) => {
   if (isLoadingUser || isLoadingProducts) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#22C55E" />
+        <ActivityIndicator size="large" color="#1877f2" />
       </View>
     );
   }
@@ -114,7 +114,7 @@ const ProfileScreen = ({ navigation }) => {
 
         {userData.isVerified && (
           <View style={styles.verifiedBadge}>
-            <MaterialIcons name="verified" size={16} color="#22C55E" />
+            <MaterialIcons name="verified" size={16} color="#1877f2" />
             <Text style={styles.verifiedText}>موثوق</Text>
           </View>
         )}
@@ -149,7 +149,7 @@ const ProfileScreen = ({ navigation }) => {
         <View style={styles.statItem}>
   <Text style={styles.statNumber}>
     {userData.isVerified ? (
-      <MaterialIcons name="verified" size={20} color="#22C55E" />
+      <MaterialIcons name="verified" size={20} color="#1877f2" />
     ) : (
       "No"
     )}
@@ -165,7 +165,7 @@ const ProfileScreen = ({ navigation }) => {
     style={styles.actionButton}
     onPress={() => navigation.navigate("MyProducts")}
   >
-    <AntDesign name="appstore-o" size={20} color="#22C55E" />
+    <AntDesign name="appstore-o" size={20} color="#1877f2" />
     <Text style={styles.actionButtonText}>منتجاتي</Text>
   </TouchableOpacity>
 
@@ -173,7 +173,7 @@ const ProfileScreen = ({ navigation }) => {
     style={styles.actionButton}
     onPress={() => navigation.navigate("UpdateProfile")}
   >
-    <Feather name="edit-3" size={20} color="#22C55E" />
+    <Feather name="edit-3" size={20} color="#1877f2" />
     <Text style={styles.actionButtonText}>تحديث الملف الشخصي</Text>
   </TouchableOpacity>
 </View>
@@ -222,7 +222,7 @@ const ProfileScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#22C55E',
+    backgroundColor: '#1877f2',
   },
   container: {
     flex: 1,
@@ -248,7 +248,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   loginButton: {
-    backgroundColor: "#22C55E",
+    backgroundColor: "#1877f2",
     paddingVertical: 12,
     paddingHorizontal: 24,
     borderRadius: 8,
@@ -280,7 +280,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 0,
     right: 0,
-    backgroundColor: "#22C55E",
+    backgroundColor: "#1877f2",
     width: 32,
     height: 32,
     borderRadius: 16,
@@ -300,7 +300,7 @@ const styles = StyleSheet.create({
   },
   verifiedText: {
     fontSize: 14,
-    color: "#22C55E",
+    color: "#1877f2",
     marginLeft: 4,
   },
   metaContainer: {

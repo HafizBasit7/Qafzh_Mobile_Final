@@ -219,7 +219,7 @@ const styles = StyleSheet.create({
     textAlign: 'right',
   },
   button: {
-    backgroundColor: '#2e7d32',
+    backgroundColor: '#1877f2',
     borderRadius: 12,
     padding: 16,
     alignItems: 'center',
@@ -235,7 +235,7 @@ const styles = StyleSheet.create({
   backText: {
     fontSize: 16,
     fontFamily: 'Tajawal-Bold',
-    color: '#2e7d32',
+    color: '#1877f2',
   },  
   buttonDisabled: {
     // backgroundColor: '#94A3B8',
@@ -255,7 +255,7 @@ const styles = StyleSheet.create({
     color: '#64748B',
   },
   registerHighlight: {
-    color: '#2e7d32',
+    color: '#1877f2',
     fontFamily: 'Tajawal-Bold',
   },
 });

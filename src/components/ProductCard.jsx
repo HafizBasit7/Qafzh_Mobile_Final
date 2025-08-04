@@ -118,7 +118,7 @@ const ProductCard = ({ product }) => {
         />
         {imageLoading && (
           <View style={styles.imageLoader}>
-            <ActivityIndicator color="#2e7d32" size="small" />
+            <ActivityIndicator color="#1877f2" size="small" />
           </View>
         )}
       </View>
@@ -164,7 +164,7 @@ const ProductCard = ({ product }) => {
 <View style={styles.bottomRow}>
   {product.status === "approved" ? (
     <View style={styles.verifiedBadge}>
-      {/* <Ionicons name="checkmark-done-outline" size={12} color="#10B981" /> */}
+      {/* <Ionicons name="checkmark-done-outline" size={12} color="#1877f2" /> */}
       <Text style={styles.verifiedText}>{t("COMMON.VERIFIED")}</Text>
     </View>
   ) : (
@@ -262,7 +262,7 @@ pendingText: {
   cardTitle: {
     fontSize: 18,
     fontFamily: "Tajawal-Bold",
-    color: "#2e7d32",
+    color: "#1877f2",
     marginBottom: 4,
     textAlign: "right",
   },
@@ -384,7 +384,7 @@ pendingText: {
     fontFamily: "Tajawal-Bold",
   },
   newText: {
-    color: "#166534",
+    color: "#1877f2",
   },
   usedText: {
     color: "#1E40AF",
@@ -465,7 +465,7 @@ pendingText: {
   verifiedText: {
     fontSize: 11,
     fontFamily: "Tajawal-Medium",
-    color: "#10B981",
+    color: "#1877f2",
   },
   spacer: {
     flex: 1,

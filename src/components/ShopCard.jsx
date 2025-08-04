@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
   verificationBadge: {
     flexDirection: "row-reverse",
     alignItems: "center",
-    backgroundColor: "#ECFDF5",
+    backgroundColor: "#1877f2",
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 8,
@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
   verifiedText: {
     fontSize: 12,
     fontFamily: "Tajawal-Medium",
-    color: "#10B981",
+    color: "#ffff",
     marginRight: 4,
   },
   unverifiedBadge: {
@@ -194,8 +194,8 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   serviceBadge: {
-    backgroundColor: "#F0FDF4",
-    borderColor: "#DCFCE7",
+    backgroundColor: "#EFF6FF",
+    borderColor: "#DBEAFE",
     borderWidth: 1,
     borderRadius: 20,
     paddingVertical: 6,
@@ -204,7 +204,7 @@ const styles = StyleSheet.create({
   serviceText: {
     fontSize: 12,
     fontFamily: "Tajawal-Medium",
-    color: "#166534",
+    color: "#1877f2",
   },
   footer: {
     flexDirection: "row-reverse",
@@ -215,7 +215,7 @@ const styles = StyleSheet.create({
     paddingTop: 16,
   },
   callButton: {
-    backgroundColor: "#2e7d32",
+    backgroundColor: "#1877f2",
     flexDirection: "row-reverse",
     alignItems: "center",
     paddingVertical: 12,

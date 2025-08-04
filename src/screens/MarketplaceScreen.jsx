@@ -179,11 +179,11 @@ export default function MarketplaceScreen({ navigation }) {
           style={styles.governorateFilterButton}
           onPress={() => setShowGovernorateModal(true)}
         >
-          <MaterialIcons name="location-on" size={18} color="#2e7d32" />
+          <MaterialIcons name="location-on" size={18} color="#1877f2" />
           <Text style={styles.governorateFilterText}>
             {filters.governorate || "كل المحافظات"}
           </Text>
-          <MaterialIcons name="arrow-drop-down" size={20} color="#2e7d32" />
+          <MaterialIcons name="arrow-drop-down" size={20} color="#1877f2" />
         </TouchableOpacity>
       </View>
     );
@@ -235,7 +235,7 @@ export default function MarketplaceScreen({ navigation }) {
                 {item.name}
               </Text>
               {filters.governorate === item.name && (
-                <MaterialIcons name="check" size={20} color="#2e7d32" />
+                <MaterialIcons name="check" size={20} color="#1877f2" />
               )}
             </TouchableOpacity>
           )}
@@ -494,7 +494,7 @@ export default function MarketplaceScreen({ navigation }) {
     if (!activeData.hasNextPage) return null;
     return (
       <View style={styles.footerLoader}>
-        <ActivityIndicator size="small" color="#2e7d32" />
+        <ActivityIndicator size="small" color="#1877f2" />
       </View>
     );
   };
@@ -566,7 +566,7 @@ export default function MarketplaceScreen({ navigation }) {
   const renderHeader = () => (
     <View style={styles.headerContainer}>
       <LinearGradient
-        colors={["#2e7d32", "#2e7d32"]}
+        colors={["#1877f2", "#1877f2"]}
         style={styles.headerGradient}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 0 }}
@@ -574,7 +574,7 @@ export default function MarketplaceScreen({ navigation }) {
         <View style={styles.header}>
           <View style={styles.headerTop}>
             <View style={styles.headerLeft}>
-              <Image source={Logo} style={styles.logo} />
+              {/* <Image source={Logo} style={styles.logo} /> */}
               <Text style={styles.title}>السوق الشمسي</Text>
             </View>
 
@@ -603,7 +603,7 @@ export default function MarketplaceScreen({ navigation }) {
               <MaterialIcons
                 name="search"
                 size={20}
-                color="#2e7d32"
+                color="#1877f2"
                 style={styles.searchIcon}
               />
             </View>
@@ -628,7 +628,7 @@ export default function MarketplaceScreen({ navigation }) {
                     <MaterialCommunityIcons
                       name={item.icon}
                       size={18}
-                      color={activeTab === item.id ? "#FFFFFF" : "#2e7d32"}
+                      color={activeTab === item.id ? "#FFFFFF" : "#1877f2"}
                     />
                     <Text
                       style={[
@@ -715,7 +715,7 @@ export default function MarketplaceScreen({ navigation }) {
             <MaterialCommunityIcons
               name={type.icon}
               size={24}
-              color={activeProductType === type.id ? "#fff" : "#2e7d32"}
+              color={activeProductType === type.id ? "#fff" : "#1877f2"}
               style={{ marginBottom: 8 }}
             />
             <Text
@@ -785,7 +785,7 @@ export default function MarketplaceScreen({ navigation }) {
             setFilters({ ...filters, sortBy: itemValue })
           }
           style={styles.picker}
-          dropdownIconColor="#2e7d32"
+          dropdownIconColor="#1877f2"
         >
           {QUICK_FILTERS.map((filter) => (
             <Picker.Item key={filter.id} label={filter.name} value={filter.id} />
@@ -854,8 +854,8 @@ export default function MarketplaceScreen({ navigation }) {
             <RefreshControl
               refreshing={activeData.isLoading}
               onRefresh={activeData.refetch}
-              colors={["#2e7d32"]}
-              tintColor="#2e7d32"
+              colors={["#1877f2"]}
+              tintColor="#1877f2"
             />
           }
           showsVerticalScrollIndicator={false}
@@ -896,8 +896,8 @@ export default function MarketplaceScreen({ navigation }) {
             <RefreshControl
               refreshing={activeData.isLoading}
               onRefresh={activeData.refetch}
-              colors={["#2e7d32"]}
-              tintColor="#2e7d32"
+              colors={["#1877f2"]}
+              tintColor="#1877f2"
             />
           }
           showsVerticalScrollIndicator={false}
@@ -973,7 +973,7 @@ quickFilterDropdownWrapper: {
     shadowRadius: 4,
   },
   headerGradient: {
-    paddingTop: 5,
+    paddingTop: 15,
     paddingBottom: 5,
     paddingHorizontal: 15,
   },
@@ -1008,7 +1008,8 @@ quickFilterDropdownWrapper: {
     fontSize: 30,
     fontWeight: 'bold',
     color: '#fff',
-    marginLeft:130
+    marginLeft:160,
+    marginBottom:10
   },
 
   searchRow: {
@@ -1069,7 +1070,7 @@ quickFilterDropdownWrapper: {
   categoryButton: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#2e7d32",
+    backgroundColor: "#1877f2",
     paddingHorizontal: 15,
     paddingVertical: 5,
     borderRadius: 20,
@@ -1079,7 +1080,7 @@ quickFilterDropdownWrapper: {
   },
   activeCategoryButton: {
     backgroundColor: "#FFFFFF",
-    borderColor: "#2e7d32",
+    borderColor: "#1877f2",
   },
   categoryButtonText: {
     fontSize: 16,
@@ -1088,7 +1089,7 @@ quickFilterDropdownWrapper: {
     fontFamily: "Tajawal-Medium",
   },
   activeCategoryButtonText: {
-    color: "#2e7d32",
+    color: "#1877f2",
   },
   productTypeTabsContainer: {
     paddingVertical: 12,
@@ -1116,8 +1117,8 @@ quickFilterDropdownWrapper: {
     borderColor: "#E5E7EB",
   },
   activeProductTypeTab: {
-    backgroundColor: "#2e7d32",
-    borderColor: "#2e7d32",
+    backgroundColor: "#1877f2",
+    borderColor: "#1877f2",
   },
   productTypeTabText: {
     fontSize: 13,
@@ -1192,7 +1193,7 @@ quickFilterDropdownWrapper: {
     alignSelf: "flex-end",
   },
   bannerButtonText: {
-    color: "#2e7d32",
+    color: "#1877f2",
     fontFamily: "Tajawal-Bold",
     fontSize: 15,
   },
@@ -1244,7 +1245,7 @@ quickFilterDropdownWrapper: {
     marginTop: 16,
   },
   retryButton: {
-    backgroundColor: "#2e7d32",
+    backgroundColor: "#1877f2",
     paddingHorizontal: 24,
     paddingVertical: 12,
     borderRadius: 8,
@@ -1326,7 +1327,7 @@ quickFilterDropdownWrapper: {
     color: "#1F2937",
   },
   selectedGovernorateItemText: {
-    color: "#2e7d32",
+    color: "#1877f2",
   },
   governorateItemSeparator: {
     height: 1,
@@ -1352,12 +1353,12 @@ quickFilterDropdownWrapper: {
   },
 
   activeGridCard: {
-    backgroundColor: "#2e7d32",
+    backgroundColor: "#1877f2",
   },
 
   gridCardText: {
     fontSize: 13,
-    color: "#2e7d32",
+    color: "#1877f2",
     textAlign: "center",
   },
 
@@ -1381,7 +1382,7 @@ quickFilterDropdownWrapper: {
   },
 
   activeDot: {
-    backgroundColor: "#2e7d32",
+    backgroundColor: "#1877f2",
     width: 10,
     height: 10,
   },

@@ -11,6 +11,7 @@ import {
   ActivityIndicator,
   ScrollView,
   Image,
+  Switch
 } from "react-native";
 import { useAuth } from "../../hooks/useAuth";
 import { showToast } from "../../components/common/Toast";
@@ -24,6 +25,7 @@ const RegisterScreen = ({ navigation, route }) => {
   const { register, isRegistering } = useAuth();
   const returnData = route.params?.returnData;
   const { modalState, showModal, hideModal } = useModal();
+  const [isChecked, setIsChecked] = useState(false);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -64,6 +66,17 @@ const RegisterScreen = ({ navigation, route }) => {
 
 
   const handleSubmit = async () => {
+    if (!isChecked) { // Add this check
+      showModal({
+        type: "error",
+        title: "خطأ",
+        message: "يجب الموافقة على الشروط والأحكام وسياسة الخصوصية",
+        autoClose: true,
+        duration: 3000,
+      });
+      return;
+    }
+
     if (!formData.name.trim()) {
       showModal({
         type: "error",
@@ -197,7 +210,7 @@ const RegisterScreen = ({ navigation, route }) => {
               ) : (
                 <View style={styles.uploadPlaceholder}>
                   {isUploading ? (
-                    <ActivityIndicator color="#2e7d32" />
+                    <ActivityIndicator color="#1877f2" />
                   ) : (
                     <Text style={styles.uploadText}>{t('AUTH.UPLOAD_PHOTO')}</Text>
                   )}
@@ -226,7 +239,7 @@ const RegisterScreen = ({ navigation, route }) => {
                 onChangeText={(text) =>
                   setFormData((prev) => ({ ...prev, phone: text }))
                 }
-                placeholder="03XX-XXXXXXX"
+                placeholder="+967-XXX-XXX-XXX"
                 keyboardType="phone-pad"
               />
             </View>
@@ -247,13 +260,39 @@ const RegisterScreen = ({ navigation, route }) => {
               </Text>
             </View>
 
+         {/* Replace the CheckBox component with this */}
+<View style={styles.checkboxContainer}>
+  <Switch
+    value={isChecked}
+    onValueChange={setIsChecked}
+    trackColor={{ false: "#64748B", true: "#1877f2" }}
+    thumbColor="#ffffff"
+  />
+ <Text style={styles.checkboxText}>
+  أوافق على{' '}
+  <Text 
+    style={styles.linkText}
+    onPress={() => navigation.navigate('TermsOfService')}
+  >
+    شروط الخدمة
+  </Text>{' '}
+  و{' '}
+  <Text 
+    style={styles.linkText}
+    onPress={() => navigation.navigate('PrivacyPolicy')}
+  >
+    سياسة الخصوصية
+  </Text>
+</Text>
+</View>
+
             <TouchableOpacity
               style={[
                 styles.button,
-                (isRegistering || isUploading) && styles.buttonDisabled,
+                (isRegistering || isUploading || !isChecked) && styles.buttonDisabled,
               ]}
               onPress={handleSubmit}
-              disabled={isRegistering || isUploading}
+              disabled={isRegistering || isUploading || !isChecked}
             >
               {isRegistering ? (
                 <ActivityIndicator color="#fff" />
@@ -261,6 +300,7 @@ const RegisterScreen = ({ navigation, route }) => {
                 <Text style={styles.buttonText}>تسجيل</Text>
               )}
             </TouchableOpacity>
+
           </View>
         </View>
       </ScrollView>
@@ -282,6 +322,10 @@ const RegisterScreen = ({ navigation, route }) => {
 };
 
 const styles = StyleSheet.create({
+  linkText: {
+    color: '#1877f2',
+    textDecorationLine: 'underline',
+  },
   container: {
     flex: 1,
     backgroundColor: "#F8FAFC",
@@ -313,7 +357,7 @@ const styles = StyleSheet.create({
   backText: {
     fontSize: 16,
     fontFamily: 'Tajawal-Bold',
-    color: '#2e7d32',
+    color: '#1877f2',
   },
 
   title: {
@@ -388,8 +432,25 @@ const styles = StyleSheet.create({
     color: "#64748B",
     marginTop: 4,
   },
+  checkboxContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
+    marginTop: 8,
+  },
+  checkbox: {
+    width: 20,
+    height: 20,
+    marginLeft: 8,
+  },
+  checkboxText: {
+    fontSize: 14,
+    fontFamily: "Tajawal-Regular",
+    color: "#475569",
+  },
+  
   button: {
-    backgroundColor: "#2e7d32",
+    backgroundColor: "#1877f2",
     borderRadius: 12,
     padding: 16,
     alignItems: "center",
