@@ -578,15 +578,7 @@ export default function MarketplaceScreen({ navigation }) {
               <Text style={styles.title}>السوق الشمسي</Text>
             </View>
 
-            {/* <TouchableOpacity
-              style={styles.locationTag}
-              onPress={() => setShowGovernorateModal(true)}
-            >
-              <Ionicons name="location-sharp" size={14} color="#FFFFFF" />
-              <Text style={styles.locationText} numberOfLines={1}>
-                {selectedLocation}
-              </Text>
-            </TouchableOpacity> */}
+        
           </View>
 
 
@@ -656,112 +648,39 @@ export default function MarketplaceScreen({ navigation }) {
     </View>
   );
 
-  const renderBanner = () => (
-    <TouchableOpacity
-      style={styles.bannerContainer}
-      activeOpacity={0.9}
-      onPress={() => navigation.navigate("OffersTab")}
-    >
-      <Image
-        source={require("../../assets/images/solar1.jpg")}
-        style={styles.bannerImage}
-        resizeMode="cover"
-      />
-      <LinearGradient
-        colors={["rgba(0,0,0,0.3)", "rgba(0,0,0,0.6)"]}
-        style={styles.bannerOverlay}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 0, y: 1 }}
-      >
-        <View style={styles.bannerContent}>
-          <Text style={styles.bannerTitle}>خصومات تصل إلى 30%</Text>
-          <Text style={styles.bannerSubtitle}>
-            احصل على أفضل العروض على الأنظمة الشمسية
-          </Text>
-          <TouchableOpacity style={styles.bannerButton} onPress={() => navigation.navigate("OffersTab")}>
-            <Text style={styles.bannerButtonText}>تسوق الآن</Text>
-          </TouchableOpacity>
-        </View>
-      </LinearGradient>S
-    </TouchableOpacity>
-  );
+  // const renderBanner = () => (
+  //   <TouchableOpacity
+  //     style={styles.bannerContainer}
+  //     activeOpacity={0.9}
+  //     onPress={() => navigation.navigate("OffersTab")}
+  //   >
+  //     <Image
+  //       source={require("../../assets/images/solar1.jpg")}
+  //       style={styles.bannerImage}
+  //       resizeMode="cover"
+  //     />
+  //     <LinearGradient
+  //       colors={["rgba(0,0,0,0.3)", "rgba(0,0,0,0.6)"]}
+  //       style={styles.bannerOverlay}
+  //       start={{ x: 0, y: 0 }}
+  //       end={{ x: 0, y: 1 }}
+  //     >
+  //       <View style={styles.bannerContent}>
+  //         <Text style={styles.bannerTitle}>خصومات تصل إلى 30%</Text>
+  //         <Text style={styles.bannerSubtitle}>
+  //           احصل على أفضل العروض على الأنظمة الشمسية
+  //         </Text>
+  //         <TouchableOpacity style={styles.bannerButton} onPress={() => navigation.navigate("OffersTab")}>
+  //           <Text style={styles.bannerButtonText}>تسوق الآن</Text>
+  //         </TouchableOpacity>
+  //       </View>
+  //     </LinearGradient>S
+  //   </TouchableOpacity>
+  // );
 
 
-  const renderCategoryTabs = () => (
-    <View style={styles.tabsContainer}>
-      <FlatList
-        horizontal
-        data={categories}
-        keyExtractor={(item) => item.id}
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.tabsScrollContent}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            style={[
-              styles.categoryTab,
-              activeTab === item.id && styles.activeCategoryTab,
-            ]}
-            onPress={() => handleTabChange(item.id)}
-          >
-            <MaterialCommunityIcons
-              name={item.icon}
-              size={20}
-              color={activeTab === item.id ? "#FFFFFF" : "#2e7d32"}
-            />
-            <Text
-              style={[
-                styles.categoryTabText,
-                activeTab === item.id && styles.activeCategoryTabText,
-              ]}
-            >
-              {item.name}
-            </Text>
-          </TouchableOpacity>
-        )}
-      />
-    </View>
-  );
-
-  // const renderProductTypeTabs = () => {
-  //   if (activeTab !== "products") return null;
-
-  //   return (
-  //     <View style={styles.productTypeTabsContainer}>
-  //       <ScrollView
-  //         horizontal
-  //         showsHorizontalScrollIndicator={false}
-  //         contentContainerStyle={styles.productTypeTabsScroll}
-  //       >
-  //         {PRODUCT_TYPES.map((type) => (
-  //           <TouchableOpacity
-  //             key={type.id}
-  //             style={[
-  //               styles.productTypeTab,
-  //               activeProductType === type.id && styles.activeProductTypeTab,
-  //             ]}
-  //             onPress={() => handleProductTypeChange(type.id)}
-  //           >
-  //             <MaterialCommunityIcons
-  //               name={type.icon}
-  //               size={18}
-  //               color={activeProductType === type.id ? "#FFFFFF" : "#2e7d32"}
-  //             />
-  //             <Text
-  //               style={[
-  //                 styles.productTypeTabText,
-  //                 activeProductType === type.id && styles.activeProductTypeTabText,
-  //               ]}
-  //             >
-  //               {type.name}
-  //             </Text>
-  //           </TouchableOpacity>
-  //         ))}
-  //       </ScrollView>
-  //     </View>
-  //   );
-  // };
-
-  // Corrected quick filters component
+ 
+ 
   const ITEMS_PER_PAGE = 6;
 
 
@@ -883,77 +802,64 @@ export default function MarketplaceScreen({ navigation }) {
     if (activeData.isLoading && !activeData.data.length) {
       return <LoadingSpinner />;
     }
-
+  
     if (activeData.isError) {
       return renderError();
     }
-
+  
     if (activeData.data.length === 0) {
       return renderEmptyState();
     }
-
+  
     return (
       <Animated.View style={{ opacity: fadeAnim, flex: 1 }}>
-        {activeTab === "products" ? (
-          // Special grid layout for products
-          <FlatList
-            key="products-grid"
-            data={activeData.data}
-            renderItem={({ item }) => <ProductCard product={item} />}
-            keyExtractor={(item) => item._id}
-            numColumns={2}
-            columnWrapperStyle={styles.columnWrapper}
-            contentContainerStyle={[
-              styles.listContent,
-              { paddingBottom: 20 } // Add extra padding
-            ]}
-            onEndReached={handleLoadMore}
-            onEndReachedThreshold={0.5}
-            ListFooterComponent={renderFooter}
-            ListEmptyComponent={renderEmptyState()}
-            initialNumToRender={10} // Render more items initially
-            maxToRenderPerBatch={10} // Increase batch size
-            windowSize={10} // Increase window size
-            removeClippedSubviews={false} // Disable clipping
-            refreshControl={
-              <RefreshControl
-                refreshing={activeData.isLoading}
-                onRefresh={activeData.refetch}
-                colors={["#2e7d32"]}
-                tintColor="#2e7d32"
-              />
+        <FlatList
+          key={activeTab} // Simplified key since we're using single column for all
+          data={activeData.data}
+          renderItem={({ item }) => {
+            switch (activeTab) {
+              case "products":
+                return (
+                  <View style={styles.singleColumnItem}>
+                    <ProductCard product={item} />
+                  </View>
+                );
+              case "engineers":
+                return (
+                  <View style={styles.singleColumnItem}>
+                    <EngineerCard engineer={item} />
+                  </View>
+                );
+              case "shops":
+                return (
+                  <View style={styles.singleColumnItem}>
+                    <ShopCard shop={item} />
+                  </View>
+                );
+              default:
+                return null;
             }
-            showsVerticalScrollIndicator={false}
-          />
-        ) : (
-          // Single column layout for engineers/shops
-          <FlatList
-            key={`${activeTab}-list`}
-            data={activeData.data}
-            renderItem={({ item }) => {
-              return activeTab === "engineers" ? (
-                <EngineerCard engineer={item} />
-              ) : (
-                <ShopCard shop={item} />
-              );
-            }}
-            keyExtractor={(item) => item._id}
-            contentContainerStyle={styles.listContent}
-            onEndReached={handleLoadMore}
-            onEndReachedThreshold={0.5}
-            ListFooterComponent={renderFooter}
-            ListEmptyComponent={renderEmptyState()}
-            refreshControl={
-              <RefreshControl
-                refreshing={activeData.isLoading}
-                onRefresh={activeData.refetch}
-                colors={["#2e7d32"]}
-                tintColor="#2e7d32"
-              />
-            }
-            showsVerticalScrollIndicator={false}
-          />
-        )}
+          }}
+          keyExtractor={(item) => item._id || item.id}
+          numColumns={1} // Force single column for all tabs
+          contentContainerStyle={styles.listContent}
+          onEndReached={handleLoadMore}
+          onEndReachedThreshold={0.5}
+          ListFooterComponent={renderFooter}
+          initialNumToRender={10} // Show more items initially
+          maxToRenderPerBatch={10} // Render more items per batch
+          windowSize={10} // Increase render window
+          removeClippedSubviews={false} // Prevent clipping issues
+          refreshControl={
+            <RefreshControl
+              refreshing={activeData.isLoading}
+              onRefresh={activeData.refetch}
+              colors={["#2e7d32"]}
+              tintColor="#2e7d32"
+            />
+          }
+          showsVerticalScrollIndicator={false}
+        />
       </Animated.View>
     );
   };

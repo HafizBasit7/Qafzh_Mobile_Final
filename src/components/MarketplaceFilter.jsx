@@ -38,9 +38,9 @@ const MarketplaceFilter = ({
   const loadGovernorates = async () => {
     try {
       setLoading(true);
-      console.log("governoratesAPI.getGovernorates()");
+      // console.log("governoratesAPI.getGovernorates()");
       const response = await governoratesAPI.getGovernorates();
-      console.log("response", response);
+      // console.log("response", response);
       // response = { success, message, data: [...] }
       const data = response?.data || [];
 

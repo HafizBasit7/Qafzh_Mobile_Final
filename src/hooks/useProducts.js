@@ -9,7 +9,7 @@ export const useProducts = (filters = {}) => {
   const shouldUseSearch = !!search_keyword?.trim();
   const isUserProducts = !!filters?.user_products; // Flag for user products - use user_products instead of user_id
 
-  console.log('🔐 useProducts - Filters:', filters);
+  // console.log('🔐 useProducts - Filters:', filters);
   console.log('🔐 useProducts - isUserProducts:', isUserProducts);
   console.log('🔐 useProducts - shouldUseSearch:', shouldUseSearch);
 
@@ -47,6 +47,7 @@ export const useProducts = (filters = {}) => {
         // Fetch all products when no filters
         console.log('🔐 useProducts - Calling getProducts');
         response = await productsAPI.getProducts(params);
+        console.log("PARAMS", params)
       }
       
       console.log('🔐 useProducts - API Response:', {
@@ -54,7 +55,7 @@ export const useProducts = (filters = {}) => {
         total: response?.total || 0,
         endpoint: isUserProducts ? 'getUserProducts' : shouldUseSearch ? 'searchProducts' : 'getProducts'
       });
-      
+      console.log("ProductResponse", response.data.length)
       return {
         data: response.data || [], // The array of products
         currentPage: response.currentPage || pageParam,
