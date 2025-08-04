@@ -35,7 +35,7 @@ export default function TabNavigator() {
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: "#02ff04",
+        tabBarActiveTintColor: "#2e7d32",
         tabBarInactiveTintColor: "#64748B",
         tabBarLabelStyle: {
           fontFamily: "Tajawal-Bold",
@@ -150,7 +150,7 @@ const styles = StyleSheet.create({
     width: scaleSize(50),
     height: scaleSize(50),
     borderRadius: scaleSize(25),
-    backgroundColor: "#02ff04",
+    backgroundColor: "#2e7d32",
     justifyContent: "center",
     alignItems: "center",
     marginTop: scaleSize(-10),
@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
     elevation: 8,
   },
   addButtonFocused: {
-    backgroundColor: "#15803D",
+    backgroundColor: "#2e7d32",
     transform: [{ scale: 1.1 }],
   },
 });

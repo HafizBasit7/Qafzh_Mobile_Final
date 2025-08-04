@@ -8,7 +8,7 @@ const PhoneLink = ({
   textStyle, 
   showIcon = true, 
   iconSize = 16, 
-  iconColor = '#02ff04',
+  iconColor = '#2e7d32',
   children 
 }) => {
   const handlePhonePress = async () => {

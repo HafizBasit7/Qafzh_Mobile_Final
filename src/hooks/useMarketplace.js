@@ -29,7 +29,7 @@ export const useMarketplace = (filters = {}, type = 'all') => {
       const params = {
         page: pageParam,
         limit,
-        status: 'approved',
+        // status: 'approved',
         ...(activeTab !== 'all' && {
           type:
             activeTab === 'solarPanels' ? 'Panel' :

@@ -3,7 +3,7 @@ import { uploadAPI } from "../utils/imageUpload";
 import { showToast } from "../components/common/Toast";
 import storage from "../utils/storage";
 
-const BASE_URL = "http://192.168.1.3:5005/api/v1"; 
+const BASE_URL = "http://192.168.100.30:5005/api/v1"; 
 // const BASE_URL = 'https://srv694651.hstgr.cloud/solar/api/v1'; 
 
 // Create axios instance

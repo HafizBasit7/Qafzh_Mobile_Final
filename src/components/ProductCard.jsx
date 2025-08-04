@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Dimensions,
+
 } from "react-native";
 import { MaterialIcons, Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
@@ -15,7 +16,7 @@ import PhoneLink from './PhoneLink';
 import { useNavigation } from "@react-navigation/native";
 
 const { width } = Dimensions.get('window');
-const cardWidth = (width - 48) / 2; // 2 cards per row with margins
+// const cardWidth = (width - 48) / 2; // 2 cards per row with margins
 
 const ProductCard = ({ product }) => {
   const { t } = useTranslation();
@@ -103,51 +104,213 @@ const ProductCard = ({ product }) => {
   };
 
   return (
-    <TouchableOpacity style={styles.container} onPress={handlePress}>
-      {renderImage()}
-
-      {/* Product Info */}
-      <View style={styles.content}>
-        <Text style={styles.title} numberOfLines={2}>
-          {product.name || t('MARKETPLACE.UNTITLED_PRODUCT')}
-        </Text>
-        
-        {product.brand && (
-          <Text style={styles.brand} numberOfLines={1}>
-            {product.brand}
-          </Text>
-        )}
-
-        <Text style={styles.price}>
-          {formatPrice(product.price)}
-        </Text>
-
-        {/* Location */}
-        {(product.governorate || product.city) && (
-          <View style={styles.locationContainer}>
-            <Ionicons name="location-outline" size={12} color="#6B7280" />
-            <Text style={styles.location} numberOfLines={1}>
-              {[product.city, product.governorate].filter(Boolean).join(', ')}
-            </Text>
+    <TouchableOpacity style={styles.cardContainer} onPress={handlePress}>
+      <View style={styles.cardImageWrapper}>
+        <Image
+          source={{ uri: product.images?.[0] || "https://via.placeholder.com/300" }}
+          style={styles.cardImage}
+          onLoadStart={() => setImageLoading(true)}
+          onLoadEnd={() => setImageLoading(false)}
+          onError={() => {
+            setImageLoading(false);
+            setImageError(true);
+          }}
+        />
+        {imageLoading && (
+          <View style={styles.imageLoader}>
+            <ActivityIndicator color="#2e7d32" size="small" />
           </View>
         )}
-
-        {/* Contact Info */}
-        {product.phone && (
-          <PhoneLink
-            phoneNumber={product.phone}
-            style={styles.phoneContainer}
-            textStyle={styles.phoneText}
-            iconSize={12}
-            showIcon={true}
-          />
-        )}
       </View>
+  
+      <View style={styles.cardContent}>
+  <View style={styles.topRow}>
+    <Text style={styles.cardTitle} numberOfLines={1}>
+      {product.name || t("MARKETPLACE.UNTITLED_PRODUCT")}
+    </Text>
+
+    {product.brand && (
+      <Text style={styles.cardBrand} numberOfLines={1}>
+        {product.brand}
+      </Text>
+    )}
+
+    <Text style={styles.cardPrice}>
+      {formatPrice(product.price)}
+    </Text>
+  </View>
+
+  <View style={styles.middleRow}>
+    {(product.governorate || product.city) && (
+      <View style={styles.metaRow}>
+        <Ionicons name="location-outline" size={12} color="#6B7280" />
+        <Text style={styles.metaText} numberOfLines={1}>
+          {[product.city, product.governorate].filter(Boolean).join(", ")}
+        </Text>
+      </View>
+    )}
+
+    {product.phone && (
+      <PhoneLink
+        phoneNumber={product.phone}
+        style={styles.phoneLink}
+        textStyle={styles.phoneText}
+        iconSize={12}
+        showIcon={true}
+      />
+    )}
+  </View>
+
+<View style={styles.bottomRow}>
+  {product.status === "approved" ? (
+    <View style={styles.verifiedBadge}>
+      {/* <Ionicons name="checkmark-done-outline" size={12} color="#10B981" /> */}
+      <Text style={styles.verifiedText}>{t("COMMON.VERIFIED")}</Text>
+    </View>
+  ) : (
+    <View style={styles.pendingBadge}>
+      <Ionicons name="time-outline" size={12} color="#F59E0B" />
+      <Text style={styles.pendingText}>{t("COMMON.PENDING")}</Text>
+    </View>
+  )}
+</View>
+
+
+
+
+</View>
+
     </TouchableOpacity>
   );
+  
 };
 
 const styles = StyleSheet.create({
+  cardContainer: {
+    flexDirection: "row-reverse",
+    alignItems: "center",
+    backgroundColor: "#FFFFFF",
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: "#E5E7EB",
+    width: "100%", // full width row
+  },
+  
+  cardImageWrapper: {
+    width: 100,
+    height: 95,
+    borderRadius: 8,
+    overflow: "hidden",
+    backgroundColor: "#F1F5F9",
+    marginLeft: 12,
+  },
+  
+  cardImage: {
+    width: "100%",
+    height: "100%",
+    resizeMode: "cover",
+  },
+  
+  imageLoader: {
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+    backgroundColor: "rgba(255, 255, 255, 0.8)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  
+  cardContent: {
+    flex: 1,
+  justifyContent: "space-between",
+  // gap: 6,
+  // paddingTop: 4,
+  // paddingBottom: 2,
+  },
+  topRow: {
+  // gap: 2,
+},
+
+middleRow: {
+  // gap: 4,
+  // marginTop: 4,
+},
+
+bottomRow: {
+  marginTop: 6,
+  flexDirection: 'row-reverse',
+  alignItems: 'center',
+},
+pendingBadge: {
+  flexDirection: "row-reverse",
+  alignItems: "center",
+  gap: 4,
+  backgroundColor: "#F3F4F6", // light gray
+  paddingHorizontal: 8,
+  paddingVertical: 4,
+  borderRadius: 8,
+},
+
+pendingText: {
+  fontSize: 11,
+  fontFamily: "Tajawal-Medium",
+  color: "#9CA3AF", // gray text
+},
+
+  
+  cardTitle: {
+    fontSize: 18,
+    fontFamily: "Tajawal-Bold",
+    color: "#2e7d32",
+    marginBottom: 4,
+    textAlign: "right",
+  },
+  
+  cardBrand: {
+    fontSize: 12,
+    fontFamily: "Tajawal-Regular",
+    color: "#6B7280",
+    marginBottom: 2,
+    textAlign: "right",
+  },
+  
+  cardPrice: {
+    fontSize: 15,
+    fontFamily: "Tajawal-Bold",
+    color: "#1E293B",
+    marginBottom: 4,
+    textAlign: "right",
+  },
+  
+  metaRow: {
+    flexDirection: "row-reverse",
+    alignItems: "center",
+    gap: 4,
+    marginBottom: 2,
+  },
+  
+  metaText: {
+    fontSize: 12,
+    fontFamily: "Tajawal-Regular",
+    color: "#6B7280",
+    textAlign: "right",
+    flexShrink: 1,
+  },
+  
+  phoneLink: {
+    flexDirection: "row-reverse",
+    alignItems: "center",
+    marginTop: 4,
+  },
+  
+  phoneText: {
+    fontSize: 12,
+    fontFamily: "Tajawal-Medium",
+    color: "#4B5563",
+    textAlign: "right",
+  },
+  
   container: {
     backgroundColor: "#FFFFFF",
     borderRadius: 16,
@@ -159,7 +322,7 @@ const styles = StyleSheet.create({
     elevation: 4,
     borderWidth: 1,
     borderColor: "#F1F5F9",
-    width: cardWidth, // Apply cardWidth to container
+    // width: cardWidth, // Apply cardWidth to container
     marginHorizontal: 8, // Add some horizontal margin
     marginVertical: 8, // Add some vertical margin
   },
@@ -290,15 +453,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
   },
-  verifiedBadge: {
-    flexDirection: "row-reverse",
-    alignItems: "center",
-    gap: 4,
-    backgroundColor: "#10B981",
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 8,
-  },
+  // verifiedBadge: {
+  //   flexDirection: "row-reverse",
+  //   alignItems: "center",
+  //   gap: 4,
+  //   backgroundColor: "#10B981",
+  //   paddingHorizontal: 8,
+  //   paddingVertical: 4,
+  //   borderRadius: 8,
+  // },
   verifiedText: {
     fontSize: 11,
     fontFamily: "Tajawal-Medium",

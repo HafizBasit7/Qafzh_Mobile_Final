@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
     width: 45,
     height: 50,
     borderWidth: 1,
-    borderColor: '#02ff04',
+    borderColor: '#2e7d32',
     borderRadius: 8,
     fontSize: 20,
     fontWeight: 'bold',
@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#f8f9fa'
   },
   verifyButton: {
-    backgroundColor: '#02ff04',
+    backgroundColor: '#2e7d32',
     padding: 15,
     borderRadius: 8,
     width: '80%',

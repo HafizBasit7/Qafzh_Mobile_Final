@@ -37,6 +37,16 @@ export default function LoginScreen({ navigation }) {
     }
   }, [isAuthenticated, navigation]);
 
+
+  const handleBack = () => {
+    navigation.navigate('MainStack')
+    // if (navigation.canGoBack()) {
+    //   navigation.goBack();
+    // } else {
+    //   navigation.navigate('MainStack'); // or a more appropriate screen
+    // }
+  };
+  
   const handleLogin = async () => {
     const phone = formData.phone.trim();
     const password = formData.password.trim();
@@ -88,6 +98,10 @@ export default function LoginScreen({ navigation }) {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <ScrollView contentContainerStyle={styles.scrollContent}>
+      <TouchableOpacity onPress={handleBack} style={styles.backButton}>
+  <Text style={styles.backText}>◀ رجوع</Text>
+</TouchableOpacity>
+
         <View style={styles.content}>
           <Text style={styles.title}>مرحباً بعودتك</Text>
           <Text style={styles.subtitle}>سجل دخولك للمتابعة</Text>
@@ -205,14 +219,26 @@ const styles = StyleSheet.create({
     textAlign: 'right',
   },
   button: {
-    backgroundColor: '#02ff04',
+    backgroundColor: '#2e7d32',
     borderRadius: 12,
     padding: 16,
     alignItems: 'center',
     marginTop: 8,
   },
+  backButton: {
+    position: 'absolute',
+    top: 40,
+    left: 24,
+    zIndex: 10,
+  },
+  
+  backText: {
+    fontSize: 16,
+    fontFamily: 'Tajawal-Bold',
+    color: '#2e7d32',
+  },  
   buttonDisabled: {
-    backgroundColor: '#94A3B8',
+    // backgroundColor: '#94A3B8',
   },
   buttonText: {
     color: '#FFFFFF',
@@ -229,7 +255,7 @@ const styles = StyleSheet.create({
     color: '#64748B',
   },
   registerHighlight: {
-    color: '#02ff04',
+    color: '#2e7d32',
     fontFamily: 'Tajawal-Bold',
   },
 });

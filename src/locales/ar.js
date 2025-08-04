@@ -26,6 +26,8 @@ export default {
     APPLY_FILTERS: "تطبيق الفلاتر",
     RESET: "إعادة تعيين",
     VERIFIED: "موثوق",
+    NOT_VERIFIED:"لم يتم التحقق",
+    PENDING:"قيدالمراجعة",
     VERIFIED_STORE: "متجر موثوق",
     CALL: "اتصال",
     CALL_STORE: "اتصال بالمتجر",
@@ -37,6 +39,7 @@ export default {
     SUCCESS: "نجاح",
     BACK: "رجوع",
     submitting: "جاري النشر...",
+    
   },
   AUTH: {
     VERIFY_PHONE: "تحقق من رقم الهاتف",
@@ -67,8 +70,17 @@ export default {
       "يجب أن تحتوي كلمة المرور على حرف كبير، رقم، ورمز خاص",
     REGISTRATION_FAILED: "فشل في عملية التسجيل",
     IMAGE_UPLOAD_FAILED: "فشل في تحميل الصورة",
+    UPLOAD_PHOTO: "تحميل الصور"
+
+  },
+  "MY_PRODUCTS": {
+    "TITLE": "منتجاتي",
+    "EMPTY_TITLE": "لا توجد منتجات",
+    "EMPTY_MESSAGE": "لم تقم بنشر أي منتجات بعد. ابدأ بإضافة منتجك الأول!",
+    "ADD_PRODUCT": "إضافة منتج"
   },
   MARKETPLACE: {
+    "UNTITLED_PRODUCT": "منتج بدون عنوان",
     NO_PRODUCTS: "لا توجد منتجات متاحة",
     NO_SHOPS: "لا توجد متاجر متاحة",
     NO_ENGINEERS: "لا توجد مهندسين متاحين",
@@ -348,6 +360,7 @@ export default {
     negotiable: "قابل للتفاوض",
     featured: "مميز",
     whatsapp: "واتساب",
+    "notSpecified": "غير محدد"
   },
   LOADING: {
     FETCHING_PRODUCTS: "جاري تحميل المنتجات...",

@@ -202,7 +202,7 @@ const styles = StyleSheet.create({
     paddingTop: 16,
   },
   callButton: {
-    backgroundColor: "#02ff04",
+    backgroundColor: "#2e7d32",
     flexDirection: "row-reverse",
     alignItems: "center",
     paddingVertical: 12,

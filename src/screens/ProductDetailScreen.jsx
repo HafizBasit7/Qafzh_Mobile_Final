@@ -211,7 +211,7 @@ export default function ProductDetailScreen() {
               <View style={styles.sellerInfo}>
                 <View style={styles.sellerText}>
                   <Text style={styles.sellerContact}>
-                    <Ionicons name="call-outline" size={14} color="#02ff04" />{" "}
+                    <Ionicons name="call-outline" size={14} color="#2e7d32" />{" "}
                     {product.phone}
                   </Text>
                   {product.whatsappPhone && (
@@ -261,7 +261,7 @@ export default function ProductDetailScreen() {
         {/* Fixed Action Bar */}
         <View style={styles.actionBar}>
           {/* <TouchableOpacity style={styles.saveButton}>
-            <Ionicons name="bookmark-outline" size={22} color="#02ff04" />
+            <Ionicons name="bookmark-outline" size={22} color="#2e7d32" />
           </TouchableOpacity> */}
 
           {product.whatsappPhone && (
@@ -323,7 +323,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingHorizontal: 16,
     paddingVertical: 12,
-    backgroundColor: "#02ff04",
+    backgroundColor: "#2e7d32",
     elevation: 4,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
@@ -427,7 +427,7 @@ const styles = StyleSheet.create({
   price: {
     fontSize: 24,
     fontFamily: "Tajawal-Bold",
-    color: "#02ff04",
+    color: "#2e7d32",
     textAlign: "right",
     marginBottom: 20,
   },
@@ -508,7 +508,7 @@ const styles = StyleSheet.create({
   sellerLocation: {
     fontSize: 13,
     fontFamily: "Tajawal-Regular",
-    color: "#02ff04",
+    color: "#2e7d32",
     textAlign: "right",
     marginTop: 4,
   },
@@ -545,7 +545,7 @@ const styles = StyleSheet.create({
   },
   primaryButton: {
     flex: 1,
-    backgroundColor: "#02ff04",
+    backgroundColor: "#2e7d32",
     flexDirection: "row-reverse",
     justifyContent: "center",
     alignItems: "center",

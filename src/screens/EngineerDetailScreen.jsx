@@ -54,7 +54,7 @@ const EngineerDetailScreen = ({ navigation, route }) => {
   const renderCertification = ({ item }) => (
     <View style={styles.certificationCard}>
       <View style={styles.certificationHeader}>
-        <MaterialIcons name="school" size={20} color="#02ff04" />
+        <MaterialIcons name="school" size={20} color="#2e7d32" />
         <Text style={styles.certificationName}>{item.name}</Text>
       </View>
       <Text style={styles.certificationDetail}>{item.issuedBy}</Text>
@@ -192,17 +192,17 @@ const EngineerDetailScreen = ({ navigation, route }) => {
           <Text style={styles.sectionTitle}>{t("ENGINEER.info")}</Text>
 
           <View style={styles.infoCard}>
-            <View style={styles.detailRow}>
-              <MaterialIcons name="location-on" size={20} color="#02ff04" />
+            {/* <View style={styles.detailRow}>
+              <MaterialIcons name="location-on" size={20} color="#2e7d32" />
               <View style={styles.detailTextContainer}>
                 <Text style={styles.detailText}>
                   {engineer.address}, {engineer.city}, {engineer.governorate}
                 </Text>
               </View>
-            </View>
+            </View> */}
 
             <View style={styles.detailRow}>
-              <MaterialIcons name="phone" size={20} color="#02ff04" />
+              <MaterialIcons name="phone" size={20} color="#2e7d32" />
               <View style={styles.detailTextContainer}>
                 <Text style={styles.detailText}>{engineer.phone}</Text>
               </View>
@@ -220,7 +220,7 @@ const EngineerDetailScreen = ({ navigation, route }) => {
             )}
 
             <View style={styles.detailRow}>
-              <MaterialIcons name="email" size={20} color="#02ff04" />
+              <MaterialIcons name="email" size={20} color="#2e7d32" />
               <View style={styles.detailTextContainer}>
                 <Text style={styles.detailText}>{engineer.email}</Text>
               </View>
@@ -228,7 +228,7 @@ const EngineerDetailScreen = ({ navigation, route }) => {
 
             {engineer.notes && (
               <View style={styles.detailRow}>
-                <MaterialIcons name="notes" size={20} color="#02ff04" />
+                <MaterialIcons name="notes" size={20} color="#2e7d32" />
                 <View style={styles.detailTextContainer}>
                   <Text style={styles.detailText}>{engineer.notes}</Text>
                 </View>
@@ -263,7 +263,7 @@ const EngineerDetailScreen = ({ navigation, route }) => {
                       <MaterialCommunityIcons
                         name="cash"
                         size={20}
-                        color="#02ff04"
+                        color="#2e7d32"
                       />
                       <View style={styles.detailTextContainer}>
                         <Text style={styles.detailText}>
@@ -277,7 +277,7 @@ const EngineerDetailScreen = ({ navigation, route }) => {
                       <MaterialIcons
                         name="description"
                         size={20}
-                        color="#02ff04"
+                        color="#2e7d32"
                       />
                       <View style={styles.detailTextContainer}>
                         <Text style={styles.detailText}>
@@ -292,7 +292,7 @@ const EngineerDetailScreen = ({ navigation, route }) => {
                   <MaterialCommunityIcons
                     name="cash"
                     size={20}
-                    color="#02ff04"
+                    color="#2e7d32"
                   />
                   <View style={styles.detailTextContainer}>
                     <Text style={styles.detailText}>{engineer.experience}</Text>
@@ -444,7 +444,7 @@ const styles = StyleSheet.create({
   },
   callButton: {
     flex: 1,
-    backgroundColor: "#02ff04",
+    backgroundColor: "#2e7d32",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
@@ -588,7 +588,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   retryButton: {
-    backgroundColor: "#02ff04",
+    backgroundColor: "#2e7d32",
     paddingHorizontal: 24,
     paddingVertical: 12,
     borderRadius: 8,

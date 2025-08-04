@@ -62,6 +62,8 @@ const ProductSubmissionScreen = () => {
 
   // State for available cities based on selected governorate
   const [availableCities, setAvailableCities] = useState([]);
+
+  
   
   // Check auth when screen is focused
   useFocusEffect(
@@ -127,10 +129,8 @@ const ProductSubmissionScreen = () => {
     { label: 'لوح شمسي', value: 'Panel' },
     { label: 'انفرتر', value: 'Inverter' },
     { label: 'بطارية', value: 'Battery' },
+    { label: 'قواعدألواح', value: 'Panel bases' },
     { label: 'اكسسوار', value: 'Accessory' },
-    { label: 'كابل', value: 'Cable' },
-    { label: 'متحكم', value: 'Controller' },
-    { label: 'شاشة مراقبة', value: 'Monitor' },
     { label: 'أخرى', value: 'Other' }
   ];
 
@@ -140,6 +140,35 @@ const ProductSubmissionScreen = () => {
     { label: 'يحتاج إصلاح', value: 'Needs Repair' },
     { label: 'مُجدد', value: 'Refurbished' }
   ];
+
+  const takePhoto = async () => {
+    const { status } = await ImagePicker.requestCameraPermissionsAsync();
+    if (status !== 'granted') {
+      showWarning('إذن مطلوب', 'نحتاج إذن لاستخدام الكاميرا');
+      return;
+    }
+  
+    const result = await ImagePicker.launchCameraAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: false,
+      quality: 0.8,
+    });
+  
+    if (!result.canceled && result.assets && result.assets.length > 0) {
+      try {
+        const imageUrl = await uploadImage(result.assets[0], result.assets[0].fileName || 'camera_image.jpg');
+        setFormData((prevData) => ({
+          ...prevData,
+          images: [...(prevData.images || []), imageUrl],
+        }));
+        showSuccess('تم الرفع', 'تم التقاط الصورة ورفعها بنجاح');
+      } catch (error) {
+        showError('خطأ', 'فشل رفع الصورة من الكاميرا');
+        console.error('Upload error:', error);
+      }
+    }
+  };
+  
 
   const pickImage = async () => {
     try {
@@ -151,7 +180,7 @@ const ProductSubmissionScreen = () => {
 
       let result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true,
+        allowsEditing: false,
         aspect: [4, 3],
         quality: 0.8,
         allowsMultipleSelection: false,
@@ -224,9 +253,16 @@ const ProductSubmissionScreen = () => {
         price: parseFloat(formData.price),
         userId: currentUser.id || currentUser?._id
       });
+
+      showSuccess(
+        "تم نشر المنتج",
+        "تمت إضافة المنتج بنجاح إلى السوق"
+      );
       
       // Success is handled by the mutation's onSuccess callback
-      navigation.goBack();
+      setTimeout(() => {
+        navigation.goBack();
+      }, 2000); // Wait 2 seconds before navigating back
     } catch (error) {
       // Error is handled by the mutation's onError callback
       console.error('Submission error:', error);
@@ -415,10 +451,10 @@ const ProductSubmissionScreen = () => {
                 onValueChange={(itemValue) => setFormData({...formData, currency: itemValue})}
                 style={styles.picker}
               >
-                <Picker.Item label="ريال يمني" value="YER" />
-                <Picker.Item label="دولار" value="USD" />
-                <Picker.Item label="ريال سعودي" value="SAR" />
-                <Picker.Item label="يورو" value="EUR" />
+                <Picker.Item label="ريال يمني شمال" value="YER" />
+                <Picker.Item label="ريال يمني جنوب" value="USD" />
+                {/* <Picker.Item label="ريال سعودي" value="SAR" />
+                <Picker.Item label="يورو" value="EUR" /> */}
               </Picker>
             </View>
           </View>
@@ -527,6 +563,11 @@ const ProductSubmissionScreen = () => {
           <AntDesign name="plus" size={20} color={colors.primary} />
           <Text style={styles.imagePickerText}>إضافة صورة</Text>
         </TouchableOpacity>
+
+        <TouchableOpacity style={styles.imagePickerButton} onPress={takePhoto}>
+    <Ionicons name="camera-outline" size={20} color={colors.primary} />
+    <Text style={styles.imagePickerText}>الكاميرا</Text>
+  </TouchableOpacity>
 
         <View style={styles.imageGrid}>
           {(formData.images && Array.isArray(formData.images)) ? formData.images.map((image, index) => (

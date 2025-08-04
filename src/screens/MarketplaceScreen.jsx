@@ -33,6 +33,7 @@ import { useDebounce } from "../hooks/useDebounce";
 import { searchAPI } from "../services/api";
 import LoadingSpinner from "../components/common/LoadingSpinner";
 import Logo from "../../assets/images/Logo.png"
+import { Picker } from '@react-native-picker/picker';
 import {
   MaterialIcons,
   FontAwesome,
@@ -142,8 +143,11 @@ const PRODUCT_TYPES = [
   { id: "Panel", name: "ألواح شمسية", icon: "solar-panel" },
   { id: "Inverter", name: "انفرترات", icon: "flash" },
   { id: "Battery", name: "بطاريات", icon: "battery" },
-  // { id: "Accessory", name: "اكسسوارات", icon: "cable" },
+  { id: "Panel bases", name: "قواعد ألواح", icon: "format-align-bottom" }, // new
+  { id: "Accessory", name: "اكسسوارات", icon: "tools" },
+  { id: "Other", name: "أخرى", icon: "shape" }, // new
 ];
+
 
 export default function MarketplaceScreen({ navigation }) {
   const { t } = useTranslation();
@@ -175,11 +179,11 @@ export default function MarketplaceScreen({ navigation }) {
           style={styles.governorateFilterButton}
           onPress={() => setShowGovernorateModal(true)}
         >
-          <MaterialIcons name="location-on" size={18} color="#02ff04" />
+          <MaterialIcons name="location-on" size={18} color="#2e7d32" />
           <Text style={styles.governorateFilterText}>
             {filters.governorate || "كل المحافظات"}
           </Text>
-          <MaterialIcons name="arrow-drop-down" size={20} color="#02ff04" />
+          <MaterialIcons name="arrow-drop-down" size={20} color="#2e7d32" />
         </TouchableOpacity>
       </View>
     );
@@ -231,7 +235,7 @@ export default function MarketplaceScreen({ navigation }) {
                 {item.name}
               </Text>
               {filters.governorate === item.name && (
-                <MaterialIcons name="check" size={20} color="#02ff04" />
+                <MaterialIcons name="check" size={20} color="#2e7d32" />
               )}
             </TouchableOpacity>
           )}
@@ -490,7 +494,7 @@ export default function MarketplaceScreen({ navigation }) {
     if (!activeData.hasNextPage) return null;
     return (
       <View style={styles.footerLoader}>
-        <ActivityIndicator size="small" color="#02ff04" />
+        <ActivityIndicator size="small" color="#2e7d32" />
       </View>
     );
   };
@@ -562,7 +566,7 @@ export default function MarketplaceScreen({ navigation }) {
   const renderHeader = () => (
     <View style={styles.headerContainer}>
       <LinearGradient
-        colors={["#02ff04", "#02ff04"]}
+        colors={["#2e7d32", "#2e7d32"]}
         style={styles.headerGradient}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 0 }}
@@ -574,7 +578,7 @@ export default function MarketplaceScreen({ navigation }) {
               <Text style={styles.title}>السوق الشمسي</Text>
             </View>
 
-            <TouchableOpacity
+            {/* <TouchableOpacity
               style={styles.locationTag}
               onPress={() => setShowGovernorateModal(true)}
             >
@@ -582,7 +586,7 @@ export default function MarketplaceScreen({ navigation }) {
               <Text style={styles.locationText} numberOfLines={1}>
                 {selectedLocation}
               </Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
 
 
@@ -607,7 +611,7 @@ export default function MarketplaceScreen({ navigation }) {
               <MaterialIcons
                 name="search"
                 size={20}
-                color="#02ff04"
+                color="#2e7d32"
                 style={styles.searchIcon}
               />
             </View>
@@ -632,7 +636,7 @@ export default function MarketplaceScreen({ navigation }) {
                     <MaterialCommunityIcons
                       name={item.icon}
                       size={18}
-                      color={activeTab === item.id ? "#FFFFFF" : "#02ff04"}
+                      color={activeTab === item.id ? "#FFFFFF" : "#2e7d32"}
                     />
                     <Text
                       style={[
@@ -678,7 +682,7 @@ export default function MarketplaceScreen({ navigation }) {
             <Text style={styles.bannerButtonText}>تسوق الآن</Text>
           </TouchableOpacity>
         </View>
-      </LinearGradient>
+      </LinearGradient>S
     </TouchableOpacity>
   );
 
@@ -702,7 +706,7 @@ export default function MarketplaceScreen({ navigation }) {
             <MaterialCommunityIcons
               name={item.icon}
               size={20}
-              color={activeTab === item.id ? "#FFFFFF" : "#02ff04"}
+              color={activeTab === item.id ? "#FFFFFF" : "#2e7d32"}
             />
             <Text
               style={[
@@ -718,84 +722,160 @@ export default function MarketplaceScreen({ navigation }) {
     </View>
   );
 
+  // const renderProductTypeTabs = () => {
+  //   if (activeTab !== "products") return null;
+
+  //   return (
+  //     <View style={styles.productTypeTabsContainer}>
+  //       <ScrollView
+  //         horizontal
+  //         showsHorizontalScrollIndicator={false}
+  //         contentContainerStyle={styles.productTypeTabsScroll}
+  //       >
+  //         {PRODUCT_TYPES.map((type) => (
+  //           <TouchableOpacity
+  //             key={type.id}
+  //             style={[
+  //               styles.productTypeTab,
+  //               activeProductType === type.id && styles.activeProductTypeTab,
+  //             ]}
+  //             onPress={() => handleProductTypeChange(type.id)}
+  //           >
+  //             <MaterialCommunityIcons
+  //               name={type.icon}
+  //               size={18}
+  //               color={activeProductType === type.id ? "#FFFFFF" : "#2e7d32"}
+  //             />
+  //             <Text
+  //               style={[
+  //                 styles.productTypeTabText,
+  //                 activeProductType === type.id && styles.activeProductTypeTabText,
+  //               ]}
+  //             >
+  //               {type.name}
+  //             </Text>
+  //           </TouchableOpacity>
+  //         ))}
+  //       </ScrollView>
+  //     </View>
+  //   );
+  // };
+
+  // Corrected quick filters component
+  const ITEMS_PER_PAGE = 6;
+
+
   const renderProductTypeTabs = () => {
+    const [currentPage, setCurrentPage] = useState(0);
+    const flatListRef = useRef(null);
+
     if (activeTab !== "products") return null;
 
-    return (
-      <View style={styles.productTypeTabsContainer}>
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.productTypeTabsScroll}
-        >
-          {PRODUCT_TYPES.map((type) => (
-            <TouchableOpacity
-              key={type.id}
+    const totalPages = Math.ceil(PRODUCT_TYPES.length / ITEMS_PER_PAGE);
+
+    const paginatedTypes = Array.from({ length: totalPages }).map((_, i) =>
+      PRODUCT_TYPES.slice(i * ITEMS_PER_PAGE, (i + 1) * ITEMS_PER_PAGE)
+    );
+
+    const handleScroll = (event) => {
+      const page = Math.round(event.nativeEvent.contentOffset.x / width);
+      setCurrentPage(page);
+    };
+
+    const renderPage = ({ item }) => (
+      <View style={styles.gridPage}>
+        {item.map((type) => (
+          <TouchableOpacity
+            key={type.id}
+            style={[
+              styles.gridCard,
+              activeProductType === type.id && styles.activeGridCard,
+            ]}
+            onPress={() => handleProductTypeChange(type.id)}
+          >
+            <MaterialCommunityIcons
+              name={type.icon}
+              size={24}
+              color={activeProductType === type.id ? "#fff" : "#2e7d32"}
+              style={{ marginBottom: 8 }}
+            />
+            <Text
               style={[
-                styles.productTypeTab,
-                activeProductType === type.id && styles.activeProductTypeTab,
+                styles.gridCardText,
+                activeProductType === type.id && styles.activeGridCardText,
               ]}
-              onPress={() => handleProductTypeChange(type.id)}
             >
-              <MaterialCommunityIcons
-                name={type.icon}
-                size={18}
-                color={activeProductType === type.id ? "#FFFFFF" : "#02ff04"}
-              />
-              <Text
-                style={[
-                  styles.productTypeTabText,
-                  activeProductType === type.id && styles.activeProductTypeTabText,
-                ]}
-              >
-                {type.name}
-              </Text>
-            </TouchableOpacity>
+              {type.name}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+    );
+
+    return (
+      <View>
+        <FlatList
+          ref={flatListRef}
+          data={paginatedTypes}
+          renderItem={renderPage}
+          keyExtractor={(_, index) => `page-${index}`}
+          horizontal
+          pagingEnabled
+          showsHorizontalScrollIndicator={false}
+          onScroll={handleScroll}
+          scrollEventThrottle={16}
+        />
+
+        {/* Dot Pagination */}
+        <View style={styles.dotContainer}>
+          {paginatedTypes.map((_, index) => (
+            <TouchableOpacity
+              key={index}
+              onPress={() => {
+                setCurrentPage(index);
+                flatListRef.current.scrollToIndex({ index, animated: true });
+              }}
+              style={[
+                styles.dot,
+                currentPage === index && styles.activeDot,
+              ]}
+            />
           ))}
-        </ScrollView>
+        </View>
       </View>
     );
   };
 
-  // Corrected quick filters component
+
   const renderQuickFilters = () => {
     if (activeTab !== "products") return null;
-
+  
     const QUICK_FILTERS = [
       { id: "newest", name: "الأحدث" },
       { id: "price_asc", name: "السعر من الأقل" },
       { id: "price_desc", name: "السعر من الأعلى" },
       // { id: "nearby", name: "القريب منك" },
     ];
-
+  
     return (
-      <View style={styles.quickFiltersContainer}>
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.quickFiltersScroll}
+      
+      <View style={styles.quickFiltersContainerDropdown}>
+        <Picker
+          selectedValue={filters.sortBy}
+          onValueChange={(itemValue) =>
+            setFilters({ ...filters, sortBy: itemValue })
+          }
+          style={styles.picker}
+          dropdownIconColor="#2e7d32"
         >
           {QUICK_FILTERS.map((filter) => (
-            <TouchableOpacity
-              key={filter.id}
-              style={[
-                styles.quickFilter,
-                filters.sortBy === filter.id && styles.activeQuickFilter,
-              ]}
-              onPress={() => setFilters({ ...filters, sortBy: filter.id })}
-            >
-              <Text
-                style={[
-                  styles.quickFilterText,
-                  filters.sortBy === filter.id && styles.activeQuickFilterText,
-                ]}
-              >
-                {filter.name}
-              </Text>
-            </TouchableOpacity>
+            <Picker.Item key={filter.id} label={filter.name} value={filter.id} />
           ))}
-        </ScrollView>
+        </Picker>
+
+        
       </View>
+      
     );
   };
 
@@ -813,42 +893,82 @@ export default function MarketplaceScreen({ navigation }) {
     }
 
     return (
-      <Animated.View style={{ opacity: fadeAnim }}>
-        <FlatList
-          key={`${activeTab}-${activeTab === "products" ? "2" : "1"}`}
-          data={activeData.data}
-          renderItem={({ item }) => {
-            switch (activeTab) {
-              case "products":
-                return <ProductCard product={item} />;
-              case "engineers":
-                return <EngineerCard engineer={item} />;
-              case "shops":
-                return <ShopCard shop={item} />;
-              default:
-                return null;
+      <Animated.View style={{ opacity: fadeAnim, flex: 1 }}>
+        {activeTab === "products" ? (
+          // Special grid layout for products
+          <FlatList
+            key="products-grid"
+            data={activeData.data}
+            renderItem={({ item }) => <ProductCard product={item} />}
+            keyExtractor={(item) => item._id}
+            numColumns={2}
+            columnWrapperStyle={styles.columnWrapper}
+            contentContainerStyle={[
+              styles.listContent,
+              { paddingBottom: 20 } // Add extra padding
+            ]}
+            onEndReached={handleLoadMore}
+            onEndReachedThreshold={0.5}
+            ListFooterComponent={renderFooter}
+            ListEmptyComponent={renderEmptyState()}
+            initialNumToRender={10} // Render more items initially
+            maxToRenderPerBatch={10} // Increase batch size
+            windowSize={10} // Increase window size
+            removeClippedSubviews={false} // Disable clipping
+            refreshControl={
+              <RefreshControl
+                refreshing={activeData.isLoading}
+                onRefresh={activeData.refetch}
+                colors={["#2e7d32"]}
+                tintColor="#2e7d32"
+              />
             }
-          }}
-          keyExtractor={(item) => item._id || item.id}
-          numColumns={activeTab === "products" ? 2 : 1}
-          columnWrapperStyle={activeTab === "products" ? styles.columnWrapper : null}
-          contentContainerStyle={styles.listContent}
-          onEndReached={handleLoadMore}
-          onEndReachedThreshold={0.5}
-          ListFooterComponent={renderFooter}
-          refreshControl={
-            <RefreshControl
-              refreshing={activeData.isLoading}
-              onRefresh={activeData.refetch}
-              colors={["#02ff04"]}
-              tintColor="#02ff04"
-            />
-          }
-          showsVerticalScrollIndicator={false}
-        />
+            showsVerticalScrollIndicator={false}
+          />
+        ) : (
+          // Single column layout for engineers/shops
+          <FlatList
+            key={`${activeTab}-list`}
+            data={activeData.data}
+            renderItem={({ item }) => {
+              return activeTab === "engineers" ? (
+                <EngineerCard engineer={item} />
+              ) : (
+                <ShopCard shop={item} />
+              );
+            }}
+            keyExtractor={(item) => item._id}
+            contentContainerStyle={styles.listContent}
+            onEndReached={handleLoadMore}
+            onEndReachedThreshold={0.5}
+            ListFooterComponent={renderFooter}
+            ListEmptyComponent={renderEmptyState()}
+            refreshControl={
+              <RefreshControl
+                refreshing={activeData.isLoading}
+                onRefresh={activeData.refetch}
+                colors={["#2e7d32"]}
+                tintColor="#2e7d32"
+              />
+            }
+            showsVerticalScrollIndicator={false}
+          />
+        )}
       </Animated.View>
     );
   };
+
+  const renderFiltersRow = () => {
+    if (activeTab !== "products") return null;
+  
+    return (
+      <View style={styles.filtersRow}>
+        <View style={styles.governorateFilterWrapper}>{renderGovernorateFilter()}</View>
+        <View style={styles.quickFilterDropdownWrapper}>{renderQuickFilters()}</View>
+      </View>
+    );
+  };
+  
 
   return (
     <SafeAreaView style={styles.safeArea} edges={["left", "right"]}>
@@ -858,11 +978,11 @@ export default function MarketplaceScreen({ navigation }) {
           ListHeaderComponent={
             <>
               {renderHeader()}
-              {renderBanner()}
+              {/* {renderBanner()} */}
               {/* {renderCategoryTabs()} */}
               {renderProductTypeTabs()}
-              {renderQuickFilters()}
-              {renderGovernorateFilter()}
+              {renderFiltersRow()}
+
             </>
           }
           ListFooterComponent={renderContent()}
@@ -870,8 +990,8 @@ export default function MarketplaceScreen({ navigation }) {
             <RefreshControl
               refreshing={activeData.isLoading}
               onRefresh={activeData.refetch}
-              colors={["#02ff04"]}
-              tintColor="#02ff04"
+              colors={["#2e7d32"]}
+              tintColor="#2e7d32"
             />
           }
           showsVerticalScrollIndicator={false}
@@ -904,6 +1024,31 @@ export default function MarketplaceScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
+  filtersRow: {
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "space-between",
+  backgroundColor: "#FFFFFF",
+  paddingHorizontal: 15,
+  paddingVertical: 10,
+  gap: 10,
+},
+
+governorateFilterWrapper: {
+  flex: 1,
+},
+
+quickFilterDropdownWrapper: {
+  flex: 1,
+  borderWidth: 1,
+  borderColor: "#D1D5DB",
+  borderRadius: 10,
+  backgroundColor: "#F3F4F6",
+  justifyContent: "center",
+  paddingLeft: 5,
+  height:33
+},
+
   safeArea: {
     flex: 1,
     backgroundColor: "#FFFFFF",
@@ -936,7 +1081,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     minHeight: 30, // Ensures consistent header height
   },
-  
+
 
   headerLeft: {
     flex: 1,
@@ -945,18 +1090,19 @@ const styles = StyleSheet.create({
   },
 
   logo: {
-    width: 64,
-    height: 64,
+    width: 54,
+    height: 54,
     marginRight: 8,
     maxHeight: 64,
     resizeMode: 'contain',
   },
-  
+
 
   title: {
-    fontSize: 25,
+    fontSize: 30,
     fontWeight: 'bold',
     color: '#fff',
+    marginLeft:130
   },
 
   searchRow: {
@@ -1017,7 +1163,7 @@ const styles = StyleSheet.create({
   categoryButton: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#02ff04",
+    backgroundColor: "#2e7d32",
     paddingHorizontal: 15,
     paddingVertical: 5,
     borderRadius: 20,
@@ -1027,7 +1173,7 @@ const styles = StyleSheet.create({
   },
   activeCategoryButton: {
     backgroundColor: "#FFFFFF",
-    borderColor: "#02ff04",
+    borderColor: "#2e7d32",
   },
   categoryButtonText: {
     fontSize: 16,
@@ -1036,7 +1182,7 @@ const styles = StyleSheet.create({
     fontFamily: "Tajawal-Medium",
   },
   activeCategoryButtonText: {
-    color: "#02ff04",
+    color: "#2e7d32",
   },
   productTypeTabsContainer: {
     paddingVertical: 12,
@@ -1064,8 +1210,8 @@ const styles = StyleSheet.create({
     borderColor: "#E5E7EB",
   },
   activeProductTypeTab: {
-    backgroundColor: "#02ff04",
-    borderColor: "#02ff04",
+    backgroundColor: "#2e7d32",
+    borderColor: "#2e7d32",
   },
   productTypeTabText: {
     fontSize: 13,
@@ -1076,36 +1222,20 @@ const styles = StyleSheet.create({
   activeProductTypeTabText: {
     color: "#FFFFFF",
   },
-  quickFiltersContainer: {
-    paddingVertical: 10,
-    backgroundColor: "#FFFFFF",
-    borderBottomWidth: 1,
-    borderBottomColor: "#E5E7EB",
-  },
-  quickFiltersScroll: {
-    paddingHorizontal: 15,
-  },
-  quickFilter: {
-    backgroundColor: "#F3F4F6",
-    paddingHorizontal: 15,
-    paddingVertical: 5,
-    borderRadius: 20,
-    marginLeft: 10,
-    // borderWidth: 1,
-    borderColor: "#E5E7EB",
-  },
-  activeQuickFilter: {
-    backgroundColor: "#02ff04",
-    borderColor: "#02ff04",
-  },
-  quickFilterText: {
+  // quickFiltersContainerDropdown: {
+  //   backgroundColor: "#FFFFFF",
+  //   paddingHorizontal: 15,
+  //   paddingVertical: 5,
+  //   // borderBottomWidth: 1,
+  // //   borderBottomColor: "#E5E7EB",
+  // },
+  
+  picker: {
     fontSize: 13,
     color: "#4B5563",
     fontFamily: "Tajawal-Medium",
   },
-  activeQuickFilterText: {
-    color: "#FFFFFF",
-  },
+  
   bannerContainer: {
     height: 150,
     marginHorizontal: 12,
@@ -1156,7 +1286,7 @@ const styles = StyleSheet.create({
     alignSelf: "flex-end",
   },
   bannerButtonText: {
-    color: "#02ff04",
+    color: "#2e7d32",
     fontFamily: "Tajawal-Bold",
     fontSize: 15,
   },
@@ -1208,7 +1338,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
   retryButton: {
-    backgroundColor: "#02ff04",
+    backgroundColor: "#2e7d32",
     paddingHorizontal: 24,
     paddingVertical: 12,
     borderRadius: 8,
@@ -1230,7 +1360,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#F3F4F6",
     paddingVertical: 5,
-    paddingHorizontal: 15,
+    paddingHorizontal: 5,
     borderRadius: 10,
     borderWidth: 1,
     borderColor: "#D1D5DB",
@@ -1290,11 +1420,66 @@ const styles = StyleSheet.create({
     color: "#1F2937",
   },
   selectedGovernorateItemText: {
-    color: "#02ff04",
+    color: "#2e7d32",
   },
   governorateItemSeparator: {
     height: 1,
     backgroundColor: "#E5E7EB",
     marginHorizontal: 8,
   },
+  gridPage: {
+    width: width,
+    flexDirection: "row",
+    flexWrap: "wrap",
+    // justifyContent: "center",
+    paddingVertical: 5,
+  },
+
+  gridCard: {
+    width: "30%",
+    margin: "1.66%",
+    backgroundColor: "#f1f5f9",
+    borderRadius: 10,
+    paddingVertical: 6,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  activeGridCard: {
+    backgroundColor: "#2e7d32",
+  },
+
+  gridCardText: {
+    fontSize: 13,
+    color: "#2e7d32",
+    textAlign: "center",
+  },
+
+  activeGridCardText: {
+    color: "#fff",
+  },
+
+  dotContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 8,
+  },
+
+  dot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: "#ccc",
+    marginHorizontal: 5,
+  },
+
+  activeDot: {
+    backgroundColor: "#2e7d32",
+    width: 10,
+    height: 10,
+  },
+
+
+
 });

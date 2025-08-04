@@ -8,22 +8,20 @@ import {
   ActivityIndicator,
   RefreshControl,
   SafeAreaView,
-  Dimensions
+  Dimensions,
+  Image,
+  Platform
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
-import { MaterialIcons } from "@expo/vector-icons";
+import { MaterialIcons, Ionicons, Feather } from "@expo/vector-icons";
 import { useAuth } from "../../hooks/useAuth";
 import { useProducts } from "../../hooks/useProducts";
-import ProductCard from "../../components/ProductCard";
 import EmptyState from "../../components/EmptyState";
 import CustomModal from "../../components/common/CustomModal";
-
+import PhoneLink from "../../components/PhoneLink";
 
 const { width } = Dimensions.get('window');
-  const CARD_MARGIN = 4;
-  const CARD_WIDTH = (width - (CARD_MARGIN * 3)) / 2;
-
 
 const MyProductsScreen = () => {
   const { t } = useTranslation();
@@ -31,9 +29,7 @@ const MyProductsScreen = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState(null);
-  console.log('🔐 MyProductsScreen - Requesting user products via token');
   
-  // Use user_products flag to get only authenticated user's products
   const {
     products,
     totalCount,
@@ -61,67 +57,97 @@ const MyProductsScreen = () => {
     });
   };
 
-  // const handleDelete = (productId) => {
-  //   Alert.alert(
-  //     "تأكيد الحذف", 
-  //     "هل أنت متأكد من حذف هذا المنتج؟", 
-  //     [
-  //       {
-  //         text: "إلغاء",
-  //         style: "cancel",
-  //       },
-  //       {
-  //         text: "حذف",
-  //         onPress: () => {
-  //           if (deleteProduct) {
-  //             deleteProduct(productId);
-  //           } else {
-  //             console.error('Delete function not available');
-  //           }
-  //         },
-  //         style: "destructive",
-  //       },
-  //     ]
-  //   );
-  // };
+  const handleDelete = (productId) => {
+    setSelectedProductId(productId);
+    setDeleteModalVisible(true);
+  };
 
-const handleDelete = (productId) => {
-  console.log('🔐 MyProductsScreen - Deleting product:', productId);
-  setSelectedProductId(productId);
-  setDeleteModalVisible(true);
-};
+  const confirmDelete = () => {
+    if (deleteProduct && selectedProductId) {
+      deleteProduct(selectedProductId);
+    }
+    setDeleteModalVisible(false);
+  };
 
-const confirmDelete = () => {
-  if (deleteProduct && selectedProductId) {
-    deleteProduct(selectedProductId);
-  }
-  setDeleteModalVisible(false);
-};
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat("ar-YE", {
+      style: "decimal",  
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(price);
+  };
 
-  const renderItem = ({ item, index  }) => (
-    <View style={[styles.productContainer,  index % 2 === 0 ? { marginRight: CARD_MARGIN } : null ]}>
-      <TouchableOpacity onPress={() => handleProductPress(item)} activeOpacity={0.95}>
-        <ProductCard product={item} />
-      </TouchableOpacity>
-      
-      <View style={styles.cardOverlay}>
-        <View style={styles.statusContainer}>
-          <View style={[
-            styles.statusBadge, 
-            { backgroundColor: item.status === 'approved' ? '#10B981' : '#F59E0B' }
-          ]}>
-            <Text style={styles.statusText}>
-              {item.status === 'approved' ? 'مقبول' : 'قيد المراجعة'}
+  const renderItem = ({ item }) => (
+    <View style={styles.cardContainer}>
+      <TouchableOpacity 
+        style={styles.cardContent}
+        onPress={() => handleProductPress(item)}
+        activeOpacity={0.9}
+      >
+        <View style={styles.cardImageWrapper}>
+          <Image
+            source={{ uri: item.images?.[0] || "https://via.placeholder.com/300" }}
+            style={styles.cardImage}
+          />
+        </View>
+        
+        <View style={styles.textContent}>
+          <View style={styles.topRow}>
+            <Text style={styles.cardTitle} numberOfLines={1}>
+              {item.name || t("MARKETPLACE.UNTITLED_PRODUCT")}
+            </Text>
+
+            {item.brand && (
+              <Text style={styles.cardBrand} numberOfLines={1}>
+                {item.brand}
+              </Text>
+            )}
+
+            <Text style={styles.cardPrice}>
+              {formatPrice(item.price)} {t("CURRENCIES.YER")}
             </Text>
           </View>
+
+          <View style={styles.middleRow}>
+            {(item.governorate || item.city) && (
+              <View style={styles.metaRow}>
+                <Ionicons name="location-outline" size={12} color="#6B7280" />
+                <Text style={styles.metaText} numberOfLines={1}>
+                  {[item.city, item.governorate].filter(Boolean).join(", ")}
+                </Text>
+              </View>
+            )}
+
+            {item.phone && (
+              <PhoneLink
+                phoneNumber={item.phone}
+                style={styles.phoneLink}
+                textStyle={styles.phoneText}
+                iconSize={12}
+                showIcon={true}
+              />
+            )}
+          </View>
+        </View>
+      </TouchableOpacity>
+
+      {/* Overlay buttons */}
+      <View style={styles.overlayButtons}>
+        <View style={[
+          styles.statusBadge, 
+          { backgroundColor: item.status === 'approved' ? '#10B981' : '#F59E0B' }
+        ]}>
+          <Text style={styles.statusText}>
+            {item.status === 'approved' ? t("COMMON.VERIFIED") : t("COMMON.PENDING")}
+          </Text>
         </View>
         
         <TouchableOpacity
-          style={styles.deleteIcon}
+          style={styles.deleteButton}
           onPress={() => handleDelete(item._id)}
           disabled={isDeleting}
         >
-           {isDeleting && selectedProductId === item._id ? (
+          {isDeleting && selectedProductId === item._id ? (
             <ActivityIndicator size="small" color="#FFFFFF" />
           ) : (
             <MaterialIcons name="delete" size={20} color="#FFFFFF" />
@@ -136,7 +162,7 @@ const confirmDelete = () => {
     return (
       <View style={styles.footer}>
         {isFetchingNextPage && (
-          <ActivityIndicator size="large" color="#02ff04" />
+          <ActivityIndicator size="large" color="#1877f2" />
         )}
       </View>
     );
@@ -145,7 +171,7 @@ const confirmDelete = () => {
   if (isLoading && !refreshing) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#02ff04" />
+        <ActivityIndicator size="large" color="#1877f2" />
       </View>
     );
   }
@@ -154,57 +180,80 @@ const confirmDelete = () => {
     return (
       <EmptyState
         icon="error"
-        title="خطأ"
-        message={error?.message || "حدث خطأ أثناء تحميل المنتجات"}
-        actionText="إعادة المحاولة"
+        title={t("COMMON.ERROR")}
+        message={error?.message || t("COMMON.DEFAULT_ERROR_MESSAGE")}
+        actionText={t("COMMON.RETRY")}
         onAction={refetch}
       />
     );
   }
 
   if (!products || products.length === 0) {
-    return (
+    
+      return (
+        <SafeAreaView style={styles.safeArea}>
+          <View style={styles.container}>
+            <View style={styles.header}>
+              <TouchableOpacity 
+                style={styles.backButton}
+                onPress={() => navigation.goBack()}
+              >
+                <Feather name="arrow-right" size={24} color="#1E293B" />
+              </TouchableOpacity>
+              <Text style={styles.headerTitle}>
+                {t("MY_PRODUCTS.TITLE")}
+              </Text>
+            </View>
       <EmptyState
         icon="inventory"
-        title="لا توجد منتجات"
-        message="لم تقم بنشر أي منتجات بعد. ابدأ بإضافة منتجك الأول!"
-        actionText="إضافة منتج"
+        title={t("MY_PRODUCTS.EMPTY_TITLE")}
+        message={t("MY_PRODUCTS.EMPTY_MESSAGE")}
+        actionText={t("MY_PRODUCTS.ADD_PRODUCT")}
         onAction={() => navigation.navigate("ProductSubmission")}
       />
+       </View>
+    </SafeAreaView>
     );
   }
 
   return (
     <SafeAreaView style={styles.safeArea}>
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>منتجاتي
-        <Text style={styles.productCount}> ({totalCount})</Text>
-        </Text>
-      </View>
-      
-      <FlatList
-        data={products}
-        columnWrapperStyle={styles.columnWrapper}
-        renderItem={renderItem}
-        keyExtractor={(item) => item._id}
-        numColumns={2}
-        contentContainerStyle={styles.listContent}
-        onEndReached={() => hasNextPage && fetchNextPage()}
-        onEndReachedThreshold={0.5}
-        ListFooterComponent={renderFooter}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={handleRefresh}
-            colors={["#02ff04"]}
-            tintColor="#02ff04"
-          />
-        }
-        showsVerticalScrollIndicator={false}
-      />
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <TouchableOpacity 
+            style={styles.backButton}
+            onPress={() => navigation.goBack()}
+          >
+            <Feather name="arrow-right" size={24} color="#1E293B" />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>
+            {t("MY_PRODUCTS.TITLE")}
+            <Text style={styles.productCount}> ({totalCount})</Text>
+          </Text>
+        </View>
+        
+        <FlatList
+          data={products}
+          renderItem={renderItem}
+          keyExtractor={(item) => item._id}
+          contentContainerStyle={styles.listContent}
+          onEndReached={() => hasNextPage && fetchNextPage()}
+          onEndReachedThreshold={0.5}
+          ListFooterComponent={renderFooter}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={handleRefresh}
+              colors={["#1877f2"]}
+              tintColor="#1877f2"
+            />
+          }
+          showsVerticalScrollIndicator={false}
+          // Added key to prevent numColumns warning
+          key="single-column-list"
+        />
 
-<CustomModal
+        <CustomModal
           visible={deleteModalVisible}
           type="error"
           title={t('deleteConfirmation.title')}
@@ -214,8 +263,7 @@ const confirmDelete = () => {
           onAction={confirmDelete}
           autoClose={false}
         />
-
-    </View>
+      </View>
     </SafeAreaView>
   );
 };
@@ -236,18 +284,22 @@ const styles = StyleSheet.create({
     backgroundColor: '#F8FAFC'
   },
   header: {
-    padding: 20,
+    padding: 16,
     backgroundColor: "#FFFFFF",
     borderBottomWidth: 1,
-    borderBottomColor: "#EDF2F7",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 6,
-    elevation: 1,
+    borderBottomColor: "#E5E7EB",
+    flexDirection: 'row-reverse',
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'relative',
+  },
+  backButton: {
+    position: 'absolute',
+    right: 16,
+    padding: 8,
   },
   headerTitle: {
-    fontSize: 22,
+    fontSize: 20,
     fontFamily: 'Tajawal-Bold',
     color: "#1E293B",
     textAlign: 'center'
@@ -257,66 +309,116 @@ const styles = StyleSheet.create({
     fontFamily: 'Tajawal-Medium'
   },
   listContent: {
-    paddingHorizontal: CARD_MARGIN, // Only side margins
-    paddingTop: 12,
-    paddingBottom: 24,
+    paddingBottom: 20,
   },
-  columnWrapper: {
-    justifyContent: 'space-between',
-    marginBottom: CARD_MARGIN,
-  },
-  productContainer: {
-    // width: CARD_WIDTH,
-    // backgroundColor: "#FFFFFF",
-    borderRadius: 12,
-    overflow: "hidden",
-    // shadowColor: "#000",
-    // shadowOffset: { width: 0, height: 2 },
-    // shadowOpacity: 0.08,
-    // shadowRadius: 6,
-    // elevation: 3,
-    // borderWidth: 1,
-    borderColor: "#F1F5F9",
-  },
-  productCard: {
-    width: '100%',
-  },
-  cardOverlay: {
-    position: "absolute",
-    top: 12,
-    left: 12,
-    right: 12,
-    flexDirection: "row",
-    justifyContent: "space-between",
+  cardContainer: {
+    flexDirection: "row-reverse",
     alignItems: "center",
+    backgroundColor: "#FFFFFF",
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: "#E5E7EB",
+    position: 'relative',
+  },
+  cardContent: {
+    flexDirection: "row-reverse",
+    alignItems: "center",
+    flex: 1,
+  },
+  cardImageWrapper: {
+    width: 100,
+    height: 95,
+    borderRadius: 8,
+    overflow: "hidden",
+    backgroundColor: "#F1F5F9",
+    marginLeft: 12,
+  },
+  cardImage: {
+    width: "100%",
+    height: "100%",
+    resizeMode: "cover",
+  },
+  textContent: {
+    flex: 1,
+  },
+  topRow: {
+    marginBottom: 4,
+  },
+  cardTitle: {
+    fontSize: 18,
+    fontFamily: "Tajawal-Bold",
+    color: "#1877f2",
+    marginBottom: 4,
+    textAlign: "right",
+  },
+  cardBrand: {
+    fontSize: 12,
+    fontFamily: "Tajawal-Regular",
+    color: "#6B7280",
+    marginBottom: 2,
+    textAlign: "right",
+  },
+  cardPrice: {
+    fontSize: 15,
+    fontFamily: "Tajawal-Bold",
+    color: "#1E293B",
+    marginBottom: 4,
+    textAlign: "right",
+  },
+  middleRow: {
+    marginTop: 4,
+  },
+  metaRow: {
+    flexDirection: "row-reverse",
+    alignItems: "center",
+    gap: 4,
+    marginBottom: 2,
+  },
+  metaText: {
+    fontSize: 12,
+    fontFamily: "Tajawal-Regular",
+    color: "#6B7280",
+    textAlign: "right",
+    flexShrink: 1,
+  },
+  phoneLink: {
+    flexDirection: "row-reverse",
+    alignItems: "center",
+    marginTop: 4,
+  },
+  phoneText: {
+    fontSize: 12,
+    fontFamily: "Tajawal-Medium",
+    color: "#4B5563",
+    textAlign: "right",
+  },
+  overlayButtons: {
+    position: 'absolute',
+    left: 16,
+    top: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
   },
   statusBadge: {
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    borderRadius: 20,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 3,
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    borderRadius: 12,
+    backgroundColor: '#F59E0B',
   },
   statusText: {
-    color: "#FFFFFF",
-    fontSize: 12,
-    fontFamily: 'Tajawal-Bold',
-    includeFontPadding: false,
+    fontSize: 11,
+    fontFamily: 'Tajawal-Medium',
+    color: '#FFFFFF',
   },
-  deleteIcon: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+  deleteButton: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
     backgroundColor: "rgba(239, 68, 68, 0.9)",
     justifyContent: "center",
     alignItems: "center",
-    shadowColor: "#991B1B",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    elevation: 4,
   },
   footer: {
     padding: 20,

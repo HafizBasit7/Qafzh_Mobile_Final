@@ -61,12 +61,14 @@ export default function ShopCard({ shop }) {
             >
               {shop.name}
             </Text>
-            {shop.isVerified && (
-              <View style={styles.verificationBadge}>
-                <Ionicons name="checkmark-circle" size={14} color="#10B981" />
-                <Text style={styles.verifiedText}>{t("COMMON.VERIFIED")}</Text>
-              </View>
-            )}
+            
+             <View style={shop.isVerified ? styles.verificationBadge : styles.unverifiedBadge}>
+             <Text style={shop.isVerified ? styles.verifiedText : styles.unverifiedText}>
+               {shop.isVerified ? t("COMMON.VERIFIED") : t("COMMON.NOT_VERIFIED")}
+             </Text>
+           </View>
+           
+            
           </View>
           <View style={styles.locationContainer}>
             <Ionicons name="location-outline" size={16} color="#64748B" />
@@ -157,6 +159,23 @@ const styles = StyleSheet.create({
     color: "#10B981",
     marginRight: 4,
   },
+  unverifiedBadge: {
+    flexDirection: "row-reverse",
+    alignItems: "center",
+    backgroundColor: "#64748B", // light gray background
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 8,
+    marginRight: 8,
+  },
+  
+  unverifiedText: {
+    fontSize: 12,
+    fontFamily: "Tajawal-Medium",
+    color: "#ECFDF5", // gray text
+    marginRight: 4,
+  },
+  
   locationContainer: {
     flexDirection: "row-reverse",
     alignItems: "center",
@@ -196,7 +215,7 @@ const styles = StyleSheet.create({
     paddingTop: 16,
   },
   callButton: {
-    backgroundColor: "#02ff04",
+    backgroundColor: "#2e7d32",
     flexDirection: "row-reverse",
     alignItems: "center",
     paddingVertical: 12,

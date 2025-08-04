@@ -37,7 +37,7 @@ const RegisterScreen = ({ navigation, route }) => {
     try {
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true,
+        allowsEditing: false,
         aspect: [1, 1],
         quality: 0.8,
       });
@@ -54,6 +54,15 @@ const RegisterScreen = ({ navigation, route }) => {
     }
   };
 
+  const handleBack = () => {
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+    } else {
+      navigation.navigate('MainStack'); // or a more appropriate screen
+    }
+  };
+
+
   const handleSubmit = async () => {
     if (!formData.name.trim()) {
       showModal({
@@ -65,7 +74,7 @@ const RegisterScreen = ({ navigation, route }) => {
       });
       return;
     }
-  
+
     if (!formData.phone.trim()) {
       showModal({
         type: "error",
@@ -76,7 +85,7 @@ const RegisterScreen = ({ navigation, route }) => {
       });
       return;
     }
-  
+
     if (!formData.password || formData.password.length < 6) {
       showModal({
         type: "error",
@@ -87,7 +96,7 @@ const RegisterScreen = ({ navigation, route }) => {
       });
       return;
     }
-  
+
     const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
     if (!passwordRegex.test(formData.password)) {
       showModal({
@@ -99,10 +108,10 @@ const RegisterScreen = ({ navigation, route }) => {
       });
       return;
     }
-  
+
     try {
       await register(formData); // await register.mutateAsync
-  
+
       // Show success only if no error is thrown
       showModal({
         type: "success",
@@ -111,7 +120,7 @@ const RegisterScreen = ({ navigation, route }) => {
         autoClose: true,
         duration: 1500,
       });
-  
+
       setTimeout(() => {
         navigation.navigate("OtpVerif", {
           phone: formData.phone,
@@ -119,17 +128,17 @@ const RegisterScreen = ({ navigation, route }) => {
           isNewUser: true,
         });
       }, 1500);
-  
+
     } catch (error) {
       console.log("❌ REGISTER ERROR:", JSON.stringify(error, null, 2));
-  
+
       const message =
         error?.message ||
         error?.response?.data?.message ||
         error?.data?.message ||
         error?.error ||
         "";
-  
+
       if (message.toLowerCase().includes("already exists") || message.includes("موجود")) {
         showModal({
           type: "error",
@@ -153,30 +162,29 @@ const RegisterScreen = ({ navigation, route }) => {
       }
     }
   };
-  
-  
-  
-  
+
+
+
+
 
   return (
+
     <KeyboardAvoidingView
       style={styles.container}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
-      <ScrollView contentContainerStyle={styles.scrollContent}>
-        <View style={styles.content}>
-          {/* <TouchableOpacity
-            style={styles.backButton}
-            onPress={() => navigation.goBack()}
-          >
-            <Text style={styles.backButtonText}>←</Text>
-          </TouchableOpacity> */}
 
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        <TouchableOpacity onPress={handleBack} style={styles.backButton}>
+          <Text style={styles.backText}>◀ رجوع</Text>
+        </TouchableOpacity>
+
+        <View style={styles.content}>
           <Text style={styles.title}>إنشاء حساب</Text>
           <Text style={styles.subtitle}>يرجى ملء التفاصيل أدناه</Text>
 
           <View style={styles.form}>
-            {/* <TouchableOpacity 
+            <TouchableOpacity 
               style={styles.imageUpload}
               onPress={handleImagePick}
               disabled={isUploading}
@@ -189,13 +197,13 @@ const RegisterScreen = ({ navigation, route }) => {
               ) : (
                 <View style={styles.uploadPlaceholder}>
                   {isUploading ? (
-                    <ActivityIndicator color="#02ff04" />
+                    <ActivityIndicator color="#2e7d32" />
                   ) : (
                     <Text style={styles.uploadText}>{t('AUTH.UPLOAD_PHOTO')}</Text>
                   )}
                 </View>
               )}
-            </TouchableOpacity> */}
+            </TouchableOpacity>
 
             <View style={styles.inputContainer}>
               <Text style={styles.label}>الاسم الكامل</Text>
@@ -258,16 +266,16 @@ const RegisterScreen = ({ navigation, route }) => {
       </ScrollView>
 
       <CustomModal
-  visible={modalState.visible}
-  type={modalState.type}
-  title={modalState.title}
-  message={modalState.message}
-  onClose={hideModal}
-  actionText={modalState.actionText}
-  onAction={modalState.onAction}
-  autoClose={modalState.autoClose}
-  duration={modalState.duration}
-/>
+        visible={modalState.visible}
+        type={modalState.type}
+        title={modalState.title}
+        message={modalState.message}
+        onClose={hideModal}
+        actionText={modalState.actionText}
+        onAction={modalState.onAction}
+        autoClose={modalState.autoClose}
+        duration={modalState.duration}
+      />
 
     </KeyboardAvoidingView>
   );
@@ -282,11 +290,13 @@ const styles = StyleSheet.create({
     flexGrow: 1,
   },
   content: {
-    flex: 1,
+    // flex: 1,
     padding: 24,
+   
   },
   backButton: {
-    marginTop: 48,
+    marginTop: 38,
+    marginLeft:20,
     width: 40,
     height: 40,
     borderRadius: 20,
@@ -294,10 +304,18 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  backButtonText: {
-    fontSize: 24,
-    color: "#475569",
+  // backButton: {
+  //   position: 'absolute',
+  //   top: 40,
+  //   left: 24,
+  //   zIndex: 10,
+  // },
+  backText: {
+    fontSize: 16,
+    fontFamily: 'Tajawal-Bold',
+    color: '#2e7d32',
   },
+
   title: {
     fontSize: 28,
     fontFamily: "Tajawal-Bold",
@@ -371,7 +389,7 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   button: {
-    backgroundColor: "#02ff04",
+    backgroundColor: "#2e7d32",
     borderRadius: 12,
     padding: 16,
     alignItems: "center",
