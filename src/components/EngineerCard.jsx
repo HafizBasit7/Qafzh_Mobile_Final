@@ -2,7 +2,9 @@ import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
-
+import { I18nManager } from 'react-native';
+I18nManager.forceRTL(true);
+I18nManager.allowRTL(true);
 export default function EngineerCard({ engineer }) {
   const { t } = useTranslation();
   const navigation = useNavigation();
@@ -18,7 +20,7 @@ export default function EngineerCard({ engineer }) {
 
   return (
     <TouchableOpacity
-      style={styles.card}
+    style={[styles.card, styles.rtlContainer]} 
       onPress={handlePress}
       activeOpacity={0.9}
     >
@@ -85,6 +87,10 @@ export default function EngineerCard({ engineer }) {
 }
 
 const styles = StyleSheet.create({
+  rtlContainer: {
+    direction: 'rtl', // This is crucial for proper RTL layout
+    writingDirection: 'rtl', // For text direction
+  },
   card: {
     backgroundColor: "#FFFFFF",
     borderRadius: 16,
@@ -99,7 +105,7 @@ const styles = StyleSheet.create({
     borderColor: "#F1F5F9",
   },
   header: {
-    flexDirection: "row-reverse",
+    flexDirection: "row",
     alignItems: "center",
     marginBottom: 16,
   },
@@ -107,15 +113,17 @@ const styles = StyleSheet.create({
     width: 70,
     height: 70,
     borderRadius: 12,
-    marginLeft: 16,
+    marginLeft: 0, // Changed from 16 to 0
+    marginRight: 16, // Added this
   },
   engineerInfo: {
     flex: 1,
   },
   nameContainer: {
-    flexDirection: "row-reverse",
+    flexDirection: "row",
     alignItems: "center",
     marginBottom: 8,
+    justifyContent: 'flex-start', // Added this
   },
   engineerName: {
     fontSize: 18,
@@ -124,13 +132,14 @@ const styles = StyleSheet.create({
     textAlign: "right",
   },
   verificationBadge: {
-    flexDirection: "row-reverse",
+    flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#1D4ED8",
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 8,
-    marginRight: 8,
+    marginRight: 0, // Changed from 8 to 0
+    marginLeft: 8, // Added this
   },
   verifiedText: {
     fontSize: 12,
@@ -139,7 +148,7 @@ const styles = StyleSheet.create({
     marginRight: 4,
   },
   specializationContainer: {
-    flexDirection: "row-reverse",
+    flexDirection: "row",
     alignItems: "center",
     marginBottom: 8,
   },
@@ -151,7 +160,7 @@ const styles = StyleSheet.create({
     textAlign: "right",
   },
   locationContainer: {
-    flexDirection: "row-reverse",
+    flexDirection: "row",
     alignItems: "center",
   },
   location: {
@@ -162,10 +171,11 @@ const styles = StyleSheet.create({
     textAlign: "right",
   },
   servicesContainer: {
-    flexDirection: "row-reverse",
+    flexDirection: "row",
     flexWrap: "wrap",
     gap: 8,
     marginBottom: 16,
+    justifyContent: 'flex-end', // Added this
   },
   serviceBadge: {
     backgroundColor: "#EFF6FF",
@@ -194,7 +204,7 @@ const styles = StyleSheet.create({
     fontFamily: "Tajawal-Medium",
   },
   footer: {
-    flexDirection: "row-reverse",
+    flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     borderTopWidth: 1,
@@ -203,7 +213,7 @@ const styles = StyleSheet.create({
   },
   callButton: {
     backgroundColor: "#1877f2",
-    flexDirection: "row-reverse",
+    flexDirection: "row",
     alignItems: "center",
     paddingVertical: 12,
     paddingHorizontal: 20,

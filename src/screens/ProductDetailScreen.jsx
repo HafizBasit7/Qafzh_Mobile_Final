@@ -318,7 +318,7 @@ const styles = StyleSheet.create({
     paddingTop: 0,
   },
   header: {
-    flexDirection: "row",
+    flexDirection: "row-reverse",
     alignItems: "center",
     justifyContent: "space-between",
     paddingHorizontal: 16,
@@ -446,7 +446,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 16,
     marginBottom: 12,
-    alignItems: "flex-end",
+    // alignItems: "flex-end",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
@@ -484,6 +484,7 @@ const styles = StyleSheet.create({
     color: "#475569",
     lineHeight: 22,
     textAlign: "right",
+    
   },
   sellerSection: {
     marginBottom: 20,
@@ -595,9 +596,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#F8FAFC",
     borderRadius: 10,
     padding: 12,
+    
   },
   specItem: {
-    flexDirection: "row-reverse",
+    // flexDirection: "row-reverse",
     justifyContent: "space-between",
     marginBottom: 8,
   },

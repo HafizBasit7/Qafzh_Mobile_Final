@@ -5,10 +5,15 @@ import {
   TouchableOpacity,
   Image,
   Linking,
+  I18nManager
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
+
+// Force RTL if not already set
+I18nManager.forceRTL(true);
+I18nManager.allowRTL(true);
 
 export default function ShopCard({ shop }) {
   const navigation = useNavigation();
@@ -43,7 +48,7 @@ export default function ShopCard({ shop }) {
 
   return (
     <TouchableOpacity
-      style={styles.card}
+      style={[styles.card, styles.rtlContainer]}
       onPress={handlePress}
       activeOpacity={0.9}
     >
@@ -62,16 +67,19 @@ export default function ShopCard({ shop }) {
               {shop.name}
             </Text>
             
-             <View style={shop.isVerified ? styles.verificationBadge : styles.unverifiedBadge}>
-             <Text style={shop.isVerified ? styles.verifiedText : styles.unverifiedText}>
-               {shop.isVerified ? t("COMMON.VERIFIED") : t("COMMON.NOT_VERIFIED")}
-             </Text>
-           </View>
-           
-            
+            <View style={shop.isVerified ? styles.verificationBadge : styles.unverifiedBadge}>
+              <Text style={shop.isVerified ? styles.verifiedText : styles.unverifiedText}>
+                {shop.isVerified ? t("COMMON.VERIFIED") : t("COMMON.NOT_VERIFIED")}
+              </Text>
+            </View>
           </View>
           <View style={styles.locationContainer}>
-            <Ionicons name="location-outline" size={16} color="#64748B" />
+            <Ionicons 
+              name="location-outline" 
+              size={16} 
+              color="#64748B" 
+              style={{ transform: [{ scaleX: I18nManager.isRTL ? -1 : 1 }] }}
+            />
             <Text
               style={styles.location}
               numberOfLines={1}
@@ -104,6 +112,10 @@ export default function ShopCard({ shop }) {
 }
 
 const styles = StyleSheet.create({
+  rtlContainer: {
+    direction: 'rtl',
+    writingDirection: 'rtl',
+  },
   card: {
     backgroundColor: "#FFFFFF",
     borderRadius: 16,
@@ -118,7 +130,7 @@ const styles = StyleSheet.create({
     borderColor: "#F1F5F9",
   },
   header: {
-    flexDirection: "row-reverse",
+    flexDirection: "row", // Changed from row-reverse to row with RTL context
     alignItems: "center",
     marginBottom: 16,
   },
@@ -126,16 +138,18 @@ const styles = StyleSheet.create({
     width: 70,
     height: 70,
     borderRadius: 12,
-    marginLeft: 16,
+    marginLeft: 0, // Changed from 16 to 0
+    marginRight: 16, // Added this
   },
   shopInfo: {
     flex: 1,
   },
   nameContainer: {
-    flexDirection: "row-reverse",
+    flexDirection: "row", // Changed from row-reverse to row with RTL context
     alignItems: "center",
     marginBottom: 8,
     flexWrap: "wrap",
+    justifyContent: 'flex-start', // Added for RTL
   },
   shopName: {
     fontSize: 18,
@@ -143,41 +157,44 @@ const styles = StyleSheet.create({
     color: "#1E293B",
     flexShrink: 1,
     textAlign: "right",
+    writingDirection: 'rtl', // Added RTL text direction
   },
   verificationBadge: {
-    flexDirection: "row-reverse",
+    flexDirection: "row", // Changed from row-reverse to row with RTL context
     alignItems: "center",
     backgroundColor: "#1877f2",
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 8,
-    marginRight: 8,
+    marginRight: 0, // Changed from 8 to 0
+    marginLeft: 8, // Added this
   },
   verifiedText: {
     fontSize: 12,
     fontFamily: "Tajawal-Medium",
     color: "#ffff",
     marginRight: 4,
+    writingDirection: 'rtl', // Added RTL text direction
   },
   unverifiedBadge: {
-    flexDirection: "row-reverse",
+    flexDirection: "row", // Changed from row-reverse to row with RTL context
     alignItems: "center",
-    backgroundColor: "#64748B", // light gray background
+    backgroundColor: "#64748B",
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 8,
-    marginRight: 8,
+    marginRight: 0, // Changed from 8 to 0
+    marginLeft: 8, // Added this
   },
-  
   unverifiedText: {
     fontSize: 12,
     fontFamily: "Tajawal-Medium",
-    color: "#ECFDF5", // gray text
+    color: "#ECFDF5",
     marginRight: 4,
+    writingDirection: 'rtl', // Added RTL text direction
   },
-  
   locationContainer: {
-    flexDirection: "row-reverse",
+    flexDirection: "row", // Changed from row-reverse to row with RTL context
     alignItems: "center",
   },
   location: {
@@ -186,12 +203,14 @@ const styles = StyleSheet.create({
     color: "#64748B",
     marginRight: 6,
     textAlign: "right",
+    writingDirection: 'rtl', // Added RTL text direction
   },
   servicesContainer: {
-    flexDirection: "row-reverse",
+    flexDirection: "row", // Changed from row-reverse to row with RTL context
     flexWrap: "wrap",
     marginBottom: 16,
     gap: 8,
+    justifyContent: 'flex-end', // Added for RTL
   },
   serviceBadge: {
     backgroundColor: "#EFF6FF",
@@ -205,9 +224,10 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontFamily: "Tajawal-Medium",
     color: "#1877f2",
+    writingDirection: 'rtl', // Added RTL text direction
   },
   footer: {
-    flexDirection: "row-reverse",
+    flexDirection: "row", // Changed from row-reverse to row with RTL context
     justifyContent: "space-between",
     alignItems: "center",
     borderTopWidth: 1,
@@ -216,7 +236,7 @@ const styles = StyleSheet.create({
   },
   callButton: {
     backgroundColor: "#1877f2",
-    flexDirection: "row-reverse",
+    flexDirection: "row", // Changed from row-reverse to row with RTL context
     alignItems: "center",
     paddingVertical: 12,
     paddingHorizontal: 20,
@@ -232,5 +252,6 @@ const styles = StyleSheet.create({
     fontFamily: "Tajawal-Bold",
     fontSize: 14,
     marginRight: 8,
+    writingDirection: 'rtl', // Added RTL text direction
   },
 });

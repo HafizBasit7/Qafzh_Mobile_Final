@@ -12,6 +12,7 @@ import {
   Platform,
   ActivityIndicator,
   FlatList,
+  I18nManager
 } from "react-native";
 import {
   Ionicons,
@@ -25,6 +26,10 @@ import LoadingSpinner from "../components/common/LoadingSpinner";
 import ImageViewerModal from "../components/ImageViewerModal";
 
 const { width } = Dimensions.get("window");
+
+// Force RTL if not already set
+I18nManager.forceRTL(true);
+I18nManager.allowRTL(true);
 
 const EngineerDetailScreen = ({ navigation, route }) => {
   const { engineerId } = route.params;
@@ -165,7 +170,12 @@ const EngineerDetailScreen = ({ navigation, route }) => {
             style={styles.backButton}
             onPress={() => navigation.goBack()}
           >
-            <Ionicons name="arrow-back" size={24} color="#FFF" />
+            <Ionicons 
+              name="arrow-back" 
+              size={24} 
+              color="#FFF" 
+              style={{ transform: [{ scaleX: I18nManager.isRTL ? -1 : 1 }] }}
+            />
           </TouchableOpacity>
         </View>
 
@@ -192,15 +202,6 @@ const EngineerDetailScreen = ({ navigation, route }) => {
           <Text style={styles.sectionTitle}>{t("ENGINEER.info")}</Text>
 
           <View style={styles.infoCard}>
-            {/* <View style={styles.detailRow}>
-              <MaterialIcons name="location-on" size={20} color="#1877f2" />
-              <View style={styles.detailTextContainer}>
-                <Text style={styles.detailText}>
-                  {engineer.address}, {engineer.city}, {engineer.governorate}
-                </Text>
-              </View>
-            </View> */}
-
             <View style={styles.detailRow}>
               <MaterialIcons name="phone" size={20} color="#1877f2" />
               <View style={styles.detailTextContainer}>
@@ -352,6 +353,7 @@ const styles = StyleSheet.create({
   },
   container: {
     paddingBottom: 20,
+    direction: 'rtl', // RTL direction for container
   },
   header: {
     backgroundColor: "#FFFFFF",
@@ -386,8 +388,9 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontFamily: "Tajawal-Bold",
     color: "#1E293B",
-    textAlign: "center",
+    textAlign: "right", // Right align for RTL
     marginRight: 8,
+    writingDirection: 'rtl', // RTL text direction
   },
   verifiedBadge: {
     flexDirection: "row",
@@ -403,6 +406,7 @@ const styles = StyleSheet.create({
     fontFamily: "Tajawal-Medium",
     color: "#10B981",
     marginRight: 4,
+    writingDirection: 'rtl', // RTL text direction
   },
   featuredBadge: {
     flexDirection: "row",
@@ -417,18 +421,20 @@ const styles = StyleSheet.create({
     fontFamily: "Tajawal-Medium",
     color: "#F59E0B",
     marginRight: 4,
+    writingDirection: 'rtl', // RTL text direction
   },
   specialization: {
     fontSize: 16,
     fontFamily: "Tajawal-Regular",
     color: "#64748B",
-    textAlign: "center",
+    textAlign: "right", // Right align for RTL
     marginBottom: 16,
+    writingDirection: 'rtl', // RTL text direction
   },
   backButton: {
     position: "absolute",
     top: 20,
-    left: 20,
+    right: 20, // Changed from left to right for RTL
     width: 40,
     height: 40,
     borderRadius: 20,
@@ -445,7 +451,7 @@ const styles = StyleSheet.create({
   callButton: {
     flex: 1,
     backgroundColor: "#1877f2",
-    flexDirection: "row",
+    flexDirection: "row-reverse", // Reverse direction for RTL
     alignItems: "center",
     justifyContent: "center",
     paddingVertical: 14,
@@ -459,7 +465,7 @@ const styles = StyleSheet.create({
   whatsappButton: {
     flex: 1,
     backgroundColor: "#10B981",
-    flexDirection: "row",
+    flexDirection: "row-reverse", // Reverse direction for RTL
     alignItems: "center",
     justifyContent: "center",
     paddingVertical: 14,
@@ -475,6 +481,7 @@ const styles = StyleSheet.create({
     fontFamily: "Tajawal-Bold",
     fontSize: 14,
     marginRight: 8,
+    writingDirection: 'rtl', // RTL text direction
   },
   section: {
     marginTop: 20,
@@ -485,7 +492,8 @@ const styles = StyleSheet.create({
     fontFamily: "Tajawal-Bold",
     color: "#1E293B",
     marginBottom: 16,
-    textAlign: "right",
+    textAlign: "right", // Right align for RTL
+    writingDirection: 'rtl', // RTL text direction
   },
   infoCard: {
     backgroundColor: "#FFFFFF",
@@ -500,7 +508,7 @@ const styles = StyleSheet.create({
     borderColor: "#F1F5F9",
   },
   detailRow: {
-    flexDirection: "row",
+    flexDirection: "row-reverse", // Reverse direction for RTL
     alignItems: "center",
     marginBottom: 16,
   },
@@ -512,10 +520,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: "Tajawal-Regular",
     color: "#374151",
-    textAlign: "right",
+    textAlign: "right", // Right align for RTL
+    writingDirection: 'rtl', // RTL text direction
   },
   servicesContainer: {
-    flexDirection: "row",
+    flexDirection: "row-reverse", // Reverse direction for RTL
     flexWrap: "wrap",
     gap: 8,
   },
@@ -531,6 +540,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#166534",
     fontFamily: "Tajawal-Medium",
+    writingDirection: 'rtl', // RTL text direction
   },
   certificationCard: {
     backgroundColor: "#FFFFFF",
@@ -546,7 +556,7 @@ const styles = StyleSheet.create({
     borderColor: "#F1F5F9",
   },
   certificationHeader: {
-    flexDirection: "row",
+    flexDirection: "row-reverse", // Reverse direction for RTL
     alignItems: "center",
     marginBottom: 8,
   },
@@ -556,14 +566,16 @@ const styles = StyleSheet.create({
     color: "#1E293B",
     marginRight: 8,
     flex: 1,
-    textAlign: "right",
+    textAlign: "right", // Right align for RTL
+    writingDirection: 'rtl', // RTL text direction
   },
   certificationDetail: {
     fontSize: 14,
     fontFamily: "Tajawal-Regular",
     color: "#64748B",
     marginBottom: 4,
-    textAlign: "right",
+    textAlign: "right", // Right align for RTL
+    writingDirection: 'rtl', // RTL text direction
   },
   portfolioContainer: {
     paddingRight: 20,
@@ -584,8 +596,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: "Tajawal-Regular",
     color: "#64748B",
-    textAlign: "center",
+    textAlign: "right", // Right align for RTL
     marginBottom: 20,
+    writingDirection: 'rtl', // RTL text direction
   },
   retryButton: {
     backgroundColor: "#1877f2",
@@ -597,6 +610,7 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     fontFamily: "Tajawal-Bold",
     fontSize: 14,
+    writingDirection: 'rtl', // RTL text direction
   },
 });
 

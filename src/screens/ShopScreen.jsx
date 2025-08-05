@@ -11,6 +11,7 @@ import {
   Platform,
   SafeAreaView,
   Image,
+  I18nManager
 } from "react-native";
 import { useRoute } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
@@ -19,6 +20,10 @@ import { useTranslation } from "react-i18next";
 import { useShops, useShop } from "../hooks/useShops";
 import LoadingSpinner from "../components/common/LoadingSpinner";
 import ImageViewerModal from "../components/ImageViewerModal";
+
+// Force RTL if not already set
+I18nManager.forceRTL(true);
+I18nManager.allowRTL(true);
 
 const ShopScreen = ({ navigation, route }) => {
   const { shopId } = route.params;
@@ -370,6 +375,7 @@ const styles = StyleSheet.create({
   },
   container: {
     paddingBottom: 20,
+    direction: 'rtl',
   },
   header: {
     backgroundColor: "#FFFFFF",
@@ -382,6 +388,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 3,
     position: "relative",
+    
   },
   shopLogo: {
     width: 100,
@@ -437,6 +444,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.6)",
     justifyContent: "center",
     alignItems: "center",
+    
   },
   contactButtons: {
     flexDirection: "row",

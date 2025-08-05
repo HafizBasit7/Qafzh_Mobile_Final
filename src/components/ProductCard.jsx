@@ -187,7 +187,7 @@ const ProductCard = ({ product }) => {
 
 const styles = StyleSheet.create({
   cardContainer: {
-    flexDirection: "row-reverse",
+    flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#FFFFFF",
     paddingVertical: 12,
@@ -239,11 +239,11 @@ middleRow: {
 
 bottomRow: {
   marginTop: 6,
-  flexDirection: 'row-reverse',
+  // flexDirection: 'row',
   alignItems: 'center',
 },
 pendingBadge: {
-  flexDirection: "row-reverse",
+  flexDirection: "row",
   alignItems: "center",
   gap: 4,
   backgroundColor: "#F3F4F6", // light gray

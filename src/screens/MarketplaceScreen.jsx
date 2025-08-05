@@ -1008,8 +1008,9 @@ quickFilterDropdownWrapper: {
     fontSize: 30,
     fontWeight: 'bold',
     color: '#fff',
-    marginLeft:160,
-    marginBottom:10
+    // marginLeft:160,
+    marginBottom:10,
+    // flexDirection: "row",
   },
 
   searchRow: {
@@ -1367,7 +1368,7 @@ quickFilterDropdownWrapper: {
   },
 
   dotContainer: {
-    flexDirection: "row",
+    flexDirection: "row-reverse",
     justifyContent: "center",
     alignItems: "center",
     marginTop: 8,

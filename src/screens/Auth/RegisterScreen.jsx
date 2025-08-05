@@ -44,15 +44,17 @@ const RegisterScreen = ({ navigation, route }) => {
         quality: 0.8,
       });
 
-      if (!result.canceled) {
+      if (!result.canceled && result.assets && result.assets[0]) {
         setIsUploading(true);
         const imageUrl = await uploadImage(result.assets[0], result.assets[0].fileName || 'profile_image.jpg');
         setFormData((prev) => ({ ...prev, profileImageUrl: imageUrl }));
-        setIsUploading(false);
+        // setIsUploading(false);
       }
     } catch (error) {
-      setIsUploading(false);
+      console.error("Image upload error:", error);
       showToast("error", "خطأ", "فشل في تحميل الصورة");
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -184,10 +186,17 @@ const RegisterScreen = ({ navigation, route }) => {
 
     <KeyboardAvoidingView
       style={styles.container}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      behavior={Platform.OS === "ios" ? "padding" : "null"}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 60 : 0}
     >
 
-      <ScrollView contentContainerStyle={styles.scrollContent}>
+      <ScrollView 
+      contentContainerStyle={styles.scrollContent}
+      keyboardShouldPersistTaps="handled"
+      showsVerticalScrollIndicator={false}
+      bounces={false}
+      overScrollMode="never"
+      >
         <TouchableOpacity onPress={handleBack} style={styles.backButton}>
           <Text style={styles.backText}>◀ رجوع</Text>
         </TouchableOpacity>
