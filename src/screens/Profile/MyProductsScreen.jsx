@@ -224,7 +224,7 @@ const MyProductsScreen = () => {
             style={styles.backButton}
             onPress={() => navigation.goBack()}
           >
-            <Feather name="arrow-right" size={24} color="#1E293B" />
+            <Feather name="arrow-left" size={24} color="#1E293B" />
           </TouchableOpacity>
           <Text style={styles.headerTitle}>
             {t("MY_PRODUCTS.TITLE")}

@@ -187,12 +187,21 @@ export default {
     city: "المدينة",
     whatsappPhone: "واتساب",
   },
-  PRODUCT_TYPES: {
-    PANEL: "ألواح شمسية",
-    INVERTER: "انفرتر",
-    BATTERY: "بطارية",
-    CHARGER: "شاحن",
-    ACCESSORY: "ملحقات",
+  // PRODUCT_TYPES: {
+  //   PANEL: "ألواح شمسية",
+  //   INVERTER: "انفرتر",
+  //   BATTERY: "بطارية",
+  //   CHARGER: "شاحن",
+  //   ACCESSORY: "ملحقات",
+  // },
+  "PRODUCT_TYPES": {
+    "PANEL": "لوح شمسي",
+    "INVERTER": "انفرتر",
+    "BATTERY": "بطارية",
+    "CHARGER": "شاحن",
+    "ACCESSORY": "اكسسوار",
+    "OTHER": "أخرى",
+    "PANEL_BASES": "قواعد ألواح"
   },
   PRODUCT_DETAIL: {
     TITLE: "تفاصيل المنتج",

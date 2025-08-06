@@ -77,7 +77,7 @@ export default function ShopCard({ shop }) {
             <Ionicons 
               name="location-outline" 
               size={16} 
-              color="#64748B" 
+              color="#309c78" 
               style={{ transform: [{ scaleX: I18nManager.isRTL ? -1 : 1 }] }}
             />
             <Text
@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
   verificationBadge: {
     flexDirection: "row", // Changed from row-reverse to row with RTL context
     alignItems: "center",
-    backgroundColor: "#1877f2",
+    backgroundColor: "#309c78",
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 8,
@@ -200,7 +200,7 @@ const styles = StyleSheet.create({
   location: {
     fontSize: 14,
     fontFamily: "Tajawal-Regular",
-    color: "#64748B",
+    color: "#309c78",
     marginRight: 6,
     textAlign: "right",
     writingDirection: 'rtl', // Added RTL text direction
@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
   serviceText: {
     fontSize: 12,
     fontFamily: "Tajawal-Medium",
-    color: "#1877f2",
+    color: "#309c78",
     writingDirection: 'rtl', // Added RTL text direction
   },
   footer: {
@@ -235,7 +235,7 @@ const styles = StyleSheet.create({
     paddingTop: 16,
   },
   callButton: {
-    backgroundColor: "#1877f2",
+    backgroundColor: "#309c78",
     flexDirection: "row", // Changed from row-reverse to row with RTL context
     alignItems: "center",
     paddingVertical: 12,

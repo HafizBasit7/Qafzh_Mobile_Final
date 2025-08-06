@@ -13,6 +13,7 @@ import { useRoute, useNavigation } from "@react-navigation/native";
 import { MaterialIcons, Ionicons, FontAwesome } from "@expo/vector-icons";
 import { useWindowDimensions } from "react-native";
 import { useTranslation } from "react-i18next";
+import { getTranslatedType } from '../utils/productTypes';
 
 export default function ProductDetailScreen() {
   const route = useRoute();
@@ -125,11 +126,13 @@ export default function ProductDetailScreen() {
 
             {/* Basic Details */}
             <View style={styles.detailsGrid}>
-              <View style={styles.detailItem}>
-                <MaterialIcons name="category" size={18} color="#64748B" />
-                <Text style={styles.detailLabel}>{t("PRODUCT.type")}</Text>
-                <Text style={styles.detailValue}>{product.type}</Text>
-              </View>
+            <View style={styles.detailItem}>
+  <MaterialIcons name="category" size={18} color="#64748B" />
+  <Text style={styles.detailLabel}>{t("PRODUCT.type")}</Text>
+  <Text style={styles.detailValue}>
+    {getTranslatedType(product.type, t)}
+  </Text>
+</View>
 
               <View style={styles.detailItem}>
                 <MaterialIcons name="build" size={18} color="#64748B" />

@@ -164,7 +164,7 @@ const ProductCard = ({ product }) => {
 <View style={styles.bottomRow}>
   {product.status === "approved" ? (
     <View style={styles.verifiedBadge}>
-      {/* <Ionicons name="checkmark-done-outline" size={12} color="#1877f2" /> */}
+      {/* <Ionicons name="checkmark-done-outline" size={12} color="#309c78" /> */}
       <Text style={styles.verifiedText}>{t("COMMON.VERIFIED")}</Text>
     </View>
   ) : (
@@ -187,7 +187,7 @@ const ProductCard = ({ product }) => {
 
 const styles = StyleSheet.create({
   cardContainer: {
-    flexDirection: "row",
+    flexDirection: "row-reverse",
     alignItems: "center",
     backgroundColor: "#FFFFFF",
     paddingVertical: 12,
@@ -239,8 +239,8 @@ middleRow: {
 
 bottomRow: {
   marginTop: 6,
-  // flexDirection: 'row',
-  alignItems: 'center',
+  flexDirection: 'row-reverse',
+  alignItems: 'left',
 },
 pendingBadge: {
   flexDirection: "row",
@@ -262,9 +262,9 @@ pendingText: {
   cardTitle: {
     fontSize: 18,
     fontFamily: "Tajawal-Bold",
-    color: "#1877f2",
+    color: "#309c78",
     marginBottom: 4,
-    textAlign: "right",
+    textAlign: "left",
   },
   
   cardBrand: {
@@ -272,20 +272,20 @@ pendingText: {
     fontFamily: "Tajawal-Regular",
     color: "#6B7280",
     marginBottom: 2,
-    textAlign: "right",
+    textAlign: "left",
   },
   
   cardPrice: {
     fontSize: 15,
     fontFamily: "Tajawal-Bold",
-    color: "#1E293B",
+    color: "#309c78",
     marginBottom: 4,
-    textAlign: "right",
+    textAlign: "left",
   },
   
   metaRow: {
     flexDirection: "row-reverse",
-    alignItems: "center",
+    alignItems: "right",
     gap: 4,
     marginBottom: 2,
   },
@@ -294,12 +294,12 @@ pendingText: {
     fontSize: 12,
     fontFamily: "Tajawal-Regular",
     color: "#6B7280",
-    textAlign: "right",
+    textAlign: "left",
     flexShrink: 1,
   },
   
   phoneLink: {
-    flexDirection: "row-reverse",
+    flexDirection: "row",
     alignItems: "center",
     marginTop: 4,
   },
@@ -308,7 +308,7 @@ pendingText: {
     fontSize: 12,
     fontFamily: "Tajawal-Medium",
     color: "#4B5563",
-    textAlign: "right",
+    textAlign: "left",
   },
   
   container: {
@@ -400,7 +400,7 @@ pendingText: {
     fontFamily: "Tajawal-Bold",
     color: "#1E293B",
     marginBottom: 8,
-    textAlign: "right",
+    textAlign: "left",
     lineHeight: 20,
   },
   priceSection: {
@@ -414,16 +414,7 @@ pendingText: {
     alignItems: "baseline",
     gap: 4,
   },
-  price: {
-    fontSize: 18,
-    fontFamily: "Tajawal-Bold",
-    color: "#02ff04",
-  },
-  currency: {
-    fontSize: 14,
-    fontFamily: "Tajawal-Medium",
-    color: "#02ff04",
-  },
+
   negotiableBadge: {
     backgroundColor: "#FEF3C7",
     paddingHorizontal: 8,
@@ -437,7 +428,7 @@ pendingText: {
   },
   locationContainer: {
     flexDirection: "row-reverse",
-    alignItems: "center",
+    alignItems: "left",
     gap: 6,
     marginBottom: 8,
   },
@@ -446,12 +437,12 @@ pendingText: {
     fontFamily: "Tajawal-Regular",
     color: "#64748B",
     flex: 1,
-    textAlign: "right",
+    textAlign: "left",
   },
   bottomSection: {
-    flexDirection: "row-reverse",
-    alignItems: "center",
-    justifyContent: "space-between",
+    flexDirection: "row",
+    alignItems: "left",
+    justifyContent: "left",
   },
   // verifiedBadge: {
   //   flexDirection: "row-reverse",
@@ -465,7 +456,7 @@ pendingText: {
   verifiedText: {
     fontSize: 11,
     fontFamily: "Tajawal-Medium",
-    color: "#1877f2",
+    color: "#309c78",
   },
   spacer: {
     flex: 1,

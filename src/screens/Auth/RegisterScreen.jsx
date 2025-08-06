@@ -197,9 +197,9 @@ const RegisterScreen = ({ navigation, route }) => {
       bounces={false}
       overScrollMode="never"
       >
-        <TouchableOpacity onPress={handleBack} style={styles.backButton}>
-          <Text style={styles.backText}>◀ رجوع</Text>
-        </TouchableOpacity>
+     <TouchableOpacity onPress={handleBack} style={styles.backButton}>
+  <Text style={styles.backText}>رجوع ◀</Text>
+</TouchableOpacity>
 
         <View style={styles.content}>
           <Text style={styles.title}>إنشاء حساب</Text>
@@ -348,25 +348,29 @@ const styles = StyleSheet.create({
    
   },
   backButton: {
-    marginTop: 38,
-    marginLeft:20,
-    width: 40,
-    height: 40,
+    position: 'absolute',
+    top: Platform.OS === 'ios' ? 50 : 30,
+    right: 15, // Changed from left to right for RTL
+    paddingHorizontal: 12,
+    paddingVertical: 8,
     borderRadius: 20,
     backgroundColor: "#F1F5F9",
+    flexDirection: 'row',
     alignItems: "center",
     justifyContent: "center",
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
   },
-  // backButton: {
-  //   position: 'absolute',
-  //   top: 40,
-  //   left: 24,
-  //   zIndex: 10,
-  // },
+  
   backText: {
     fontSize: 16,
     fontFamily: 'Tajawal-Bold',
     color: '#1877f2',
+    marginRight: 5, // Space between text and arrow
+    writingDirection: 'rtl', // Ensures proper RTL rendering
   },
 
   title: {

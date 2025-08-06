@@ -9,6 +9,8 @@ import {
   Image,
   Switch,
   KeyboardAvoidingView,
+  Modal,
+  FlatList
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { Picker } from '@react-native-picker/picker';
@@ -22,6 +24,7 @@ import governorates from '../../data/governorates'; // Updated import
 import { uploadImage } from '../../utils/upload';
 import CustomModal from '../components/common/CustomModal';
 import EmptyState from '../components/EmptyState';
+import { MaterialIcons } from '@expo/vector-icons';
 
 const colors = {
   primary: '#1877f2',
@@ -40,6 +43,10 @@ const ProductSubmissionScreen = () => {
   const { modalState, hideModal, showSuccess, showError, showWarning, showInfo } = useModal();
   const [hasCheckedAuth, setHasCheckedAuth] = useState(false);
   const navigation = useNavigation();
+  const [showTypeModal, setShowTypeModal] = useState(false);
+  const [showGovernorateModal, setShowGovernorateModal] = useState(false);
+  const [showCityModal, setShowCityModal] = useState(false);
+  const [showConditionModal, setShowConditionModal] = useState(false);
  
 
 
@@ -69,6 +76,7 @@ const ProductSubmissionScreen = () => {
   // State for available cities based on selected governorate
   const [availableCities, setAvailableCities] = useState([]);
   const [formData, setFormData] = useState(initialFormState);
+  const [showCurrencyModal, setShowCurrencyModal] = useState(false);
 
 
    // Reset form when tab loses focus
@@ -394,34 +402,130 @@ const ProductSubmissionScreen = () => {
         </View>
         
         <View style={styles.inputGroup}>
-          <Text style={styles.label}>نوع المنتج</Text>
-          <View style={styles.pickerContainer}>
-            <Picker
-              selectedValue={formData.type}
-              onValueChange={(itemValue) => setFormData({...formData, type: itemValue})}
-              style={styles.picker}
-            >
-              {productTypes && productTypes.map((type) => (
-                <Picker.Item key={type.value} label={type.label} value={type.value} />
-              ))}
-            </Picker>
-          </View>
-        </View>
+  <Text style={styles.label}>نوع المنتج</Text>
+  <TouchableOpacity 
+    style={styles.currencySelector} // Reusing currency selector style
+    onPress={() => setShowTypeModal(true)}
+  >
+    <Text style={styles.currencyText}>
+      {productTypes.find(t => t.value === formData.type)?.label || 'اختر نوع المنتج'}
+    </Text>
+    <MaterialIcons name="arrow-drop-down" size={24} color="#64748B" />
+  </TouchableOpacity>
+</View>
+
+{/* Product Type Selection Modal */}
+{/* Product Type Selection Modal */}
+<Modal
+  visible={showTypeModal}
+  transparent={true}
+  animationType="slide"
+  onRequestClose={() => setShowTypeModal(false)}
+>
+  <View style={styles.modalOverlay}>
+    <View style={styles.currencyModal}>
+      <View style={styles.modalHeader}>
+        <Text style={styles.modalTitle}>اختر نوع المنتج</Text>
+        <TouchableOpacity 
+          onPress={() => setShowTypeModal(false)}
+          hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}
+        >
+          <Text>
+            <MaterialIcons name="close" size={24} color="#64748B" />
+          </Text>
+        </TouchableOpacity>
+      </View>
+
+      <FlatList
+        data={productTypes}
+        keyExtractor={(item) => item.value}
+        renderItem={({ item }) => (
+          <TouchableOpacity
+            style={[
+              styles.currencyOption,
+              formData.type === item.value && styles.selectedOption
+            ]}
+            onPress={() => {
+              setFormData({...formData, type: item.value});
+              setShowTypeModal(false);
+            }}
+          >
+            <Text style={styles.optionText}>{item.label}</Text>
+            {formData.type === item.value && (
+              <Text>
+                <MaterialIcons name="check" size={20} color="#1877f2" />
+              </Text>
+            )}
+          </TouchableOpacity>
+        )}
+        ItemSeparatorComponent={() => <View style={styles.separator} />}
+        contentContainerStyle={{ paddingBottom: 20 }}
+      />
+    </View>
+  </View>
+</Modal>
         
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>الحالة</Text>
-          <View style={styles.pickerContainer}>
-            <Picker
-              selectedValue={formData.condition}
-              onValueChange={(value) => setFormData({ ...formData, condition: value })}
-              style={styles.picker}
-            >
-              {conditions && conditions.map((condition) => (
-                <Picker.Item key={condition.value} label={condition.label} value={condition.value} />
-              ))}
-            </Picker>
-          </View>
-        </View>
+<View style={styles.inputGroup}>
+  <Text style={styles.label}>الحالة</Text>
+  <TouchableOpacity 
+    style={styles.currencySelector}
+    onPress={() => setShowConditionModal(true)}
+  >
+    <Text style={styles.currencyText}>
+      {conditions.find(c => c.value === formData.condition)?.label || 'اختر الحالة'}
+    </Text>
+    <MaterialIcons name="arrow-drop-down" size={24} color="#64748B" />
+  </TouchableOpacity>
+</View>
+{/* Condition Selection Modal */}
+<Modal
+  visible={showConditionModal}
+  transparent={true}
+  animationType="slide"
+  onRequestClose={() => setShowConditionModal(false)}
+>
+  <View style={styles.modalOverlay}>
+    <View style={styles.currencyModal}>
+      <View style={styles.modalHeader}>
+        <Text style={styles.modalTitle}>اختر حالة المنتج</Text>
+        <TouchableOpacity 
+          onPress={() => setShowConditionModal(false)}
+          hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}
+        >
+          <Text>
+            <MaterialIcons name="close" size={24} color="#64748B" />
+          </Text>
+        </TouchableOpacity>
+      </View>
+
+      <FlatList
+        data={conditions}
+        keyExtractor={(item) => item.value}
+        renderItem={({ item }) => (
+          <TouchableOpacity
+            style={[
+              styles.currencyOption,
+              formData.condition === item.value && styles.selectedOption
+            ]}
+            onPress={() => {
+              setFormData({...formData, condition: item.value});
+              setShowConditionModal(false);
+            }}
+          >
+            <Text style={styles.optionText}>{item.label}</Text>
+            {formData.condition === item.value && (
+              <Text>
+                <MaterialIcons name="check" size={20} color="#1877f2" />
+              </Text>
+            )}
+          </TouchableOpacity>
+        )}
+        ItemSeparatorComponent={() => <View style={styles.separator} />}
+        contentContainerStyle={{ paddingBottom: 20 }}
+      />
+    </View>
+  </View>
+</Modal>
         
         <View style={styles.inputGroup}>
           <Text style={styles.label}>الماركة</Text>
@@ -463,21 +567,66 @@ const ProductSubmissionScreen = () => {
             />
           </View>
           
-          <View style={{ flex: 0.3, marginLeft: 10 }}>
-            <Text style={styles.label}>العملة</Text>
-            <View style={styles.pickerContainer}>
-              <Picker
-                selectedValue={formData.currency}
-                onValueChange={(itemValue) => setFormData({...formData, currency: itemValue})}
-                style={styles.picker}
-              >
-                <Picker.Item label="ريال يمني شمال" value="YER" />
-                <Picker.Item label="ريال يمني جنوب" value="USD" />
-                {/* <Picker.Item label="ريال سعودي" value="SAR" />
-                <Picker.Item label="يورو" value="EUR" /> */}
-              </Picker>
-            </View>
-          </View>
+          <View style={styles.currencyContainer}>
+  <Text style={styles.sectionLabel}>العملة</Text>
+  
+  <TouchableOpacity 
+    style={styles.currencySelector}
+    onPress={() => setShowCurrencyModal(true)}
+  >
+    <Text style={styles.currencyText}>
+      {formData.currency === 'YER' ? 'ريال يمني شمال' : 'ريال يمني جنوب'}
+    </Text>
+    <MaterialIcons name="arrow-drop-down" size={24} color="#64748B" />
+  </TouchableOpacity>
+
+  {/* Currency Selection Modal */}
+  <Modal
+    visible={showCurrencyModal}
+    transparent={true}
+    animationType="fade"
+    onRequestClose={() => setShowCurrencyModal(false)}
+  >
+    <View style={styles.modalOverlay}>
+      <View style={styles.currencyModal}>
+        <View style={styles.modalHeader}>
+          <Text style={styles.modalTitle}>اختر العملة</Text>
+          <TouchableOpacity onPress={() => setShowCurrencyModal(false)}>
+            <MaterialIcons name="close" size={24} color="#64748B" />
+          </TouchableOpacity>
+        </View>
+
+        <FlatList
+          data={[
+            { label: 'ريال يمني شمال', value: 'YER' },
+            { label: 'ريال يمني جنوب', value: 'YERR' },
+            { label: 'ريال سعودي', value: 'SAR' },
+            { label: 'دولار أمريكي', value: 'USD' }
+          ]}
+          keyExtractor={(item) => item.value}
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              style={[
+                styles.currencyOption,
+                formData.currency === item.value && styles.selectedOption
+              ]}
+              onPress={() => {
+                setFormData({...formData, currency: item.value});
+                setShowCurrencyModal(false);
+              }}
+            >
+              <Text style={styles.optionText}>{item.label}</Text>
+              {formData.currency === item.value && (
+                <MaterialIcons name="check" size={20} color="#1877f2" />
+              )}
+            </TouchableOpacity>
+          )}
+          ItemSeparatorComponent={() => <View style={styles.separator} />}
+        />
+      </View>
+    </View>
+  </Modal>
+</View>
         </View>
 
         <View style={styles.switchContainer}>
@@ -525,43 +674,161 @@ const ProductSubmissionScreen = () => {
         <Text style={styles.sectionTitle}>الموقع</Text>
         
         <View style={styles.inputGroup}>
-          <Text style={styles.label}>المحافظة *</Text>
-          <View style={styles.pickerContainer}>
-            <Picker
-              selectedValue={formData.governorate}
-              onValueChange={(value) => setFormData({ ...formData, governorate: value })}
-              style={styles.picker}
-            >
-              <Picker.Item label="اختر المحافظة" value="" />
-              {governorates && governorates.map((gov) => (
-                <Picker.Item key={gov.name} label={gov.name} value={gov.name} />
-              ))}
-            </Picker>
-          </View>
-        </View>
+  <Text style={styles.label}>المحافظة *</Text>
+  <TouchableOpacity 
+    style={styles.currencySelector} // Reusing the same style
+    onPress={() => setShowGovernorateModal(true)}
+  >
+    <Text style={styles.currencyText}>
+      {formData.governorate || 'اختر المحافظة'}
+    </Text>
+    <MaterialIcons name="arrow-drop-down" size={24} color="#64748B" />
+  </TouchableOpacity>
+</View>
 
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>المدينة *</Text>
-          <View style={styles.pickerContainer}>
-            <Picker
-              selectedValue={formData.city}
-              onValueChange={(value) => setFormData({ ...formData, city: value })}
-              style={styles.picker}
-              enabled={availableCities.length > 0}
+{/* Governorate Selection Modal */}
+<Modal
+  visible={showGovernorateModal}
+  transparent={true}
+  animationType="slide"
+  onRequestClose={() => setShowGovernorateModal(false)}
+>
+  <View style={styles.LocmodalOverlay}>
+    <View style={styles.currencyModal}>
+      <View style={styles.modalHeader}>
+        <Text style={styles.modalTitle}>اختر المحافظة</Text>
+        <TouchableOpacity 
+          onPress={() => setShowGovernorateModal(false)}
+          hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}
+        >
+          <Text>
+            <MaterialIcons name="close" size={24} color="#64748B" />
+          </Text>
+        </TouchableOpacity>
+      </View>
+
+      <FlatList
+        data={governorates}
+        keyExtractor={(item) => item.name}
+        renderItem={({ item }) => (
+          <TouchableOpacity
+            style={[
+              styles.currencyOption,
+              formData.governorate === item.name && styles.selectedOption
+            ]}
+            onPress={() => {
+              setFormData({
+                ...formData, 
+                governorate: item.name,
+                city: '' // Reset city when governorate changes
+              });
+              setShowGovernorateModal(false);
+            }}
+          >
+            <Text style={styles.optionText}>{item.name}</Text>
+            {formData.governorate === item.name && (
+              <Text>
+                <MaterialIcons name="check" size={20} color="#1877f2" />
+              </Text>
+            )}
+          </TouchableOpacity>
+        )}
+        ItemSeparatorComponent={() => <View style={styles.separator} />}
+        contentContainerStyle={{ paddingBottom: 20 }}
+      />
+    </View>
+  </View>
+</Modal>
+
+<View style={styles.inputGroup}>
+  <Text style={styles.label}>المدينة *</Text>
+  <TouchableOpacity 
+    style={[
+      styles.currencySelector,
+      !formData.governorate && { opacity: 0.6 }
+    ]}
+    onPress={() => {
+      if (formData.governorate) {
+        setShowCityModal(true);
+      }
+    }}
+    disabled={!formData.governorate}
+  >
+    <Text style={styles.currencyText}>
+      {formData.city || (
+        formData.governorate 
+          ? "اختر المدينة" 
+          : "اختر المحافظة أولاً"
+      )}
+    </Text>
+    <MaterialIcons name="arrow-drop-down" size={24} color="#64748B" />
+  </TouchableOpacity>
+  
+  {!formData.governorate && (
+    <Text style={styles.helperText}>يرجى اختيار المحافظة أولاً</Text>
+  )}
+</View>
+
+{/* City Selection Modal */}
+<Modal
+  visible={showCityModal}
+  transparent={true}
+  animationType="slide"
+  onRequestClose={() => setShowCityModal(false)}
+>
+  <View style={styles.modalOverlay}>
+    <View style={styles.currencyModal}>
+      <View style={styles.modalHeader}>
+        <Text style={styles.modalTitle}>
+          {formData.governorate 
+            ? `مدن ${formData.governorate}`
+            : "اختر المدينة"}
+        </Text>
+        <TouchableOpacity 
+          onPress={() => setShowCityModal(false)}
+          hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}
+        >
+          <Text>
+            <MaterialIcons name="close" size={24} color="#64748B" />
+          </Text>
+        </TouchableOpacity>
+      </View>
+
+      {availableCities.length > 0 ? (
+        <FlatList
+          data={availableCities}
+          keyExtractor={(item) => item}
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              style={[
+                styles.currencyOption,
+                formData.city === item && styles.selectedOption
+              ]}
+              onPress={() => {
+                setFormData({...formData, city: item});
+                setShowCityModal(false);
+              }}
             >
-              <Picker.Item 
-                label={formData.governorate ? "اختر المدينة" : "اختر المحافظة أولاً"} 
-                value="" 
-              />
-              {availableCities.map((city) => (
-                <Picker.Item key={city} label={city} value={city} />
-              ))}
-            </Picker>
-          </View>
-          {!formData.governorate && (
-            <Text style={styles.helperText}>يرجى اختيار المحافظة أولاً</Text>
+              <Text style={styles.optionText}>{item}</Text>
+              {formData.city === item && (
+                <Text>
+                  <MaterialIcons name="check" size={20} color="#1877f2" />
+                </Text>
+              )}
+            </TouchableOpacity>
           )}
+          ItemSeparatorComponent={() => <View style={styles.separator} />}
+          contentContainerStyle={{ paddingBottom: 20 }}
+        />
+      ) : (
+        <View style={styles.emptyState}>
+          <MaterialIcons name="location-off" size={40} color="#9CA3AF" />
+          <Text style={styles.emptyText}>لا توجد مدن متاحة</Text>
         </View>
+      )}
+    </View>
+  </View>
+</Modal>
 
         <View style={styles.inputGroup}>
           <Text style={styles.label}>تفاصيل الموقع</Text>
@@ -673,7 +940,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: colors.textPrimary,
     marginBottom: 8,
-    textAlign: 'right',
+    textAlign: 'left',
     fontFamily: 'Tajawal-Medium',
   },
   input: {
@@ -779,6 +1046,84 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     textAlign: 'center',
+  },
+  currencyContainer: {
+    marginBottom: 16,
+  },
+  sectionLabel: {
+    fontSize: 14,
+    fontFamily: 'Tajawal-Medium',
+    color: '#374151',
+    marginBottom: 8,
+  },
+  currencySelector: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderWidth: 1,
+    borderColor: '#D1D5DB',
+    borderRadius: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    backgroundColor: '#FFFFFF',
+  },
+  currencyText: {
+    fontSize: 16,
+    fontFamily: 'Tajawal-Medium',
+    color: '#1F2937',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  LocmodalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+  },
+  currencyModal: {
+    backgroundColor: '#FFFFFF',
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
+    width: '100%',
+    maxHeight: '50%',
+    paddingBottom: 20,
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F3F4F6',
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontFamily: 'Tajawal-Bold',
+    color: '#1F2937',
+  },
+  currencyOption: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 16,
+    paddingHorizontal: 20,
+  },
+  selectedOption: {
+    backgroundColor: '#F5F8FF',
+  },
+  optionText: {
+    fontSize: 16,
+    fontFamily: 'Tajawal-Medium',
+    color: '#1F2937',
+  },
+  separator: {
+    height: 1,
+    backgroundColor: '#F3F4F6',
+    marginHorizontal: 16,
   },
 });
 

@@ -354,6 +354,8 @@ const styles = StyleSheet.create({
   container: {
     paddingBottom: 20,
     direction: 'rtl', // RTL direction for container
+    textAlign:"right",
+    flexDirection:""
   },
   header: {
     backgroundColor: "#FFFFFF",
@@ -486,6 +488,7 @@ const styles = StyleSheet.create({
   section: {
     marginTop: 20,
     paddingHorizontal: 20,
+    // alignItems:"right"
   },
   sectionTitle: {
     fontSize: 20,
@@ -508,7 +511,7 @@ const styles = StyleSheet.create({
     borderColor: "#F1F5F9",
   },
   detailRow: {
-    flexDirection: "row-reverse", // Reverse direction for RTL
+    flexDirection: "row", // Reverse direction for RTL
     alignItems: "center",
     marginBottom: 16,
   },
@@ -524,7 +527,7 @@ const styles = StyleSheet.create({
     writingDirection: 'rtl', // RTL text direction
   },
   servicesContainer: {
-    flexDirection: "row-reverse", // Reverse direction for RTL
+    flexDirection: "row", // Reverse direction for RTL
     flexWrap: "wrap",
     gap: 8,
   },
@@ -556,8 +559,8 @@ const styles = StyleSheet.create({
     borderColor: "#F1F5F9",
   },
   certificationHeader: {
-    flexDirection: "row-reverse", // Reverse direction for RTL
-    alignItems: "center",
+    flexDirection: "row", // Reverse direction for RTL
+    alignItems: "right",
     marginBottom: 8,
   },
   certificationName: {
@@ -567,7 +570,8 @@ const styles = StyleSheet.create({
     marginRight: 8,
     flex: 1,
     textAlign: "right", // Right align for RTL
-    writingDirection: 'rtl', // RTL text direction
+    flexDirection:"row"
+    // writingDirection: 'rtl', // RTL text direction
   },
   certificationDetail: {
     fontSize: 14,

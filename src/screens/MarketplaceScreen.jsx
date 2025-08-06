@@ -76,10 +76,7 @@ const governorates = [
     name: "المحويت",
     cities: ["المحويت", "الخبت", "حفاش", "شبام كوكبان", "ملحان", "بني سعد", "الرجم", "الطويلة", "الرُجم"]
   },
-  {
-    name: "أمانة العاصمة",
-    cities: ["المدينة القديمة", "السبعين", "معين", "التحرير", "الثورة", "شعوب", "السبعين", "بني الحارث", "الوحدة", "آزال"]
-  },
+
   {
     name: "عمران",
     cities: ["عمران", "ريدة", "حرف سفيان", "خارف", "القفلة", "السودة", "بني صريم", "مسور", "عيال سريح", "جبل عيال يزيد", "ثلاء", "حبور ظليمة", "السود", "المدان", "سوير", "شهيد ناجي", "ذي بين"]
@@ -141,8 +138,8 @@ const governorates = [
 const PRODUCT_TYPES = [
   { id: "all", name: "الكل", icon: "apps" },
   { id: "Panel", name: "ألواح شمسية", icon: "solar-panel" },
-  { id: "Inverter", name: "انفرترات", icon: "flash" },
-  { id: "Battery", name: "بطاريات", icon: "battery" },
+  { id: "Inverter", name: "انفرترات", icon: "chip" },
+  { id: "Battery", name: "بطاريات", icon: "car-battery" },
   { id: "Panel bases", name: "قواعد ألواح", icon: "format-align-bottom" }, // new
   { id: "Accessory", name: "اكسسوارات", icon: "tools" },
   { id: "Other", name: "أخرى", icon: "shape" }, // new

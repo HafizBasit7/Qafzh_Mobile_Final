@@ -38,7 +38,8 @@ export default function SolarCalculator() {
     defaultAppliances.map((a) => ({
       ...a,
       quantity: 0,
-      hours: 0,
+      dayHours: 0,    // New field
+    nightHours: 0,  // New field
       watt: a.watt,
     }))
   );
@@ -66,10 +67,16 @@ export default function SolarCalculator() {
   const handleChange = (idx, field, value) => {
     let numericValue = Number(value) || 0;
 
-    // Validate hours to not exceed 24
-    if (field === "hours" && numericValue > 24) {
-      numericValue = 24;
-    }
+     // Validate hours to not exceed 24
+  if ((field === "dayHours" || field === "nightHours") && numericValue > 24) {
+    numericValue = 24;
+  }
+
+  // Validate quantity and watt to not be negative
+  if ((field === "quantity" || field === "watt") && numericValue < 0) {
+    numericValue = 0;
+  }
+
 
     // Validate quantity and watt to not be negative
     if ((field === "quantity" || field === "watt") && numericValue < 0) {
@@ -82,31 +89,49 @@ export default function SolarCalculator() {
     setAppliances(updated);
   };
 
-  const canCalculate = appliances.some((a) => a.quantity > 0 && a.hours > 0);
+  const canCalculate = appliances.some((a) => 
+    a.quantity > 0 && (a.dayHours > 0 || a.nightHours > 0)
+  );
 
   const handleCalculate = () => {
-    const totalDailyWh = appliances.reduce(
-      (sum, a) => sum + a.watt * a.quantity * a.hours,
+    // Calculate day and night usage separately
+    const dayUsageWh = appliances.reduce(
+      (sum, a) => sum + a.watt * a.quantity * a.dayHours,
       0
     );
+    
+    const nightUsageWh = appliances.reduce(
+      (sum, a) => sum + a.watt * a.quantity * a.nightHours,
+      0
+    );
+  
+    const totalDailyWh = dayUsageWh + nightUsageWh;
     const peakLoad = appliances.reduce(
       (sum, a) => sum + a.watt * a.quantity,
       0
     );
+  
+    // Panel calculation
     const requiredPanelWatt = totalDailyWh / (SUN_HOURS * PANEL_EFFICIENCY);
     const panelWatt = 550;
     const numPanels = Math.ceil(requiredPanelWatt / panelWatt);
-    const batteryAh = Math.ceil(totalDailyWh / (BATTERY_VOLTAGE * BATTERY_DOD));
+  
+    // Battery calculation - ensure no division by zero
+    const batteryAh = BATTERY_VOLTAGE > 0 
+      ? Math.ceil(totalDailyWh / (BATTERY_VOLTAGE * BATTERY_DOD))
+      : 0;
+  
+    // Inverter calculation
     const inverterWatt = Math.ceil(peakLoad * 1.25);
-
+  
     setResults({
-      totalDailyWh: Math.round(totalDailyWh),
-      peakLoad: Math.round(peakLoad),
-      requiredPanelWatt: Math.ceil(requiredPanelWatt),
-      numPanels,
+      totalDailyWh: Math.round(totalDailyWh) || 0,
+      peakLoad: Math.round(peakLoad) || 0,
+      requiredPanelWatt: Math.ceil(requiredPanelWatt) || 0,
+      numPanels: numPanels || 0,
       panelWatt,
-      batteryAh,
-      inverterWatt,
+      batteryAh: batteryAh || 0,
+      inverterWatt: inverterWatt || 0,
     });
     setShowResultsModal(true);
   };
@@ -132,41 +157,51 @@ export default function SolarCalculator() {
               <Text style={styles.headerText}>الجهاز</Text>
               <Text style={styles.headerText}>الكمية</Text>
               <Text style={styles.headerText}>الواط</Text>
-              <Text style={styles.headerText}>الساعات</Text>
+              <Text style={styles.headerText}>نهاراً (ساعة)</Text>
+              <Text style={styles.headerText}>ليلاً (ساعة)</Text>
             </View>
 
             {appliances.map((appliance, idx) => (
-              <View key={appliance.key} style={styles.tableRow}>
-                <Text style={styles.applianceName}>{t(appliance.name)}</Text>
+  <View key={appliance.key} style={styles.tableRow}>
+    <Text style={styles.applianceName}>{t(appliance.name)}</Text>
 
-                <TextInput
-                  style={styles.input}
-                  keyboardType="numeric"
-                  value={appliance.quantity.toString()}
-                  onChangeText={(value) => handleChange(idx, "quantity", value)}
-                  placeholder="0"
-                  placeholderTextColor="#9CA3AF"
-                />
+    <TextInput
+      style={styles.input}
+      keyboardType="numeric"
+      value={appliance.quantity?.toString() || '0'}
+      onChangeText={(value) => handleChange(idx, "quantity", value)}
+      placeholder="0"
+      placeholderTextColor="#9CA3AF"
+    />
 
-                <TextInput
-                  style={styles.input}
-                  keyboardType="numeric"
-                  value={appliance.watt.toString()}
-                  onChangeText={(value) => handleChange(idx, "watt", value)}
-                  placeholder="0"
-                  placeholderTextColor="#9CA3AF"
-                  editable={appliance.key === "other"}
-                />
+    <TextInput
+      style={styles.input}
+      keyboardType="numeric"
+      value={appliance.watt?.toString() || '0'}
+      onChangeText={(value) => handleChange(idx, "watt", value)}
+      placeholder="0"
+      placeholderTextColor="#9CA3AF"
+      editable={appliance.key === "other"}
+    />
 
-                <TextInput
-                  style={styles.input}
-                  keyboardType="numeric"
-                  value={appliance.hours.toString()}
-                  onChangeText={(value) => handleChange(idx, "hours", value)}
-                  placeholder="0-24"
-                  placeholderTextColor="#9CA3AF"
-                />
-              </View>
+    <TextInput
+      style={styles.input}
+      keyboardType="numeric"
+      value={appliance.dayHours?.toString() || '0'}
+      onChangeText={(value) => handleChange(idx, "dayHours", value)}
+      placeholder="0-24"
+      placeholderTextColor="#9CA3AF"
+    />
+
+    <TextInput
+      style={styles.input}
+      keyboardType="numeric"
+      value={appliance.nightHours?.toString() || '0'}
+      onChangeText={(value) => handleChange(idx, "nightHours", value)}
+      placeholder="0-24"
+      placeholderTextColor="#9CA3AF"
+    />
+  </View>
             ))}
           </View>
 
