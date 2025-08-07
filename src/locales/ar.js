@@ -213,6 +213,7 @@ export default {
   },
   CURRENCIES: {
     YER: "ريال يمني",
+    YER: "ريال يمني جنوب",
     USD: "دولار أمريكي",
     SAR: "ريال سعودي",
   },
@@ -242,7 +243,7 @@ export default {
     modelPlaceholder: "مثال: JKM550M-72HL4-V",
     pricing: "التسعير",
     price: "السعر",
-    negotiable: "السعر قابل للتفاوض",
+    negotiable: "قابل للتفاوض",
     images: "الصور",
     imagesHint: "يمكنك إضافة حتى 5 صور (اختر صورًا واضحة)",
     addImage: "إضافة صورة",

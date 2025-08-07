@@ -580,12 +580,12 @@ export default function MarketplaceScreen({ navigation }) {
 
 
           <View style={styles.searchRow}>
-            <TouchableOpacity
+            {/* <TouchableOpacity
               style={styles.searchContainer}
               onPress={() => setShowCategories(!showCategories)}
             >
               <MaterialIcons name="category" size={20} color="#FFFFFF" />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
 
             <View style={styles.searchInputContainer}>
               <TextInput
@@ -606,7 +606,7 @@ export default function MarketplaceScreen({ navigation }) {
             </View>
           </View>
 
-          {showCategories && (
+          
             <View style={styles.categoriesContainer}>
               <FlatList
                 horizontal
@@ -639,7 +639,7 @@ export default function MarketplaceScreen({ navigation }) {
                 )}
               />
             </View>
-          )}
+          
         </View>
       </LinearGradient>
     </View>
@@ -713,7 +713,7 @@ export default function MarketplaceScreen({ navigation }) {
               name={type.icon}
               size={24}
               color={activeProductType === type.id ? "#fff" : "#1877f2"}
-              style={{ marginBottom: 8 }}
+              style={{ marginBottom: 2 }}
             />
             <Text
               style={[
@@ -1060,7 +1060,7 @@ quickFilterDropdownWrapper: {
     maxWidth: 120,
   },
   categoriesContainer: {
-    marginTop: 8,
+    marginTop: 5,
   },
   categoriesList: {
     paddingBottom: 2,

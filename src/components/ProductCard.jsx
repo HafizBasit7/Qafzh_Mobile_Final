@@ -31,13 +31,17 @@ const ProductCard = ({ product }) => {
     navigation.navigate('ProductDetail', { product });
   };
 
-  const formatPrice = (price) => {
-    return new Intl.NumberFormat("ar-YE", {
-      style: "decimal",  
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(price);
+  const CURRENCY_SYMBOLS = {
+    YER: "﷼",          // Northern Yemeni Rial
+    YER_SOUTH: "﷼ ج",  // Southern Yemeni Rial (with ج for جنوبي)
+    USD: "$",          // US Dollar
+    SAR: "ر.س"        // Saudi Riyal
   };
+
+const formatPrice = (price, currency = 'YER', isSouthern = false) => {
+  const symbol = isSouthern ? CURRENCY_SYMBOLS.YER_SOUTH : CURRENCY_SYMBOLS[currency];
+  return `${price} ${symbol}`;
+};
 
   const renderImage = () => {
     if (imageError) {
@@ -135,9 +139,23 @@ const ProductCard = ({ product }) => {
       </Text>
     )}
 
-    <Text style={styles.cardPrice}>
-      {formatPrice(product.price)}
-    </Text>
+<Text style={styles.cardPrice}>
+  {formatPrice(
+    product.price,           // Original price value
+    product.currency,        // Currency code (YER/USD/SAR)
+    product.region === 'south' // Boolean for southern
+  )}
+</Text>
+
+{(product.isNegotiable || product.negotiable) && (
+    <View style={styles.negotiableBadge}>
+      <Text style={styles.negotiableText}>
+        {t("productSubmission.negotiable")}
+      </Text>
+    </View>
+  )}
+
+
   </View>
 
   <View style={styles.middleRow}>
@@ -229,7 +247,7 @@ const styles = StyleSheet.create({
   // paddingBottom: 2,
   },
   topRow: {
-  // gap: 2,
+  gap: 4,
 },
 
 middleRow: {
@@ -416,15 +434,17 @@ pendingText: {
   },
 
   negotiableBadge: {
-    backgroundColor: "#FEF3C7",
+    backgroundColor: "#fff",
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 8,
+    // flexDirection:"row-reverse"
   },
   negotiableText: {
     fontSize: 11,
     fontFamily: "Tajawal-Medium",
-    color: "#D97706",
+    color: "#1877f2",
+    // alignItems:"left"
   },
   locationContainer: {
     flexDirection: "row-reverse",

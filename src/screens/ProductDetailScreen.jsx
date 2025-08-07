@@ -33,7 +33,18 @@ export default function ProductDetailScreen() {
     }
   };
 
-  const currencySymbol = product.currency === "YER" ? "﷼" : "$";
+// In your product detail screen (single line solution):
+const currencySymbol = 
+  product.currency === "YER" ? "﷼" : 
+  product.currency === "USD" ? "$" : 
+  product.currency === "SAR" ? "ر.س" : 
+  product.currency === "YER_SOUTH" ? "﷼ ج":
+  product.currency; // fallback to currency code if unknown
+
+// Usage remains exactly the same:
+<Text style={styles.cardPrice}>
+  {product.price} {currencySymbol}
+</Text>
 
   // Format specifications for display
   const renderSpecifications = () => {
