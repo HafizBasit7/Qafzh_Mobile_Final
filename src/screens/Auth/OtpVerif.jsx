@@ -18,17 +18,17 @@ const OtpVerif = ({ navigation, route }) => {
   const { t } = useTranslation();
   const { verifyOTP, isVerifying, requestOTP, isRequestingOTP } = useAuth();
   const { phone, returnData, isNewUser } = route.params;
-  const [otp, setOtp] = useState(['', '', '', '', '', '']);
+  const [otp, setOtp] = useState(['1', '1', '2', '2', '3', '3']);
   const [timer, setTimer] = useState(60);
   const inputRefs = useRef([]);
 
   // Auto verify when default OTP (112233) is entered
-  useEffect(() => {
-    const enteredOTP = otp.join('');
-    if (enteredOTP === '112233') {
-      handleVerify('112233');
-    }
-  }, [otp]);
+  // useEffect(() => {
+  //   const enteredOTP = otp.join('');
+  //   if (enteredOTP === '112233') {
+  //     handleVerify('112233');
+  //   }
+  // }, [otp]);
 
   // Timer countdown
   useEffect(() => {
@@ -120,7 +120,7 @@ const OtpVerif = ({ navigation, route }) => {
 
         <Text style={styles.title}>{t('AUTH.VERIFY_PHONE')}</Text>
         <Text style={styles.subtitle}>
-          {t('AUTH.OTP_SENT_TO')} {phone}
+        تم إرسال رمز التحقق إلى {phone}
         </Text>
         <Text style={styles.devNote}>DEV NOTE: Enter "112233" for auto-verification</Text>
 
@@ -165,10 +165,10 @@ const OtpVerif = ({ navigation, route }) => {
             <ActivityIndicator color="#1877f2" size="small" />
           ) : (
             <Text style={[styles.resendText, timer > 0 && styles.resendTextDisabled]}>
-              {timer > 0
-                ? `${t('AUTH.RESEND_IN')} ${timer}s`
-                : t('AUTH.RESEND_OTP')}
-            </Text>
+            {timer > 0
+              ? `إعادة الإرسال خلال ${timer} ثانية`
+              : `إعادة إرسال رمز التحقق`}
+          </Text>
           )}
         </TouchableOpacity>
       </View>

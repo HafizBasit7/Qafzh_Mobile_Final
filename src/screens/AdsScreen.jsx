@@ -35,9 +35,11 @@ const AdsScreen = () => {
   const fetchAds = useCallback(async () => {
     try {
       const response = await getAllAds();
+      // Filter to only include active ads
+      const activeAds = response.data ? response.data.filter(ad => ad.active) : [];
       setAdsData({
-        ads: response.data || [],
-        total: response.total || 0,
+        ads: activeAds, // Only set active ads
+        total: activeAds.length, // Update total count
         loading: false,
         error: null,
       });

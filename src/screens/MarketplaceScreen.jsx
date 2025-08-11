@@ -32,7 +32,7 @@ import { useModal } from "../hooks/useModal";
 import { useDebounce } from "../hooks/useDebounce";
 import { searchAPI } from "../services/api";
 import LoadingSpinner from "../components/common/LoadingSpinner";
-import Logo from "../../assets/images/Logo.png"
+import Logo from "../../assets/images/mylogo.png"
 import { Picker } from '@react-native-picker/picker';
 import {
   MaterialIcons,
@@ -571,8 +571,8 @@ export default function MarketplaceScreen({ navigation }) {
         <View style={styles.header}>
           <View style={styles.headerTop}>
             <View style={styles.headerLeft}>
-              {/* <Image source={Logo} style={styles.logo} /> */}
-              <Text style={styles.title}>السوق الشمسي</Text>
+              <Image source={Logo} style={styles.logo} />
+              <Text style={styles.title}> الشمسي</Text>
             </View>
 
         
@@ -998,6 +998,7 @@ quickFilterDropdownWrapper: {
     marginRight: 8,
     maxHeight: 64,
     resizeMode: 'contain',
+    borderRadius: 8,
   },
 
 

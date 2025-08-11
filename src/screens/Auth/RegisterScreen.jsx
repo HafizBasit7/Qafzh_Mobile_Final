@@ -1,4 +1,5 @@
 // screens/RegisterScreen.js
+
 import React, { useState } from "react";
 import {
   View,
@@ -11,7 +12,8 @@ import {
   ActivityIndicator,
   ScrollView,
   Image,
-  Switch
+  Switch,
+  FlatList
 } from "react-native";
 import { useAuth } from "../../hooks/useAuth";
 import { showToast } from "../../components/common/Toast";
@@ -20,12 +22,27 @@ import * as ImagePicker from "expo-image-picker";
 import { uploadImage } from "../../../utils/upload";
 import CustomModal from "../../components/common/CustomModal"
 import { useModal } from "../../hooks/useModal";
+import { Ionicons } from "@expo/vector-icons";
+import countryCodes from "../../data/countryCodes";
+import Icon from "react-native-vector-icons/Ionicons";
+
 const RegisterScreen = ({ navigation, route }) => {
+  const [selectedCountryCode, setSelectedCountryCode] = useState("+967");
+const [showCountryList, setShowCountryList] = useState(false);
   const { t } = useTranslation();
   const { register, isRegistering } = useAuth();
   const returnData = route.params?.returnData;
   const { modalState, showModal, hideModal } = useModal();
   const [isChecked, setIsChecked] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+
+const filteredCountries = countryCodes.filter(
+  (c) =>
+    c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    c.dial_code.includes(searchTerm)
+);
+  
+const [showPassword, setShowPassword] = useState(false);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -241,33 +258,90 @@ const RegisterScreen = ({ navigation, route }) => {
             </View>
 
             <View style={styles.inputContainer}>
-              <Text style={styles.label}>رقم الهاتف</Text>
-              <TextInput
-                style={styles.input}
-                value={formData.phone}
-                onChangeText={(text) =>
-                  setFormData((prev) => ({ ...prev, phone: text }))
-                }
-                placeholder="+967-XXX-XXX-XXX"
-                keyboardType="phone-pad"
-              />
-            </View>
+  <Text style={styles.label}>رقم الهاتف</Text>
+  <View style={styles.phoneRow}>
+    <TouchableOpacity 
+      style={styles.countryCodeBox}
+      onPress={() => setShowCountryList(!showCountryList)}
+    >
+      <Text style={styles.countryCodeText}>{selectedCountryCode}</Text>
+    </TouchableOpacity>
+    <TextInput
+      style={[styles.input, { flex: 1 }]}
+      value={formData.phone}
+      onChangeText={(text) =>
+        setFormData((prev) => ({ ...prev, phone: text }))
+      }
+      placeholder="XXX-XXX-XXX"
+      keyboardType="phone-pad"
+    />
+  </View>
+
+  {showCountryList && (
+  <View style={styles.countryList}>
+    
+    <View style={styles.searchContainer}>
+  <Icon name="search" size={18} color="#94A3B8" style={styles.searchIcon} />
+  <TextInput
+    style={styles.searchInput}
+    placeholder="بحث عن دولة أو كود"
+    value={searchTerm}
+    onChangeText={setSearchTerm}
+    placeholderTextColor="#94A3B8"
+  />
+</View>
+    <FlatList
+      data={filteredCountries}
+      keyExtractor={(item) => item.code}
+      style={{ maxHeight: 200 }}
+      keyboardShouldPersistTaps="handled"
+      renderItem={({ item }) => (
+        <TouchableOpacity
+          style={styles.countryItem}
+          onPress={() => {
+            setSelectedCountryCode(item.dial_code);
+            setShowCountryList(false);
+            setSearchTerm(""); // reset search
+          }}
+        >
+          <Text>{item.name} ({item.dial_code})</Text>
+        </TouchableOpacity>
+      )}
+    />
+  </View>
+)}
+
+</View>
+
 
             <View style={styles.inputContainer}>
-              <Text style={styles.label}>كلمة المرور</Text>
-              <TextInput
-                style={styles.input}
-                value={formData.password}
-                onChangeText={(text) =>
-                  setFormData((prev) => ({ ...prev, password: text }))
-                }
-                placeholder="كلمة المرور (مثال: User@1)"
-                secureTextEntry
-              />
-              <Text style={styles.helperText}>
-                يجب أن تحتوي على حرف كبير، رقم، ورمز خاص
-              </Text>
-            </View>
+  <Text style={styles.label}>كلمة المرور</Text>
+
+  <View style={{ flexDirection: "row", alignItems: "center" }}>
+    <TextInput
+      style={[styles.input, { flex: 1 }]}
+      value={formData.password}
+      onChangeText={(text) =>
+        setFormData((prev) => ({ ...prev, password: text }))
+      }
+      placeholder="كلمة المرور (مثال: User@1)"
+      secureTextEntry={!showPassword}
+    />
+
+    <TouchableOpacity onPress={() => setShowPassword((prev) => !prev)}>
+      <Ionicons
+        name={showPassword ? "eye-off" : "eye"}
+        size={22}
+        color="#888"
+        style={{ marginLeft: 8 }}
+      />
+    </TouchableOpacity>
+  </View>
+
+  <Text style={styles.helperText}>
+    يجب أن تحتوي على حرف كبير، رقم، ورمز خاص
+  </Text>
+</View>
 
          {/* Replace the CheckBox component with this */}
 <View style={styles.checkboxContainer}>
@@ -477,6 +551,56 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: "Tajawal-Bold",
   },
+  phoneRow: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  countryCodeBox: {
+    backgroundColor: "#FFFFFF",
+    borderWidth: 1,
+    borderColor: "#E2E8F0",
+    borderRadius: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 14,
+    marginRight: 8,
+  },
+  countryCodeText: {
+    fontSize: 16,
+    fontFamily: "Tajawal-Regular",
+    color: "#1E293B",
+  },
+  countryList: {
+    backgroundColor: "#fff",
+    borderWidth: 1,
+    borderColor: "#E2E8F0",
+    borderRadius: 8,
+    marginTop: 4,
+  },
+  countryItem: {
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: "#E2E8F0",
+  },
+  searchContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    borderBottomWidth: 1,
+    borderBottomColor: "#E2E8F0",
+    paddingHorizontal: 8,
+    backgroundColor: "#fff",
+  },
+  searchIcon: {
+    marginRight: 6,
+  },
+  searchInput: {
+    flex: 1,
+    fontSize: 14,
+    paddingVertical: 8,
+    color: "#1E293B",
+  },
+  
+  
 });
 
 export default RegisterScreen;

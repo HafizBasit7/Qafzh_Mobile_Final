@@ -11,6 +11,7 @@ import UpdateProfileScreen from '../screens/Profile/UpdateProfileScreen';
 import LikedPostsScreen from '../screens/Profile/LikedPostsScreen';
 import EmptyState from '../components/EmptyState';
 import CustomModal from '../components/common/CustomModal';
+import HelpScreen from '../screens/Profile/HelpScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -140,6 +141,7 @@ export default function ProfileStack() {
       <Stack.Screen name="MyProducts" component={MyProductsScreen} />
       <Stack.Screen name="UpdateProfile" component={UpdateProfileScreen} />
       <Stack.Screen name="LikedPosts" component={LikedPostsScreen} />
+      <Stack.Screen name="HelpScreen" component={HelpScreen} />
     </Stack.Navigator>
   );
 }

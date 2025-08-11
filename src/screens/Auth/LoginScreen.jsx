@@ -13,10 +13,13 @@ import {
 import { useAuth } from '../../hooks/useAuth';
 import { useModal } from '../../hooks/useModal';
 import CustomModal from '../../components/common/CustomModal';
+import { Ionicons } from "@expo/vector-icons";
 
 export default function LoginScreen({ navigation }) {
   const { login, isLoggingIn, isAuthenticated, refreshAuthState } = useAuth();
   const { modalState, hideModal, showModal } = useModal();
+  
+const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     phone: '',
     password: ''
@@ -111,7 +114,7 @@ export default function LoginScreen({ navigation }) {
               <Text style={styles.label}>رقم الهاتف</Text>
               <TextInput
                 style={styles.input}
-                placeholder="+967xxxxxxxxx"
+                placeholder="xxx xx xxxx"
                 keyboardType="phone-pad"
                 value={formData.phone}
                 onChangeText={(text) => setFormData({...formData, phone: text})}
@@ -119,15 +122,29 @@ export default function LoginScreen({ navigation }) {
             </View>
 
             <View style={styles.inputContainer}>
-              <Text style={styles.label}>كلمة المرور</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="أدخل كلمة المرور"
-                secureTextEntry
-                value={formData.password}
-                onChangeText={(text) => setFormData({...formData, password: text})}
-              />
-            </View>
+            <Text style={styles.label}>كلمة المرور</Text>
+
+  <View style={{ flexDirection: "row", alignItems: "center" }}>
+    <TextInput
+      style={[styles.input, { flex: 1 }]}
+      placeholder="أدخل كلمة المرور"
+      secureTextEntry={!showPassword}
+      value={formData.password}
+      onChangeText={(text) =>
+        setFormData({ ...formData, password: text })
+      }
+    />
+
+    <TouchableOpacity onPress={() => setShowPassword((prev) => !prev)}>
+      <Ionicons
+        name={showPassword ? "eye-off" : "eye"}
+        size={22}
+        color="#888"
+        style={{ marginLeft: 8 }}
+      />
+    </TouchableOpacity>
+  </View>
+</View>
 
             <TouchableOpacity
               style={[styles.button, (!isFormValid || isLoggingIn) && styles.buttonDisabled]}

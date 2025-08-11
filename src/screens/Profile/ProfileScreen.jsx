@@ -176,6 +176,14 @@ const ProfileScreen = ({ navigation }) => {
     <Feather name="edit-3" size={20} color="#1877f2" />
     <Text style={styles.actionButtonText}>تحديث الملف الشخصي</Text>
   </TouchableOpacity>
+
+  <TouchableOpacity
+    style={styles.actionButton}
+    onPress={() => navigation.navigate("HelpScreen")}
+  >
+    <Feather name="help-circle" size={20} color="#1877f2" />
+    <Text style={styles.actionButtonText}>المساعدة والدعم</Text>
+  </TouchableOpacity>
 </View>
 
 {/* Add this logout button section at the bottom */}
@@ -379,7 +387,7 @@ const styles = StyleSheet.create({
   // Add these new styles to your StyleSheet:
 bottomLogoutContainer: {
   padding: 16,
-  marginTop: 100,
+  marginTop: 20,
 },
 bottomLogoutButton: {
   backgroundColor: "#ef4444",
